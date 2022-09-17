@@ -1,5 +1,5 @@
 
-for i in range (10):
-    print(i)
+for iu in range (10):
+    print(iu)
 
-print('hello')
+print('hello world')
