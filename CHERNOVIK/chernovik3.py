@@ -15,3 +15,7 @@ print(z)
 
 b=str(-float('-10'))
 print(b)
+'''
+text
+text2
+'''
