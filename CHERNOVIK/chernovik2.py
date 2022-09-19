@@ -17,5 +17,5 @@ for i in a:
 print(b)
 print(c)
 print( plus(10,10))
-
+# продолжим
 
