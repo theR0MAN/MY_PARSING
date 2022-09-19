@@ -57,4 +57,3 @@ print(zzz)
 file = open('REC2.txt', mode='w', encoding='utf-8')
 file.write(zzz)
 file.close()
-
