@@ -13,10 +13,11 @@ k=0
 for i in a:
     b[k]=float(i)
     k+=1
-
+# продолжим       printprintprintprint
 print(b)
 print(c)
 print( plus(10,10))
+# продолжим
 # продолжим
 # продолжим
 # продолжим
