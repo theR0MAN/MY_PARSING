@@ -58,4 +58,3 @@ for i in T1:
 t2=time.time()
 print('cicle ',t2-t1)
 # 1 комит
-# 2 комит
