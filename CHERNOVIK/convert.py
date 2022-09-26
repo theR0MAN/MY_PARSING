@@ -32,9 +32,9 @@ import numpy
 #
 
 
-text_file = open('452725.txt', mode='r',encoding='utf-16')
+text_file = open('/home/roman/MY_PARSING/files/452725.txt', mode='r',encoding='utf-16')
 zl = text_file.read()
-file2 = open('REC.txt', mode='w', encoding='utf-8')
+file2 = open('/home/roman/MY_PARSING/files/REC.txt', mode='w', encoding='utf-8')
 file2.write(zl)
 text_file.close()
 file2.close()
