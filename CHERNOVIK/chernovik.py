@@ -29,18 +29,18 @@ list_a = [1, 2020, 70]
 list_b = [2, 4, 7, 2000]
 list_c = [3, 70, 7]
 
+x= product(list_a, list_b, list_c)
 
-
-for a, b, c in product(list_a, list_b, list_c):
+for a, b, c in x:
     print(f'a={a}   b={b}  c={c}')
-
-for a, b, c in product([5], [4], [8]):
-    print(f'a={a}   b={b}  c={c}')
-
-print('UNPACK')
-LIST=(list_a,list_b,list_c)
-
-for par in product(*LIST):
-    print(f'a={par[0]}   b={par[1]}  c={par[2]}')
-print('STOP UNPACK')
-
+print(x)
+# for a, b, c in product([5], [4], [8]):
+#     print(f'a={a}   b={b}  c={c}')
+#
+# print('UNPACK')
+# LIST=(list_a,list_b,list_c)
+#
+# for par in product(*LIST):
+#     print(f'a={par[0]}   b={par[1]}  c={par[2]}')
+# print('STOP UNPACK')
+#
