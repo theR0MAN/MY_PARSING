@@ -18,4 +18,4 @@ if __name__=='__main__':
 
 
 print('ALL TIME ' , time.time()-timer)
-# 
+# print(5000**100000)
