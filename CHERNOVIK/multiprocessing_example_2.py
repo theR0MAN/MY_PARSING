@@ -10,12 +10,38 @@ def out(x,y,z):
     return x,y,z,x+y+z
 param=[(1,2,3),(4,5,6),(7,8,9),(10,11,12),(13,14,15),(16,17,18),(19,20,21),(22,23,24)]# x,y,z
 timer=time.time()
-if __name__=='__main__':
-    with multiprocessing.Pool(8) as p:
-        p.starmap_async(out,param,callback=end_func)
-        p.close()
-        p.join()
+
+if __name__ == '__main__':
+    pool = multiprocessing.Pool(8)
+    pool.starmap_async(out, param, callback=end_func)
+    pool.close()
+    pool.join()
+print('ALL TIME ', time.time() - timer)
 
 
-print('ALL TIME ' , time.time()-timer)
-# print(5000**100000)
+# def out(x):
+#     y=3
+#     z=4
+#     print(f"value: {x}  {y}  {z}")
+#     ppo=5000 ** 1000000
+#     return x,y,z,x+y+z
+# param=[1,2,3,4,5,6,7,8,9]# x,y,z
+# timer=time.time()
+#
+# if __name__ == '__main__':
+#     pool = multiprocessing.Pool(8)
+#     pool.map_async(out, param, callback=end_func)
+#     pool.close()
+#     pool.join()
+# print('ALL TIME ', time.time() - timer)
+
+
+
+#
+#
+# if __name__=='__main__':
+#     with multiprocessing.Pool(8) as p:
+#         p.starmap_async(out,param,callback=end_func)
+#         p.close()
+#         p.join()
+# print('ALL TIME ' , time.time()-timer)

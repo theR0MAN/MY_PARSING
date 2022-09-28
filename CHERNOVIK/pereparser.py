@@ -2,8 +2,8 @@ import os
 import time
 import datetime
 
-path = '/media/roman/J/Открытие ФОРТС/MQL5/Files/PERkuklfondahistoryall'
-path2 = '/media/roman/J/OLDHIST/FORTSALL/'
+path = '/media/roman/J/Открытие ФОРТС/MQL5/Files/PERkuklfondahistory2222'
+path2 = '/media/roman/J/OLDHIST/EXP/'
 
 content = sorted(os.listdir(path), reverse=False)
 content2 = []
@@ -29,7 +29,7 @@ for i in content:
 
     for i in zl:  # пробегаеся по списку строк
         x = i.split()  # дробим каждую строку в элементы списка
-        if len(x) > 2:
+        if len(x) > 6:
             if '-' in x[0]:
                 x[0] = 'FRTS ' + x[0] + ' s 0'
             else:
@@ -45,14 +45,25 @@ for i in content:
             sbids = []
             ind = 3
             for u in range(int(x[2])):
-                if float(x[ind]) > 0:
-                    asks.append((x[ind], x[ind + 1]))
-                    kasks += 1
+                # if len(x)-1==ind:
+                #     print(x, "   ", ind, "   ", x[ind], "   ", x[ind + 1])
+                #     break
+
+                # print(x,"   ",len(x),"   ",ind,"   ",x[ind],"   ", x[ind + 1])
+                try:
+                    if float(x[ind]) > 0:
+                        asks.append((x[ind], x[ind + 1]))
+                        kasks += 1
+                    else:
+                        bids.append((str(-float(x[ind])), x[ind + 1]))
+                        kbids += 1
+                    # print(x[ind],'   ',x[ind+1])
+                    ind += 2
+                except Exception:
+                    print('Error ',x[0],'   ',filename,'   ',nm)
                 else:
-                    bids.append((str(-float(x[ind])), x[ind + 1]))
-                    kbids += 1
-                # print(x[ind],'   ',x[ind+1])
-                ind += 2
+                    continue
+
             asks.reverse()
 
             for i in asks:

@@ -1,15 +1,22 @@
 import multiprocessing
 import time
 import os
-import time
 import datetime
 
-path = '/media/roman/J/Открытие ФОРТС/MQL5/Files/PERkuklfondahistoryall'
-path2 = '/media/roman/J/OLDHIST/FORTSALL/'
+def end_func(response):
+    print("end_func:",response)
 
+
+
+
+path = '/media/roman/J/Открытие ФОРТС/MQL5/Files/PERkuklfondahistory'
 content = sorted(os.listdir(path), reverse=False)
-content2 = []
-for i in content:
+
+print(content)
+
+def perepars(i):
+    kkk=i
+    path2 = '/media/roman/J/OLDHIST/FORTS/'
     nm = i.split('.')
     tm = int(nm[0]) * 3600
     dat = datetime.datetime.utcfromtimestamp(tm)
@@ -47,14 +54,19 @@ for i in content:
             sbids = []
             ind = 3
             for u in range(int(x[2])):
-                if float(x[ind]) > 0:
-                    asks.append((x[ind], x[ind + 1]))
-                    kasks += 1
+                try:
+                    if float(x[ind]) > 0:
+                        asks.append((x[ind], x[ind + 1]))
+                        kasks += 1
+                    else:
+                        bids.append((str(-float(x[ind])), x[ind + 1]))
+                        kbids += 1
+                    # print(x[ind],'   ',x[ind+1])
+                    ind += 2
+                except Exception:
+                    print('Error ', x[0], '   ', filename, '   ', nm)
                 else:
-                    bids.append((str(-float(x[ind])), x[ind + 1]))
-                    kbids += 1
-                # print(x[ind],'   ',x[ind+1])
-                ind += 2
+                    continue
             asks.reverse()
 
             for i in asks:
@@ -76,5 +88,25 @@ for i in content:
     file2 = open(path2 + filename, mode='w', encoding='utf-8')
     file2.write(zzz)
     file2.close()
-    print(filename)
+    print(kkk,'   ',filename)
+    return kkk
 
+
+
+
+timer=time.time()
+if __name__ == '__main__':
+    with multiprocessing.Pool(8) as pool:
+        pool.map_async(perepars, content, callback=end_func)
+        pool.close()
+        pool.join()
+print('ALL TIME ', time.time() - timer)
+
+#
+# timer=time.time()
+# if __name__ == '__main__':
+#     pool = multiprocessing.Pool(8)
+#     pool.map_async(perepars, content, callback=end_func)
+#     pool.close()
+#     pool.join()
+# print('ALL TIME ', time.time() - timer)
