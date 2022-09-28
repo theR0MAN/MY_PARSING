@@ -9,8 +9,8 @@ def end_func(response):
 
 
 
-path = '/media/roman/J/Открытие ФОРТС/MQL5/Files/PERkuklfondahistory2222'
-path2 = '/media/roman/J/OLDHIST/EXP/'
+path = '/media/roman/J/Открытие Фонда/MQL5/Files/PERmyfondahistory'
+path2 = '/media/roman/J/OLDHIST/FONDA/'
 content = sorted(os.listdir(path), reverse=False)
 
 print(content)
