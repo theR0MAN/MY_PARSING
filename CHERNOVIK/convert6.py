@@ -1,6 +1,6 @@
 # PythonLearningJun
 
-file = open('REC.txt', mode='r', encoding='utf-8')
+file = open('/home/roman/MY_PARSING/files/REC.txt', mode='r', encoding='utf-8')
 zl = file.readlines()
 file.close()
 x = []
@@ -52,8 +52,8 @@ for i in zl:  # пробегаеся по списку строк
     b.append("\n" + line_data)  # создаем новый массив строк с переходом на новую строку вначале
 
 zzz = ' '.join(b)  #
-print(zzz)
+# print(zzz)
 
-file = open('REC2.txt', mode='w', encoding='utf-8')
+file = open('/home/roman/MY_PARSING/files/REC2.txt', mode='w', encoding='utf-8')
 file.write(zzz)
 file.close()
