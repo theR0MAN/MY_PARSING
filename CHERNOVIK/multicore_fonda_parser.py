@@ -9,8 +9,8 @@ def end_func(response):
 
 
 
-path = '/media/roman/J/Открытие Фонда/MQL5/Files/PERmyfondahistory'
-path2 = '/media/roman/J/OLDHIST/FONDA/'
+path = '/media/roman/J/Открытие Фонда/MQL5/Files/PERmyfondahistory/'
+path2 = '/media/roman/J/OLDHIST/FONDA2/'
 content = sorted(os.listdir(path), reverse=False)
 
 print(content)
@@ -29,12 +29,14 @@ def perepars(i):
         os.mkdir(path2+yr)
     if not os.path.exists(path2+yr+ '/' + mon):
         os.mkdir(path2+yr+ '/' + mon)
+    if not os.path.exists(path2+yr+ '/' + mon+ '/' + dy):
+        os.mkdir(path2+yr+ '/' + mon+ '/' + dy)
 
-    name = yr + '/' + mon + '/' + dy + '_' + hr
+    name = yr + '/' + mon + '/' + dy + '/' + hr
     filename = name + '.txt'
     # content2.append(name+'.txt')
 
-    file = open(path + '/' + i, mode='r', encoding='utf-16')
+    file = open(path + i, mode='r', encoding='utf-16')
     zl = file.readlines()
     file.close()
     x = []

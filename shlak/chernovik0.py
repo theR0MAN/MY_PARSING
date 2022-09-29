@@ -9,8 +9,8 @@ def end_func(response):
 
 
 
-path = '/media/roman/J/Открытие ФОРТС/MQL5/Files/PERkuklfondahistory2222'
-path2 = '/media/roman/J/OLDHIST/EXP/'
+path = '/media/roman/J/Открытие ФОРТС/MQL5/Files/PERkuklfondahistory/'
+path2 = '/media/roman/J/OLDHIST/FORTS/'
 content = sorted(os.listdir(path), reverse=False)
 
 print(content)
@@ -29,12 +29,14 @@ def perepars(i):
         os.mkdir(path2+yr)
     if not os.path.exists(path2+yr+ '/' + mon):
         os.mkdir(path2+yr+ '/' + mon)
+    if not os.path.exists(path2+yr+ '/' + mon+ '/' + dy):
+        os.mkdir(path2+yr+ '/' + mon+ '/' + dy)
 
-    name = yr + '/' + mon + '/' + dy + '_' + hr
+    name = yr + '/' + mon + '/' + dy + '/' + hr
     filename = name + '.txt'
     # content2.append(name+'.txt')
 
-    file = open(path + '/' + i, mode='r', encoding='utf-16')
+    file = open(path + i, mode='r', encoding='utf-16')
     zl = file.readlines()
     file.close()
     x = []
@@ -45,9 +47,10 @@ def perepars(i):
     for i in zl:  # пробегаеся по списку строк
         x = i.split()  # дробим каждую строку в элементы списка
         if len(x) > 2:
-
-            x[0] = 'MOEX ' + x[0] + ' s 6'
-
+            if '-' in x[0]:
+                x[0] = 'FRTS ' + x[0] + ' s 0'
+            else:
+                x[0] = 'MOEX ' + x[0] + ' s 0'
 
             # print(x[2])
             # тут нужно заменить массив стаканов по правилам
@@ -57,8 +60,8 @@ def perepars(i):
             bids = []
             sasks = []
             sbids = []
-            ind = 9
-            for u in range(int(x[8])):
+            ind = 3
+            for u in range(int(x[2])):
                 try:
                     if float(x[ind]) > 0:
                         asks.append((x[ind], x[ind + 1]))
@@ -78,7 +81,7 @@ def perepars(i):
                 sasks.append(' '.join(i))
             for i in bids:
                 sbids.append(' '.join(i))
-            y = [x[0]] + [x[2]] + [x[3]] + [x[4]] + [x[5]] + [x[6]] + [x[7]] + [str(kasks)] + sasks + [str(kbids)] + sbids
+            y = [x[0]] + [str(kasks)] + sasks + [str(kbids)] + sbids
 
             t = x.pop(1)
             if t != t0:
