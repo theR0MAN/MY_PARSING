@@ -3,20 +3,20 @@ import time
 import os
 import datetime
 
+
 def end_func(response):
-    print("end_func:",response)
+    print("end_func:", response)
 
 
-
-
-path = '/media/roman/J/Открытие ФОРТС/MQL5/Files/PERkuklfondahistory'
+path = '/media/roman/J/Открытие ФОРТС/MQL5/Files/PERkuklfondahistoryall/'
+path2 = '/media/roman/J/OLDHIST/FORTSALL2/'
 content = sorted(os.listdir(path), reverse=False)
 
 print(content)
 
+
 def perepars(i):
-    kkk=i
-    path2 = '/media/roman/J/OLDHIST/FORTS/'
+    kkk = i
     nm = i.split('.')
     tm = int(nm[0]) * 3600
     dat = datetime.datetime.utcfromtimestamp(tm)
@@ -24,11 +24,19 @@ def perepars(i):
     mon = str(dat.month)
     dy = str(dat.day)
     hr = str(dat.hour)
-    name = yr + '_' + mon + '_' + dy + '_' + hr
+
+    if not os.path.exists(path2 + yr):
+        os.mkdir(path2 + yr)
+    if not os.path.exists(path2 + yr + '/' + mon):
+        os.mkdir(path2 + yr + '/' + mon)
+    if not os.path.exists(path2 + yr + '/' + mon + '/' + dy):
+        os.mkdir(path2 + yr + '/' + mon + '/' + dy)
+
+    name = yr + '/' + mon + '/' + dy + '/' + hr
     filename = name + '.txt'
     # content2.append(name+'.txt')
 
-    file = open(path + '/' + i, mode='r', encoding='utf-16')
+    file = open(path + i, mode='r', encoding='utf-16')
     zl = file.readlines()
     file.close()
     x = []
@@ -38,7 +46,7 @@ def perepars(i):
 
     for i in zl:  # пробегаеся по списку строк
         x = i.split()  # дробим каждую строку в элементы списка
-        if len(x) > 2:
+        if len(x) > 2 and x[1]!='Splice':
             if '-' in x[0]:
                 x[0] = 'FRTS ' + x[0] + ' s 0'
             else:
@@ -64,9 +72,7 @@ def perepars(i):
                     # print(x[ind],'   ',x[ind+1])
                     ind += 2
                 except Exception:
-                    print('Error ', x[0], '   ', filename, '   ', nm)
-                else:
-                    continue
+                    break
             asks.reverse()
 
             for i in asks:
@@ -84,19 +90,17 @@ def perepars(i):
         b.append("\n" + line_data)  # создаем новый массив строк с переходом на новую строку вначале
 
     zzz = ' '.join(b)  #
-
+    # print(path2 + filename)
     file2 = open(path2 + filename, mode='w', encoding='utf-8')
     file2.write(zzz)
     file2.close()
-    print(kkk,'   ',filename)
+    print(kkk, '   ', filename)
     return kkk
 
 
-
-
-timer=time.time()
+timer = time.time()
 if __name__ == '__main__':
-    with multiprocessing.Pool(8) as pool:
+    with multiprocessing.Pool(16) as pool:
         pool.map_async(perepars, content, callback=end_func)
         pool.close()
         pool.join()

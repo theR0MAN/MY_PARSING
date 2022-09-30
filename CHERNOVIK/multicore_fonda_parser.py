@@ -71,9 +71,7 @@ def perepars(i):
                     # print(x[ind],'   ',x[ind+1])
                     ind += 2
                 except Exception:
-                    print('Error ', x[0], '   ', filename, '   ', nm)
-                else:
-                    continue
+                    break
             asks.reverse()
 
             for i in asks:
