@@ -1,6 +1,19 @@
 import os
 
 def getdata(getpath, start_year, start_month, start_day, start_hour, stop_year, stop_month, stop_day, stop_hour):
+    '''
+    возвращает список путей к файлам
+    :param getpath:
+    :param start_year:
+    :param start_month:
+    :param start_day:
+    :param start_hour:
+    :param stop_year:
+    :param stop_month:
+    :param stop_day:
+    :param stop_hour:
+    :return: list
+    '''
     if stop_year < start_year \
             or stop_year == start_year and stop_month < start_month \
             or stop_year == start_year and stop_month == start_month and stop_day < start_day \
@@ -18,24 +31,18 @@ def getdata(getpath, start_year, start_month, start_day, start_hour, stop_year, 
     flag = False
     for y in range(start_year, stop_year + 1):
         if flag:
-            print('br y')
             break
         for m in range(start_month, 13):
             if flag:
-                print('br m')
                 break
             for d in range(start_day, 32):
                 if flag:
-                    print('br d')
                     break
                 for h in range(start_hour, 24):
                     if os.path.exists(getpath + '/' + str(y) + '/' + str(m) + '/' + str(d) + '/' + str(h) + '.txt'):
-                        print(f'year  {y}  month  {m}   day  {d}  hour  {h}  ')
                         listfiles.append(getpath + '/' + str(y) + '/' + str(m) + '/' + str(d) + '/' + str(h) + '.txt')
                     if y >= stop_year and m >= stop_month and d >= stop_day and h >= stop_hour:
                         flag = True
-                        # print(y,'  ',m,'  ',d,'  ',h,'  ',os.path.exists(getpath + '/' + str(y) + '/' + str(m) + '/' + str(d)+'/'+str(h)+'.txt'))
-                        print('br h')
                         break
                 start_hour = 0
             start_day = 1

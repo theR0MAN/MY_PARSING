@@ -1,47 +1,74 @@
-import multiprocessing
-import time
-import os
-import datetime
-from itertools import product
+import json
+# https://python-scripts.com/json#about-json
+data = {
+    "president": {
+        "name": "Zaphod Beeblebrox",
+        "species": "Betelgeusian"
+    }
+}
 
-getpath='/media/roman/J/OLDHIST/FONDA'
+# with open("data_file.json", "w") as write_file:
+#     json.dump(data, write_file)
+#
+json_string = json.dumps(data)
+# print(json_string)
 
-start_year = 2020
-start_month = 4
-start_day = 1
-start_hour = 12
+# json_string = json.dumps(data, indent=4)
+# print(json_string)
 
-stop_year = 2020
-stop_month = 4
-stop_day = 1
-stop_hour = 12
+# with open("data_file.json", "r") as read_file:
+#     data2 = json.load(read_file)
 
+# print(data)
+# print(data2)
+# d=dict(data)
+# print(d,type(d))
+#
+# print(d["president"]["name"])
 
-listfiles=[]
-flag = False
-for y in range(start_year, stop_year+1):
-    if flag :
-        print('br y')
-        break
-    for m in range(start_month, 13):
-        if flag :
-            print('br m')
-            break
-        for d in range(start_day, 32):
-            if flag :
-                print('br d')
-                break
-            for h in range(start_hour, 24):
-                if os.path.exists(getpath + '/' + str(y) + '/' + str(m) + '/' + str(d)+'/'+str(h)+'.txt'):
-                    print(f'year  {y}  month  {m}   day  {d}  hour  {h}  ')
-                    listfiles.append(getpath+'/'+str(y)+'/'+str(m)+'/'+str(d)+'/'+str(h)+'.txt')
-                if y == stop_year and m == stop_month and d == stop_day and h == stop_hour:
-                    flag = True
-                    # print(y,'  ',m,'  ',d,'  ',h,'  ',os.path.exists(getpath + '/' + str(y) + '/' + str(m) + '/' + str(d)+'/'+str(h)+'.txt'))
-                    print('br h')
-                    break
-            start_hour = 0
-        start_day = 1
-    start_month = 1
+# json_string = """
+# {
+#     "researcher": {
+#         "name": "Ford Prefect",
+#         "species": "Betelgeusian",
+#         "relatives": [
+#             {
+#                 "name": "Zaphod Beeblebrox",
+#                 "species": "Betelgeusian"
+#             }
+#         ]
+#     }
+# }
+# """
+#
+# data = json.loads(json_string)
+# print(data)
 
-print(listfiles)
+d2='MOEX ROSN s 6 333.3 3127736446.0 179748.0 205949.0 2750.0 2549.0 20 333.45 55.0 333.5 32.0 333.55 169.0 333.6 31.0 333.65 180.0 333.7 96.0 333.75 176.0 333.8 312.0 333.85 82.0 333.9 199.0 333.95 172.0 334.0 1940.0 334.05 23.0 334.1 225.0 334.15 196.0 334.2 61.0 334.25 99.0 334.3 22.0 334.35 112.0 334.4 124.0 20 333.3 45.0 333.25 5.0 333.2 105.0 333.15 237.0 333.1 158.0 333.05 156.0 333.0 254.0 332.95 213.0 332.9 327.0 332.85 57.0 332.8 242.0 332.75 28.0 332.7 89.0 332.65 103.0 332.6 136.0 332.55 22.0 332.5 250.0 332.45 22.0 332.4 158.0 332.35 116.0 '
+
+a=d2.split()
+print(a)
+asks=[]
+bids=[]
+# asks=(a,b for a,b )
+ind=11
+for i in range(int(a[10])):
+    asks.append((float(a[ind]), float(a[ind + 1])))
+    ind+=2
+for i in range(int(a[ind])):
+    bids.append((float(a[ind+1]), float(a[ind + 2])))
+    ind+=2
+
+ask=asks[0][0]
+bid=bids[0][0]
+
+asks=tuple(asks)
+bids=tuple(bids)
+
+print(asks)
+print(bids)
+print(ask)
+print(bid)
+dat=dict(i=a[1],p=a[0],l=float(a[4]),a=float(ask),b=float(bid),vl=float(a[5]),bvl=float(a[6]),avl=float(a[7]),kbo=int(float(a[8])),kao=int(float(a[9])), asks=asks,bids=bids)
+print(dat)
+print(a[10])
