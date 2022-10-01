@@ -2,6 +2,7 @@ from FUNC import *
 import json
 
 getpath = '/media/roman/J/OLDHIST/FONDA'
+path2 = '/media/roman/J/jsOLDHIST/FONDA'
 
 start_year = 2020
 start_month = 4
@@ -62,13 +63,27 @@ for i in zl:  # пробегаеся по списку строк
                 biglist.append(dat)
 
 
-with open("data_file.json", "w", encoding='utf-8') as write_file:
-    json.dump(bigdict, write_file)
+filename=listfiles[0]
+z=filename.split('/')
+yr=z[6]
+mon=z[7]
+dy=z[8]
+name=z[9]
+nextpath=path2+'/'+ yr
+if not os.path.exists(nextpath):
+    os.mkdir(nextpath)
+nextpath=nextpath+'/' + mon
+if not os.path.exists(nextpath):
+    os.mkdir(nextpath)
+nextpath=nextpath+ '/' + dy
+if not os.path.exists(nextpath):
+    os.mkdir(nextpath)
+fullname = nextpath+'/' +name
 
-with open("data_file.json", mode='r', encoding='utf-8') as r:
-    data = dict(json.load(r))
+with open(fullname,'w') as fl:
+        json.dump(bigdict, fl)
 
-print(data["1585823731"])
-
-for key in data:
-    print(key)
+# with open(fullname, mode='r', encoding='utf-8') as r:
+#     data = dict(json.load(r))
+# print(data["1585823731"])
+#
