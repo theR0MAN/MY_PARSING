@@ -1,5 +1,5 @@
 import os
-
+import platform
 def getdata(getpath, start_year, start_month, start_day, start_hour, stop_year, stop_month, stop_day, stop_hour):
     '''
     возвращает список путей к файлам
@@ -14,6 +14,10 @@ def getdata(getpath, start_year, start_month, start_day, start_hour, stop_year, 
     :param stop_hour:
     :return: list
     '''
+    if platform.system()=='Windows':
+        dL='\\'
+    else:
+        dL='/'
     if stop_year < start_year \
             or stop_year == start_year and stop_month < start_month \
             or stop_year == start_year and stop_month == start_month and stop_day < start_day \
@@ -39,8 +43,8 @@ def getdata(getpath, start_year, start_month, start_day, start_hour, stop_year, 
                 if flag:
                     break
                 for h in range(start_hour, 24):
-                    if os.path.exists(getpath + '/' + str(y) + '/' + str(m) + '/' + str(d) + '/' + str(h) + '.txt'):
-                        listfiles.append(getpath + '/' + str(y) + '/' + str(m) + '/' + str(d) + '/' + str(h) + '.txt')
+                    if os.path.exists(getpath + dL + str(y) + dL + str(m) + dL + str(d) + dL + str(h) + '.txt'):
+                        listfiles.append(getpath + dL + str(y) + dL + str(m) + dL + str(d) + dL + str(h) + '.txt')
                     if y >= stop_year and m >= stop_month and d >= stop_day and h >= stop_hour:
                         flag = True
                         break

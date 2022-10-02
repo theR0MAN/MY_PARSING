@@ -1,10 +1,12 @@
+import os
+
+import os
 
 
+import platform
+print (platform.system() )
 
-for i in range(10):
-    z=i
-    print(i,'range(10)')
-    for i in range(5):
-        print(i,'range(5)')
+if platform.system()=='Windows':
+	print('Yes')
 
-    print(i, 'INC',z)
+
