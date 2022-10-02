@@ -10,17 +10,17 @@ def end_func(response):
     print("end_func:", response)
 
 
-getpath = '/media/roman/J/OLDHIST/FONDA'
-putpath = '/media/roman/J/jsOLDHIST/FONDA'
+getpath = '/media/roman/J/OLDHIST/FORTSALL'
+putpath = '/media/roman/J/jsOLDHIST/FORTSALL'
 
-start_year = 2019
-start_month = 1
+start_year = 2021
+start_month = 7
 start_day = 1
 start_hour = 10
 
-stop_year = 2021
-stop_month = 1
-stop_day = 23
+stop_year = 2022
+stop_month = 7
+stop_day = 1
 stop_hour = 17
 
 content = getdata(getpath, start_year, start_month, start_day, start_hour, stop_year, stop_month, stop_day, stop_hour)
@@ -45,8 +45,8 @@ def perepars(i):
             if len(a) > 2:
                 asks = []
                 bids = []
-                ind = 11
-                for i in range(int(a[10])):
+                ind = 5
+                for i in range(int(a[4])):
                     asks.append((float(a[ind]), float(a[ind + 1])))
                     ind += 2
                 for i in range(int(a[ind])):
@@ -55,9 +55,7 @@ def perepars(i):
                 if len(asks) > 0 and len(bids) > 0:
                     ask = asks[0][0]
                     bid = bids[0][0]
-                    dat = dict(i=a[1], p=a[0], l=float(a[4]), a=float(ask), b=float(bid), vl=float(a[5]),
-                               bvl=float(a[6]),
-                               avl=float(a[7]), kbo=int(float(a[8])), kao=int(float(a[9])), asks=asks, bids=bids)
+                    dat = dict(i=a[1],p=a[0],a=float(ask),b=float(bid),asks=asks,bids=bids)
                     biglist.append(dat)
 
 
