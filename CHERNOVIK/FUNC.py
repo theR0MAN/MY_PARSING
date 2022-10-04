@@ -1,5 +1,5 @@
 import os
-import platform
+from platform import system
 def getdata(getpath, start_year, start_month, start_day, start_hour, stop_year, stop_month, stop_day, stop_hour):
     '''
     возвращает список путей к файлам
@@ -14,7 +14,7 @@ def getdata(getpath, start_year, start_month, start_day, start_hour, stop_year, 
     :param stop_hour:
     :return: list
     '''
-    if platform.system()=='Windows':
+    if system()=='Windows':
         dL='\\'
     else:
         dL='/'

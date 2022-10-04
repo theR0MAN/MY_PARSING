@@ -23,9 +23,20 @@ stop_month = 7
 stop_day = 1
 stop_hour = 17
 
-content = getdata(getpath, start_year, start_month, start_day, start_hour, stop_year, stop_month, stop_day, stop_hour)
-print(content)
+# content = getdata(getpath, start_year, start_month, start_day, start_hour, stop_year, stop_month, stop_day, stop_hour)
+# print(content)
 
+content1 =getdata(getpath, start_year, start_month, start_day, start_hour, stop_year, stop_month, stop_day, stop_hour)
+set1=set(content1)
+content2 = getdata(putpath, start_year, start_month, start_day, start_hour, stop_year, stop_month, stop_day, stop_hour)
+set2=set(content2)
+content21=[]
+for i in content2:
+    x=i.replace('jsOLDHIST','OLDHIST')
+    content21.append(x)
+set21=set(content21)
+content = list(set1.difference(set21))
+print(content)
 
 def perepars(i):
     filename = i
@@ -83,7 +94,7 @@ def perepars(i):
 
 timer = time.time()
 if __name__ == '__main__':
-    with multiprocessing.Pool(8) as pool:
+    with multiprocessing.Pool(4) as pool:
         pool.map_async(perepars, content, callback=end_func)
         pool.close()
         pool.join()
