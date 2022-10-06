@@ -43,8 +43,10 @@ def getdata(getpath, start_year, start_month, start_day, start_hour, stop_year, 
                 if flag:
                     break
                 for h in range(start_hour, 24):
-                    if os.path.exists(getpath + dL + str(y) + dL + str(m) + dL + str(d) + dL + str(h) + '.txt'):
-                        listfiles.append(getpath + dL + str(y) + dL + str(m) + dL + str(d) + dL + str(h) + '.txt')
+                    if os.path.exists(getpath + dL + str(y) + dL + str(m) + dL + str(d) + dL + str(h) + '.json'):
+                        listfiles.append(getpath + dL + str(y) + dL + str(m) + dL + str(d) + dL + str(h) + '.json')
+                    if os.path.exists(getpath + dL + str(y) + dL + str(m) + dL + str(d) + dL + str(h) + '.roman'):
+                        listfiles.append(getpath + dL + str(y) + dL + str(m) + dL + str(d) + dL + str(h) + '.roman')
                     if y >= stop_year and m >= stop_month and d >= stop_day and h >= stop_hour:
                         flag = True
                         break
