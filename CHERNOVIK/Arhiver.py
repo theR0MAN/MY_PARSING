@@ -11,16 +11,16 @@ def end_func(response):
     print("end_func:", response)
 
 
-getpath = '/media/roman/J/jsOLDHIST/FONDA'
-putpath = '/media/roman/J/rOLDHIST/FONDA'
+getpath = '/media/roman/J/jsOLDHIST/FORTS'
+putpath = '/media/roman/J/rOLDHIST/FORTS'
 
-start_year = 2019
-start_month = 1
+start_year = 2021
+start_month = 6
 start_day = 1
 start_hour = 1
 
-stop_year = 2021
-stop_month = 2
+stop_year = 2022
+stop_month = 7
 stop_day = 1
 stop_hour = 1
 
@@ -33,11 +33,11 @@ stop_hour = 1
 # stop_month = 1
 # stop_day = 3
 # stop_hour = 18
-#
+
 
 content1 =getdata(getpath, start_year, start_month, start_day, start_hour, stop_year, stop_month, stop_day, stop_hour)
 set1=set(content1)
-content2 = getdata(putpath, start_year, start_month, start_day, start_hour, stop_year, stop_month, stop_day, stop_hour)
+content2 =getdata(putpath, start_year, start_month, start_day, start_hour, stop_year, stop_month, stop_day, stop_hour)
 set2=set(content2)
 content21=[]
 for i in content2:
@@ -45,15 +45,18 @@ for i in content2:
     content21.append(x)
 set21=set(content21)
 content = list(set1.difference(set21))
-
-
 print(content)
+
+ln=len(content)
+val = multiprocessing.Value('d', ln)
+
 
 def perepars(i):
     timer = time.time()
+    lz=lzma
     filename = i
     with open(i, mode='r') as f:
-        a = lzma.compress(f.read().encode('utf-8'))
+        a = lz.compress(f.read().encode('utf-8'))
 
 
     z = filename.split('/')
@@ -73,9 +76,10 @@ def perepars(i):
         os.mkdir(nextpath)
     fullname = nextpath + '/' + name
 
-    with lzma.open(fullname, "w") as f:
+    with lz.open(fullname, "w") as f:
         f.write(a)
-    print(multiprocessing.current_process().name,"  ", fullname,' time: ', time.time() - timer)
+    val.value = val.value - 1
+    print(val.value,' ' ,multiprocessing.current_process().name,"  ", fullname,' time: ', time.time() - timer)
     return fullname
 
 

@@ -1,10 +1,9 @@
 import lzma
 import json
 
-name='/media/roman/J/rOLDHIST/FONDA/2019/1/3/14.roman'
+name='/media/roman/J/rOLDHIST/FONDA/2020/5/5/10.roman'
+lz=lzma
+with lz.open(name) as f:
+    a=dict(json.loads(lz.decompress(f.read()).decode('utf-8')))
 
-with lzma.open(name) as f:
-    a=dict(json.loads(lzma.decompress(f.read()).decode('utf-8')))
-
-
-print(a["1546524000"])
+print(a["1588672803"])
