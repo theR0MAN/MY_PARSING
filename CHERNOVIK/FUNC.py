@@ -34,29 +34,32 @@ def getdata(getpath, start_year, start_month, start_day, start_hour, stop_year, 
     listfiles = []
     flag = False
     for y in range(start_year, stop_year + 1):
-        name=getpath + dL + str(y)
-        # print(name)
-        if flag or not os.path.exists(name):
-            print(name)
+        name1=getpath + dL + str(y)
+        if flag :
             break
+        if not os.path.exists(name1):
+            continue
         for m in range(start_month, 13):
-            name = name + dL + str(m)
-            if flag or not os.path.exists(name):
-                # print(name)
+            name2 = name1 + dL + str(m)
+            if flag :
                 break
+            if not os.path.exists(name2):
+                continue
             for d in range(start_day, 32):
-                name = name + dL + str(d)
-                if flag or not os.path.exists(name):
+                name3 = name2 + dL + str(d)
+                if flag :
                     break
+                if not os.path.exists(name3):
+                    continue
                 for h in range(start_hour, 24):
-                    name1 = name + dL + str(h) + '.roman'
-                    name2 = name + dL + str(h) + '.json'
-                    if os.path.exists(name1):
-                        listfiles.append(name1)
-                        # print('name  ',name1)
-                    if os.path.exists(name2):
-                        listfiles.append(name2)
-                        # print('name2  ',name2)
+                    name10 = name3 + dL + str(h) + '.roman'
+                    name20 = name3 + dL + str(h) + '.json'
+                    # print('name1  ', name1)
+                    # print('name2  ', name2)
+                    if os.path.exists(name10):
+                        listfiles.append(name10)
+                    if os.path.exists(name20):
+                        listfiles.append(name20)
                     if y >= stop_year and m >= stop_month and d >= stop_day and h >= stop_hour:
                         flag = True
                         break
@@ -64,4 +67,5 @@ def getdata(getpath, start_year, start_month, start_day, start_hour, stop_year, 
             start_day = 1
         start_month = 1
     return listfiles
+
 
