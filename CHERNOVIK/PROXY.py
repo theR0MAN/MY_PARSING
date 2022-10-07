@@ -1,7 +1,11 @@
 # https://docs-python.ru/standart-library/paket-multiprocessing-python/proksi-obekty-menedzhera-modulja-multiprocessing/
 import multiprocessing
-manager = multiprocessing.Manager()
-D = manager.dict({})
+# manager = multiprocessing.Manager()
+# D = manager.dict({})
+
+# manager = multiprocessing.Manager()
+D = multiprocessing.Manager().dict({})
+
 D.update({'yes':30})
 print(D)
 print(type(D))

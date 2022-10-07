@@ -11,11 +11,11 @@ def end_func(response):
     print("end_func:", response)
 
 
-getpath = '/media/roman/J/jsOLDHIST/FORTS'
-putpath = '/media/roman/J/rOLDHIST/FORTS'
+getpath = '/media/roman/J/jsOLDHIST/FORTSALL'
+putpath = '/media/roman/J/rOLDHIST/FORTSALL'
 
 start_year = 2021
-start_month = 6
+start_month = 8
 start_day = 1
 start_hour = 1
 
