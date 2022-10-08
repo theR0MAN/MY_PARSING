@@ -1,51 +1,67 @@
-from FUNC import *
-import json
+# # SuperFastPython.com
+# # example of starting a child process only in __main__
+# from multiprocessing import Process
+#
+#
+# # function executed in a new process
+# def task():
+# 	print('Hello from a child process', flush=True)
+#
+#
+# # check for top-level environment
+# if __name__ == '__main__':
+# 	# create and configure a new process
+# 	process = Process(target=task)
+# 	# start the new process
+# 	process.start()
+# 	# wait for the new process to finish
+# 	process.join()
 
-getpath = '/media/roman/J/OLDHIST/FONDA'
-path2 = '/media/roman/J/jsOLDHIST/FONDA'
+import multiprocessing
+#
+# def worker(q):
+#     q.put('X' * 10000)
+#
+# if __name__ == '__main__':
+#     queue = multiprocessing.Queue()
+#     p = multiprocessing.Process(target=worker, args=(queue,))
+#     p.start()
+#     p.join()    # это тупик
+#     obj = queue.get()
 
-start_year = 2020
-start_month = 4
-start_day = 2
-start_hour = 10
+# from multiprocessing import Pool
+#
+# def worker(x):
+#     return x*x
+# if __name__ == '__main__':
+#     # запускаем 4 рабочих процесса
+#     with Pool(processes=4) as pool:
+#         it = pool.imap(worker, range(10))
+#         # использование встроенной функции next()
+#         print(next(it))    # выведет 0
+#         print(next(it))    # выведет 1
+#         # использование метода-итератора с аргументом `timeout`
+#         # выведет "4" если компьютер не очень медленный
+#         print(it.next(timeout=1))
 
-stop_year = 2020
-stop_month = 4
-stop_day = 2
-stop_hour = 10
+import multiprocessing
+# manager = multiprocessing.Manager()
+# D = manager.dict({})
+# D.update({'yes':30})
+# print(D)
+# print(type(D))
+def end_func(response):
+    print("end_func:", response)
 
-listfiles = getdata(getpath, start_year, start_month, start_day, start_hour, stop_year, stop_month, stop_day, stop_hour)
-# print(listfiles)
+def fun(i):
+    # D.update({i:i*1000})
+    return str(i)+" OK"
 
-filename=listfiles[0]
-# filename=listfiles[0].replace('OLDHIST', 'jsOLDHIST')
+content=[1,2,3,4,5,6,7,8,9,10,11,12,13,14]
 
-if  os.path.exists(filename):
-    print('YES')
-#
-# z=filename.split('/')
-# print(z)
-#
-# yr=z[6]
-# mon=z[7]
-# dy=z[8]
-# name=z[9]
-#
-# print(yr,"  ",mon,'  ',dy)
-#
-# nextpath=path2+'/'+ yr
-# if not os.path.exists(nextpath):
-#     os.mkdir(nextpath)
-# nextpath=nextpath+'/' + mon
-# if not os.path.exists(nextpath):
-#     os.mkdir(nextpath)
-# nextpath=nextpath+ '/' + dy
-# if not os.path.exists(nextpath):
-#     os.mkdir(nextpath)
-# fullname = nextpath+'/' +name
-#
-# with open(fullname,'w') as fl:
-#         fl.write('hello')
-#
-#
-# print(fullname)
+if __name__ == '__main__':
+    with multiprocessing.Pool(9) as pool:
+        pool.map_async(fun, content, callback=end_func)
+        pool.close()
+        pool.join()
+
