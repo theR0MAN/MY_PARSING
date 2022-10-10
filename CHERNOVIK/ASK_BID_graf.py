@@ -25,7 +25,7 @@ for key in a:
 #
 # t=[1, 2,3]
 print('start')
-fig = px.line(width=3840*4,height=2160*2)
+fig = px.line(width=3840*8,height=2160*2)
 fig.add_scatter(x=x, y=y1, line_color='red')
 fig.add_scatter(x=x, y=y2, line_color='blue')
 fig.show()
