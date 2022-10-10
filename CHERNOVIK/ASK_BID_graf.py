@@ -17,7 +17,7 @@ y2=[]
 for key in a:
     for instr in a[key]:
         if(instr['i']=='SBER'):
-            # print(k,'instr  ',instr['i'],' ask  ',instr['a'],' bid  ',instr['b'])
+
             x.append(k)
             y1.append(instr['a'])
             y2.append(instr['b'])
