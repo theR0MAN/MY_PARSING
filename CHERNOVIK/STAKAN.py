@@ -21,10 +21,13 @@ type=[]
 
 for key in a:
     for i in a[key]:
-        if(i['i']== 'MGNT'):
+        if(i['i']== 'SBER'):
+            y1.append(i['a'])
+            y2.append(i['b'])
             # global n
             n=0
             for c,v in i['asks']:
+
                 price.append(c)
                 if v>0 and v<10:
                     v2=2
@@ -80,13 +83,14 @@ print('start')
 
 
 
-fig = px.scatter(
-                 x=x, y=price,
-                 color=type,
-                 size=vol
-                   ,width=3840,height=2160
-                 )
-
-
+# fig = px.scatter(
+#                  x=x, y=price,
+#                  color=type,
+#                  size=vol
+#                    ,width=3840,height=2160
+#                  )
+fig = px.line()
+fig.add_scatter(x=x, y=y1, line_color='red')
+fig.add_scatter(x=x, y=y2, line_color='blue')
 
 fig.show()
