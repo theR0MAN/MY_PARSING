@@ -4,19 +4,20 @@ import plotly.express as px
 import lzma as lz
 import json
 
-HOURS = False
-instruments = ['SBER', 'SBERP', 'SBPR-12.21', 'SBPR-3.22', 'SBRF-12.21', 'SBRF-3.22']
+HOURS = True
+instruments = [ 'SBPR-3.22',  'SBRF-3.22']
 NOT_instruments = ['@']
 period = 0
 getpath = '/media/roman/J/rOLDHIST/FORTSALL'
 
-start_year, start_month, start_day, start_hour = 2021, 11, 17, 14
-stop_year, stop_month, stop_day, stop_hour =     2021, 11, 17, 18
+start_year, start_month, start_day, start_hour = 2021, 11, 17, 22
+stop_year, stop_month, stop_day, stop_hour =     2021, 11, 22, 18
 
 content = getdata(getpath, start_year, start_month, start_day, start_hour, stop_year, stop_month, stop_day, stop_hour)
 instrums = set()
 if HOURS:
     for name in content:
+        print(name)
         with lz.open(name) as f:
             a = dict(json.loads(lz.decompress(f.read()).decode('utf-8')))
 
