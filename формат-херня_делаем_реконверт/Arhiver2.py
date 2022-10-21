@@ -35,29 +35,28 @@ stop_hour = 1
 # stop_hour = 18
 
 
-content1 =getdata(getpath, start_year, start_month, start_day, start_hour, stop_year, stop_month, stop_day, stop_hour)
-set1=set(content1)
-content2 =getdata(putpath, start_year, start_month, start_day, start_hour, stop_year, stop_month, stop_day, stop_hour)
-set2=set(content2)
-content21=[]
+content1 = getdata(getpath, start_year, start_month, start_day, start_hour, stop_year, stop_month, stop_day, stop_hour)
+set1 = set(content1)
+content2 = getdata(putpath, start_year, start_month, start_day, start_hour, stop_year, stop_month, stop_day, stop_hour)
+set2 = set(content2)
+content21 = []
 for i in content2:
-    x=i.replace('NewrOLDHIST','jsOLDHIST').replace('.roman','.json')
+    x = i.replace('NewrOLDHIST', 'jsOLDHIST').replace('.roman', '.json')
     content21.append(x)
-set21=set(content21)
+set21 = set(content21)
 content = list(set1.difference(set21))
 print(content)
 
-ln=len(content)
+ln = len(content)
 val = multiprocessing.Value('d', ln)
 
 
 def perepars(i):
     timer = time.time()
-    lz=lzma
+    lz = lzma
     filename = i
     with open(i, mode='r') as f:
         a = dict(json.load(f))
-
     set1 = set()
     K1 = 0
     # получим первый ключ
@@ -75,8 +74,6 @@ def perepars(i):
             set1.add(dict['i'])
     #  преобразуем в человеческую структуру г
     s0 = set()
-    s1 = set()
-    d1 = dict()
     d2 = dict()
     for timekey in a:
         for dct in a[timekey]:
@@ -131,14 +128,12 @@ def perepars(i):
     with lz.open(fullname, "w") as f:
         f.write(a)
     val.value = val.value - 1
-    print(val.value,' ' ,multiprocessing.current_process().name,"  ", fullname,' time: ', time.time() - timer)
+    print(val.value, ' ', multiprocessing.current_process().name, "  ", fullname, ' time: ', time.time() - timer)
     return fullname
 
 
-
 if __name__ == '__main__':
-    with multiprocessing.Pool(8) as pool:
+    with multiprocessing.Pool(4) as pool:
         pool.map_async(perepars, content, callback=end_func)
         pool.close()
         pool.join()
-

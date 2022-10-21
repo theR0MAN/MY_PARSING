@@ -10,8 +10,8 @@ NOT_instruments = ['@']
 period = 0
 getpath = '/media/roman/J/rOLDHIST/FORTSALL'
 
-start_year, start_month, start_day, start_hour = 2021, 11, 17, 22
-stop_year, stop_month, stop_day, stop_hour =     2021, 11, 22, 18
+start_year, start_month, start_day, start_hour = 2021, 11, 17, 20
+stop_year, stop_month, stop_day, stop_hour =     2021, 11, 17, 20
 
 content = getdata(getpath, start_year, start_month, start_day, start_hour, stop_year, stop_month, stop_day, stop_hour)
 instrums = set()

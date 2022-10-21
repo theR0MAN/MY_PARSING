@@ -1,3 +1,6 @@
+'''
+ПОЛУЧАЕМ АСКИ И БИДЫ в спайке
+'''
 from MAIN.FUNC import *
 
 import plotly.express as px
@@ -6,14 +9,14 @@ import json
 
 period = 1
 ONE_INST = False #(ask+bid)/2
-CHANK_HOURS=7
+CHANK_HOURS=10
 
-instruments = [ 'Si-']
+instruments = [ 'PIZL*','RTKM*','POLY*']
 NOT_instruments = ['@']
 getpath = '/media/roman/J/NewrOLDHIST/FORTSALL'
 
-start_year, start_month, start_day, start_hour = 2021, 11, 17, 16
-stop_year, stop_month, stop_day, stop_hour =     2021, 11, 17, 20
+start_year, start_month, start_day, start_hour = 2021, 11, 17, 10
+stop_year, stop_month, stop_day, stop_hour =     2022, 3, 17, 20
 
 content = getdata(getpath, start_year, start_month, start_day, start_hour, stop_year, stop_month, stop_day, stop_hour)
 instrums = set()
