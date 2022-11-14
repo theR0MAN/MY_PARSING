@@ -11,12 +11,12 @@ period = 1
 ONE_INST = False #(ask+bid)/2
 CHANK_HOURS=10
 
-instruments = [ 'PIZL*','RTKM*','POLY*']
+instruments = [ 'NKNCP*MOEX', 'KOGK*MOEX']
 NOT_instruments = ['@']
-getpath = '/media/roman/J/NewrOLDHIST/FORTSALL'
+getpath = '/media/roman/J/NewrOLDHIST/FONDA'
 
-start_year, start_month, start_day, start_hour = 2021, 11, 17, 10
-stop_year, stop_month, stop_day, stop_hour =     2022, 3, 17, 20
+start_year, start_month, start_day, start_hour = 2020, 10, 15, 10
+stop_year, stop_month, stop_day, stop_hour =     2020, 10, 15, 10
 
 content = getdata(getpath, start_year, start_month, start_day, start_hour, stop_year, stop_month, stop_day, stop_hour)
 instrums = set()
@@ -37,7 +37,7 @@ for name in content:
         lastname1=name
         with lz.open(name) as f:
             a = dict(json.loads(lz.decompress(f.read()).decode('utf-8')))
-        print('len(a)=  ',  len(a))
+        print(name,'  len(a)=  ',  len(a))
         fist_key = next(iter(a))
         ln = len(a[fist_key])
         sumlen+=ln
@@ -95,7 +95,7 @@ for name in content:
                data[key][1].append(asks[key][i] * kf)
                data[key][2].append(bids[key][i] * kf)
 
-       print('start')
+       # print('start')
        color = get_color()
        fig = px.line()
        # width=3840*4,height=2160*2
