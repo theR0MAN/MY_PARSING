@@ -1,62 +1,73 @@
-
 from MAIN.FUNC import *
 
 import plotly.express as px
 import lzma as lz
 import json
 
+in_instruments = ['Si-9.21*FRTS', 'Si-12.21*FRTS', 'Si-3.22*FRTS', 'Si-6.22*FRTS']
+not_in_instruments = ['@']
+getpath = '/media/roman/J/greatOLDHIST/FORTSALL'
 
-ONE_INST = False #(ask+bid)/2
-
-
-instruments = [ 'NKNCP*MOEX', 'KOGK*MOEX']
-NOT_instruments = ['@']
-getpath = '/media/roman/J/greatOLDHIST/FONDA'
-
-start_year, start_month, start_day, start_hour = 2020, 10, 15, 10
-stop_year, stop_month, stop_day, stop_hour =     2020, 10, 15, 10
+start_year, start_month, start_day, start_hour = 2021, 9, 14, 7
+stop_year, stop_month, stop_day, stop_hour =     2021, 9,14, 22
 
 content = getdata(getpath, start_year, start_month, start_day, start_hour, stop_year, stop_month, stop_day, stop_hour)
-instrums = set()
-# lencont=len(content)
-lastname1=str()
-lastname2=str()
+print(content)
 
-ch=0
-asks={}
-bids={}
-last_ask={}
-last_bid={}
-sumlen=0
-first =False
 for name in content:
+    # print("NAME ",name )
     with lz.open(name) as f:
         a = dict(json.loads(lz.decompress(f.read()).decode('utf-8')))
-    # print(name,'  len(a)=  ',  len(a))
-    fist_key = next(iter(a))
-    fist_key2=int(next(iter(a[next(iter(a))])))
-    print(fist_key)
-    print(fist_key2)
-    #
-    # fist_key2=next(iter(a[next(iter(a))]))
-    # print(fist_key2)
-    cnt=10
-    cnt0=0
-    for ky in a[fist_key]:
-        print(ky,'  ask = ',a[fist_key][ky]['a'],'  bid = ',a[fist_key][ky]['b']  )
-        print(ky, '  asks = ', a[fist_key][ky]['asks'][0][0], '  bids = ', a[fist_key][ky]['bids'][0][0])
-        print(ky, '  asks2 = ', a[fist_key][ky]['asks'][1][0], '  bids2 = ', a[fist_key][ky]['bids'][1][0])
-        cnt0+=1
-        if cnt0>cnt:
-            break
 
-    ky=11
-    for ki in range (ky,-1,-1):
-        ki2 = str(ki)
-        if ki2 in a[fist_key]:
-            print(ki, ' ZZZ ask = ', a[fist_key][ki2]['a'], '  bid = ', a[fist_key][ki2]['b'])
-            break
-    else:
-        print('NO FLAGS')
+    inlist=[]
+    for ins in a:
+        inlist.append(ins)
+    inlist.sort()
+    print(inlist)
 
+    instrs = []
+    for inst in a:
+        for ix in in_instruments:
+            for nix in not_in_instruments:
+                if ix in inst and nix not in inst:
+                    instrs.append(inst)
 
+    print(instrs)
+    data = dict()
+    # fist_key это есть первая секунда сбора в часе - в последующем всегда нужно делать 0
+    first_key = int(next(iter(a[next(iter(a))])))
+    for inst in instrs:
+        data[inst] = dict()
+        kf = 200 / (a[inst][str(first_key)]['a']+ a[inst][str(first_key)]['b'])
+        data[inst]['kf'] =kf
+        data[inst]['lastask'] = a[inst][str(first_key)]['a']
+        data[inst]['lastbid'] = a[inst][str(first_key)]['b']
+        data[inst]['asks'] = []
+        data[inst]['bids'] = []
+
+        # print(f" inst {inst}  lastask {data[inst]['lastask']}  lastbid {data[inst]['lastbid']}")
+    ixes = []
+    for i in range(first_key, 3601):
+        ixes.append(i)
+
+    for inst in instrs:
+        for i in range(first_key, 3601):
+            if str(i) in a[inst]:
+                data[inst]['asks'].append(a[inst][str(i)]['a']*data[inst]['kf'])
+                data[inst]['bids'].append(a[inst][str(i)]['b']*data[inst]['kf'])
+
+                data[inst]['lastask'] = a[inst][str(i)]['a']
+                data[inst]['lastbid'] = a[inst][str(i)]['b']
+
+            else:
+                data[inst]['asks'].append(data[inst]['lastask']*data[inst]['kf'])
+                data[inst]['bids'].append(data[inst]['lastbid']*data[inst]['kf'])
+
+    color = get_color()
+    fig = px.line()
+    for inst in data:
+        clr = color()
+        fig.add_scatter(x=ixes, y=data[inst]['asks'], line_color=clr, name=inst + ' ask')
+        fig.add_scatter(x=ixes, y=data[inst]['bids'], line_color=clr, name=inst + ' bid')
+    print("SHOW NAME ", name)
+    fig.show()

@@ -11,7 +11,7 @@ period = 1
 ONE_INST = False #(ask+bid)/2
 CHANK_HOURS=10
 
-instruments = [ 'NKNCP*MOEX', 'KOGK*MOEX']
+instruments = [ 'FESH*MOEX', 'FIVE*MOEX']
 NOT_instruments = ['@']
 getpath = '/media/roman/J/NewrOLDHIST/FONDA'
 
@@ -40,7 +40,7 @@ for name in content:
         print(name,'  len(a)=  ',  len(a))
         fist_key = next(iter(a))
         ln = len(a[fist_key])
-        sumlen+=ln
+        # sumlen+=ln
     # фигачим аски и биды
         if not first:
             for key in a:
