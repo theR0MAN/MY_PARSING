@@ -1,15 +1,19 @@
 from MAIN.FUNC import *
-
+import os
 import plotly.express as px
 import lzma as lz
 import json
 
 in_instruments = ['Si-9.21*FRTS', 'Si-12.21*FRTS', 'Si-3.22*FRTS', 'Si-6.22*FRTS']
 not_in_instruments = ['@']
-getpath = '/media/roman/J/greatOLDHIST/FORTSALL'
 
-start_year, start_month, start_day, start_hour = 2021, 9, 14, 7
-stop_year, stop_month, stop_day, stop_hour =     2021, 9,14, 22
+if system()=='Windows':
+    getpath = 'G:\\greatOLDHIST\\FORTSALL'
+else:
+    getpath = '/media/roman/J/greatOLDHIST/FORTSALL'
+    
+start_year, start_month, start_day, start_hour = 2021, 9, 16, 15
+stop_year, stop_month, stop_day, stop_hour =     2021, 9,16, 22
 
 content = getdata(getpath, start_year, start_month, start_day, start_hour, stop_year, stop_month, stop_day, stop_hour)
 print(content)

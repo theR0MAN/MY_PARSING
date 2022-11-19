@@ -103,7 +103,7 @@ def perepars(i):
 
 
 
-    a = lzma.compress(json.dumps(d2).encode('utf-8'))
+    a = lz.compress(json.dumps(d2).encode('utf-8'))
 
     # ===================================================
     # ===================================================
