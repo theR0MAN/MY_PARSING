@@ -19,15 +19,12 @@ content = getdata(getpath, start_year, start_month, start_day, start_hour, stop_
 print(content)
 
 for name in content:
-    # print("NAME ",name )
     with lz.open(name) as f:
         a = dict(json.loads(lz.decompress(f.read()).decode('utf-8')))
 
-    inlist=[]
-    for ins in a:
-        inlist.append(ins)
+    inlist = list(a)
     inlist.sort()
-    print(inlist)
+    print(len(inlist), inlist)
 
     instrs = []
     for inst in a:

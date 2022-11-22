@@ -1,7 +1,7 @@
 import MetaTrader5 as mt5
 import json
 from platform import system
-import multiprocessing
+from multiprocessing import Process
 import time
 import os
 import lzma
@@ -12,6 +12,13 @@ putpath = 'G:\\DATA_SBOR\\MOEX'
 alltime_sbor = False
 startsbor_hour = 4
 stopsbor_hour = 20  # при переходе через 0 может быть ошибочно - поправить,но для мосбиржи пойдет
+
+def arhivator (filename,jdict):
+	lz=lzma
+	with lz.open(filename, "w") as f:
+		f.write(lz.compress(json.dumps(jdict).encode('utf-8')))
+
+
 
 if system() == 'Windows':
 	dL = '\\'
@@ -29,7 +36,6 @@ zapis = False
 first_thour = -10
 a = dict()
 data = dict()
-
 while True:
 	time.sleep(1)
 	dat = datetime.datetime.utcfromtimestamp(int(time.time()))
@@ -57,8 +63,10 @@ while True:
 
 				for name in data:
 					a[name + '*' + data['name']['makret']] = a.pop(name)
-				with lzma.open(fullname, "w") as f:
-					f.write(lzma.compress(json.dumps(a).encode('utf-8')))
+
+				if __name__ == '__main__':
+					process1 = Process(target=arhivator, args=(fullname, a))
+					process1.start()
 
 			a = dict()
 			data = dict()

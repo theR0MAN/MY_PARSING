@@ -1,107 +1,25 @@
-from FUNC import *
-#
-# def get_color():
-#     i = 0
-#     def func():
-#         colors = ['black', 'red', 'blue', 'brown', 'green', 'violet', 'yellow', 'maroon', 'gold', 'pink', 'silver',
-#                    'coral', 'chocolate']
-#         colors0 = ['aliceblue', 'antiquewhite', 'aqua', 'aquamarine', 'azure',
-#                    'beige', 'bisque', 'black', 'blanchedalmond', 'blue',
-#                    'blueviolet', 'brown', 'burlywood', 'cadetblue',
-#                    'chartreuse', 'chocolate', 'coral', 'cornflowerblue',
-#                    'cornsilk', 'crimson', 'cyan', 'darkblue', 'darkcyan',
-#                    'darkgoldenrod', 'darkgray', 'darkgrey', 'darkgreen',
-#                    'darkkhaki', 'darkmagenta', 'darkolivegreen', 'darkorange',
-#                    'darkorchid', 'darkred', 'darksalmon', 'darkseagreen',
-#                    'darkslateblue', 'darkslategray', 'darkslategrey',
-#                    'darkturquoise', 'darkviolet', 'deeppink', 'deepskyblue',
-#                    'dimgray', 'dimgrey', 'dodgerblue', 'firebrick',
-#                    'floralwhite', 'forestgreen', 'fuchsia', 'gainsboro',
-#                    'ghostwhite', 'gold', 'goldenrod', 'gray', 'grey', 'green',
-#                    'greenyellow', 'honeydew', 'hotpink', 'indianred', 'indigo',
-#                    'ivory', 'khaki', 'lavender', 'lavenderblush', 'lawngreen',
-#                    'lemonchiffon', 'lightblue', 'lightcoral', 'lightcyan',
-#                    'lightgoldenrodyellow', 'lightgray', 'lightgrey',
-#                    'lightgreen', 'lightpink', 'lightsalmon', 'lightseagreen',
-#                    'lightskyblue', 'lightslategray', 'lightslategrey',
-#                    'lightsteelblue', 'lightyellow', 'lime', 'limegreen',
-#                    'linen', 'magenta', 'maroon', 'mediumaquamarine',
-#                    'mediumblue', 'mediumorchid', 'mediumpurple',
-#                    'mediumseagreen', 'mediumslateblue', 'mediumspringgreen',
-#                    'mediumturquoise', 'mediumvioletred', 'midnightblue',
-#                    'mintcream', 'mistyrose', 'moccasin', 'navajowhite', 'navy',
-#                    'oldlace', 'olive', 'olivedrab', 'orange', 'orangered',
-#                    'orchid', 'palegoldenrod', 'palegreen', 'paleturquoise',
-#                    'palevioletred', 'papayawhip', 'peachpuff', 'peru', 'pink',
-#                    'plum', 'powderblue', 'purple', 'red', 'rosybrown',
-#                    'royalblue', 'rebeccapurple', 'saddlebrown', 'salmon',
-#                    'sandybrown', 'seagreen', 'seashell', 'sienna', 'silver',
-#                    'skyblue', 'slateblue', 'slategray', 'slategrey', 'snow',
-#                    'springgreen', 'steelblue', 'tan', 'teal', 'thistle', 'tomato',
-#                    'turquoise', 'violet', 'wheat', 'white', 'whitesmoke',
-#                    'yellow', 'yellowgreen']
-#         nonlocal i
-#         i += 1
-#         if i<13:
-#             return colors[i]
-#         else:
-#             return random.choice(colors0)
-#
-#     return func
 
-color = get_color()
-clr=color()
 
-print(clr)
-print(type(clr))
-#
-# print(color())
-# print(color())
-# print(color())
-# print(color())
-# print(color())
-# print(color())
-# print(color())
-# print(color())
-# print(color())
-# print(color())
-# print(color())
-# print(color())
-# print(color())
-# print(color())
-# print(color())
+dict_data = {'asks': [(1107.5, 14), (1108.0, 1), (1108.5, 2), (1109.0, 1), (1109.5, 2), (1110.0, 1), (1110.5, 4), (1111.0, 1), (1111.5, 4), (1112.0, 2), (1113.0, 5), (1113.5, 3), (1114.0, 9), (1114.5, 1), (1115.0, 7), (1116.0, 9), (1117.0, 1), (1118.0, 1), (1119.5, 2), (1120.0, 12)], 'bids': [(1106.0, 2), (1105.5, 8), (1105.0, 1), (1104.5, 2), (1103.5, 2), (1103.0, 7), (1100.0, 2), (1095.5, 1), (1093.0, 2), (1092.5, 7), (1092.0, 3), (1091.5, 5), (1090.5, 1), (1089.5, 5), (1089.0, 21), (1088.0, 2), (1087.0, 3), (1086.0, 1), (1085.0, 2), (1084.5, 7)]}
+# dict_data2 = {'asks': [(1107.5, 14), (1108.0, 1), (1108.5, 2), (1109.0, 1), (1109.5, 2), (1110.0, 1), (1110.5, 4), (1111.0, 1), (1111.5, 4), (1112.0, 2), (1113.0, 5), (1113.5, 3), (1114.0, 9), (1114.5, 1), (1115.0, 7), (1116.0, 9), (1117.0, 1), (1118.0, 1), (1119.5, 2), (1120.0, 12)], 'bids': [(1106.0, 2), (1105.5, 8), (1105.0, 1), (1104.5, 2), (1103.5, 2), (1103.0, 7), (1100.0, 2), (1095.5, 1), (1093.0, 2), (1092.5, 7), (1092.0, 3), (1091.5, 5), (1090.5, 1), (1089.5, 5), (1089.0, 21), (1088.0, 2), (1087.0, 3), (1086.0, 1), (1085.0, 2), (1084.5, 7)]}
+dict_data2 = {'asks': [(1107.5, 14), (1108.0, 1), (1108.5, 2), (1109.0, 1), (1109.5, 2), (1110.0, 1), (1110.5, 4), (1111.0, 1), (1111.5, 4), (1112.0, 2), (1113.0, 5), (1113.5, 3), (1114.0, 9), (1114.5, 1), (1115.0, 7), (1116.0, 9), (1117.0, 1), (1118.0, 1), (1119.5, 2), (1120.0, 12)], 'bids': [(1106.0, 2), (1105.5, 8), (1105.0, 1), (1104.5, 2), (1103.5, 2), (1103.0, 7), (1100.0, 2), (1095.5, 1), (1093.0, 2), (1092.5, 7), (1092.0, 3), (1091.5, 5), (1090.5, 1), (1089.5, 5), (1089.0, 21), (1088.0, 2), (1087.0, 3), (1086.0, 1), (1085.0, 2), (1084.5, 7)]}
 
-# z=random.choice(colors)
-# z2=random.choice(colors2)
-#
-# print(z)
-# print(z2)
-#
-# def create_counter():
-#     # global i
-#     i = 0
-#
-#     def func():
-#         nonlocal i
-#         i += 1
-#         return i
-#
-#     return func
-#
-# counter = create_counter()
-# print(counter())  # 1
-# print(counter())  # 2
-# print(counter())  # 3
-#
-#
-# def create_counter2(i):
-#     def func():
-#         nonlocal i
-#         i += 1
-#         return i
-#     return func
-#
-# counter2 = create_counter2(5)
-# print(counter2())  # 1
-# print(counter())  # 2
-# print(counter())  # 3
+
+if dict_data==dict_data2:
+	print('YES')
+else:
+	print("NO")
+
+a=set(dict_data['asks'])
+b=set(dict_data2['asks'])
+
+c=a.symmetric_difference(b)
+print(c)
+
+a=set(dict_data['bids'])
+b=set(dict_data2['bids'])
+
+c=a.symmetric_difference(b)
+print(c)
+
+	

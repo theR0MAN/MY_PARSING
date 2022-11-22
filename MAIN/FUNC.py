@@ -53,14 +53,14 @@ def getdata(getpath, start_year, start_month, start_day, start_hour, stop_year, 
                     continue
                 for h in range(start_hour, 24):
                     name10 = name3 + dL + str(h) + '.roman'
-                    name20 = name3 + dL + str(h) + '.json'
-                    # print('name1  ', name1)
-                    # print('name2  ', name2)
+
                     if os.path.exists(name10):
                         listfiles.append(name10)
-                    if os.path.exists(name20):
-                        listfiles.append(name20)
-                    if y >= stop_year and m >= stop_month and d >= stop_day and h >= stop_hour:
+                    if y > stop_year or \
+                            y == stop_year and m > stop_month or \
+                            y == stop_year and m == stop_month and d > stop_day or \
+                            y == stop_year and m == stop_month and d == stop_day and h > stop_hour:
+
                         flag = True
                         break
                 start_hour = 0
