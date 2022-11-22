@@ -4,16 +4,16 @@ import plotly.express as px
 import lzma as lz
 import json
 
-in_instruments = ['Si-6.22*FRTS', 'Si-9.22*FRTS', 'Si-12.22*FRTS',  'Si-3.23*FRTS']
+in_instruments = ['Si-12.22*FRTS',  'Si-3.23*FRTS',  'Si-6.23*FRTS',  'Si-9.23*FRTS']
 not_in_instruments = ['@']
 
 if system() == 'Windows':
-	getpath = 'G:\\greatOLDHIST\\FORTSALL'
+	getpath = 'G:\\DATA_SBOR\\FRTS\\'
 else:
 	getpath = '/media/roman/J/greatOLDHIST/FORTSALL'
 
-start_year, start_month, start_day, start_hour = 2022, 4, 7, 10
-stop_year, stop_month, stop_day, stop_hour =      2022, 4, 8, 18
+start_year, start_month, start_day, start_hour = 2022, 11, 22, 15
+stop_year, stop_month, stop_day, stop_hour =      2022, 11, 22, 16
 
 content = getdata(getpath, start_year, start_month, start_day, start_hour, stop_year, stop_month, stop_day, stop_hour)
 print(content)

@@ -1,6 +1,7 @@
 import json
 from platform import system
-from multiprocessing import Process
+# from multiprocessing import Process
+from threading import Thread
 import time
 import os
 import lzma
@@ -12,7 +13,7 @@ class Histwrite:
 		self.path = path
 		self.market = market
 		self.hr = None
-
+		self.a_cop = {}
 		self.a = {}
 		self.a_izm = {}
 		self.zapis = False
@@ -25,10 +26,8 @@ class Histwrite:
 		if hour != self.hr:
 			self.hr = hour
 			if self.zapis:
-				print(self.a)
-				print(self.market, "   Пишем   ", Histwrite.get_filename(self))
-				with lzma.open(Histwrite.get_filename(self), "w") as f:
-					f.write(lzma.compress(json.dumps(self.a).encode('utf-8')))
+				self.a_cop = self.a.copy()
+				Thread(self.wrie_compress()).start()
 				self.a = {}
 				self.a_izm = {}
 				self.zapis = False
@@ -41,7 +40,6 @@ class Histwrite:
 			self.a_izm[instr_name] = dict_data
 			self.a[instr_name][timekey] = dict_data
 			self.zapis = True
-
 
 	def get_filename(self):
 		dL = '\\' if system() == 'Windows' else '/'
@@ -65,3 +63,10 @@ class Histwrite:
 		if not os.path.exists(nextpath):
 			os.mkdir(nextpath)
 		return nextpath + dL + str(hour) + '.roman'
+
+	def wrie_compress(self):
+		lz = lzma
+		with lz.open(self.get_filename(), "w") as f:
+			f.write(lz.compress(json.dumps(self.a_cop).encode('utf-8')))
+		print(self.a_cop)
+		print(self.market, "   ЗАПИСАНО   ", self.get_filename())

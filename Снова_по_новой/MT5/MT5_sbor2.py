@@ -6,7 +6,7 @@ import datetime
 putpath = 'G:\\DATA_SBOR\\'
 
 startsbor_hour = 4
-stopsbor_hour = 20
+stopsbor_hour = 21
 
 
 Sborfrts=Histwrite(putpath,'FRTS')
@@ -25,6 +25,7 @@ else:
 # ежедневно обновлять список инструментов
 day0 = None
 names = []
+names2 = []
 while True:
 	time.sleep(1)  # не меньше секунды
 	dat = datetime.datetime.utcfromtimestamp(int(time.time()))
@@ -40,16 +41,19 @@ while True:
 		if day != day0:
 			day0 =day
 			names = []
+			names2 = []
 			symbols = mt5.symbols_get()
 			for sym in symbols:
 				sym = sym._asdict()
-				usl="RTS\\FORTS\\" in sym['path'] and 'Expired' not in sym['path'] and 'Splice' not in sym['name']
-				if usl:
+				if "RTS\\FORTS\\" in sym['path'] and 'Expired' not in sym['path'] and 'Splice' not in sym['name']:
 					if mt5.market_book_add(sym['name']):
 						names.append(sym['name'])
+				if "MOEX\\Securities\\TQBR\\" in sym['path']:
+					if mt5.market_book_add(sym['name']):
+						names2.append(sym['name'])
+
 			time.sleep(3)
 
-		# a = dict()
 		for name in names:
 			stakan = mt5.market_book_get(name)
 			asks = []
@@ -61,11 +65,31 @@ while True:
 				if i['type'] == 2:
 					bids.append((i['price'], i['volume']))
 			asks.reverse()
+			if len(asks) > 0 and len(bids) > 0 :
+				if  asks[0][0]>bids[0][0]:
+					a= dict()
+					a['a'] = asks[0][0]
+					a['b'] = bids[0][0]
+					a['asks'] = asks
+					a['bids'] = bids
+					Sborfrts.putter(name,a)
+
+		for name in names2:
+			stakan = mt5.market_book_get(name)
+			asks = []
+			bids = []
+			for i in stakan:
+				i = i._asdict()
+				if i['type'] == 1:
+					asks.append((i['price'], i['volume']))
+				if i['type'] == 2:
+					bids.append((i['price'], i['volume']))
+			asks.reverse()
 			if len(asks) > 0 and len(bids) > 0:
-				a= dict()
-				# a['a'] = asks[0][0]
-				# a['b'] = bids[0][0]
-				a['asks'] = asks
-				a['bids'] = bids
-				Sborfrts.putter(name,a)
-				# print(f" Бомбим { name }  {a}")
+				if asks[0][0]>bids[0][0]:
+					a= dict()
+					a['a'] = asks[0][0]
+					a['b'] = bids[0][0]
+					a['asks'] = asks
+					a['bids'] = bids
+					Sbormoex.putter(name,a)
