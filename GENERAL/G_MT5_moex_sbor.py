@@ -1,5 +1,5 @@
 import MetaTrader5 as mt5
-from MAIN.sbor_FUNC import *
+from G_sbor_FUNC import Histwrite2
 import time
 import datetime
 
@@ -9,12 +9,12 @@ def moexsbor():
 	startsbor_hour = 4
 	stopsbor_hour = 21
 
-	Sborfrts = Histwrite(putpath, 'FRTS')
-	Sbormoex = Histwrite(putpath, 'MOEX')
+	Sborfrts = Histwrite2(putpath, 'FRTS')
+	Sbormoex = Histwrite2(putpath, 'MOEX')
 
 	if not mt5.initialize("G:\\Открытие ФОРТС\\terminal64.exe", timeout=30):
 		print("initialize() failed, error code =", mt5.last_error(), "? once TRY again")
-		time.sleep(10)
+		time.sleep(15)
 		if not mt5.initialize("G:\\Открытие ФОРТС\\terminal64.exe", timeout=30):
 			print("QUIT!!!!!!!!!!!! initialize() failed, error code =", mt5.last_error())
 			quit()
