@@ -7,14 +7,15 @@ import json
 
 
 
-
-minutki=1
-in_instruments = [ 'SNGR-12.22*FRTS','SNGR-3.23*FRTS','SNGR-6.23*FRTS']
+markets=['FRTS']
+minutki=0
+onlymerge=1
+in_instruments = [ 'SBPR-12.22*FRTS','SBRF-12.22*FRTS', ]
 not_in_instruments = ['VTB']
 start_year, start_month, start_day, start_hour = 2022, 11, 25, 7
 stop_year, stop_month, stop_day, stop_hour = 	 2022, 11, 25, 20
 fixkf=True
-
+getpath = 'G:\\DATA_SBOR' if system() == 'Windows' else '/media/roman/J/DATA_SBOR'
 
 def find_key(dct, key):
 	if key in dct:
@@ -24,26 +25,23 @@ def find_key(dct, key):
 			if str(kk) in dct:
 				return str(kk)
 
-if system() == 'Windows':
-	getpath = 'G:\\DATA_SBOR\\FRTS\\'
-else:
-	getpath = '/media/roman/J/greatOLDHIST/FORTSALL'
 
 
-
-
-stper=61 if minutki else 3601
-content = getdata(getpath, start_year, start_month, start_day, start_hour, stop_year, stop_month, stop_day, stop_hour,minutki)
+stper=60 if minutki else 3600
+content = getdata_merge(onlymerge,minutki,markets,getpath, start_year, start_month, start_day, start_hour, stop_year, stop_month, stop_day, stop_hour)
 print(content)
-
+# quit()
 ixes = []
 kk=0
 data = dict()
 first_key=0
 first=True
-for name in content:
-	with lz.open(name) as f:
-		a = dict(json.loads(lz.decompress(f.read()).decode('utf-8')))
+for cont in content:
+	a=dict()
+	for name in cont:
+		with lz.open(name) as f:
+			bb = dict(json.loads(lz.decompress(f.read()).decode('utf-8')))
+			a |= bb
 
 	if first_key!=0:
 		first_key=0

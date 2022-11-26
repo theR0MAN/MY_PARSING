@@ -107,7 +107,7 @@ class Histwrite2:
 
 	def get_filename(self):
 		dL = '\\' if system() == 'Windows' else '/'
-		dat = datetime.datetime.utcfromtimestamp(int(time.time()) - 500)  # -открутим пару сек
+		dat = datetime.datetime.utcfromtimestamp(int(time.time()) - 3000)  # -открутим пару сек
 		year = dat.year
 		month = dat.month
 		day = dat.day

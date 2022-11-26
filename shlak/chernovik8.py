@@ -1,11 +1,16 @@
-# Import module
-import sqlite3
+# importing pandas as pd
 import pandas as pd
 
-df_job = pd.DataFrame({
-    "user_id": [1, 2, 3, 4],
-    "job": ["Data Science", "Python programmer",
-    "ML engineer", "Java programmer"]
-})
-con = sqlite3.connect("test.db")
-df_job.to_sql("Job", con)
+# Creating the DataFrame
+df = pd.DataFrame({'Weight': [45, 88, 56, 15, 71],
+				   'Name': ['Sam', 'Andrea', 'Alex', 'Robin', 'Kia'],
+				   'Age': [14, 25, 55, 8, 21]})
+
+# Create the index
+index_ = ['Row_1', 'Row_2', 'Row_3', 'Row_4', 'Row_5']
+
+# Set the index
+df.index = index_
+
+# Print the DataFrame
+print(df)

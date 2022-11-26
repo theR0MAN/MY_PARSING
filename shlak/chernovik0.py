@@ -1,8 +1,14 @@
 import sqlite3 as sl
 
-con = sl.connect('my-test.db')
+c=dict()
+a={'q':1,'g':2,'d':4}
+b={'q1':1,'g1':2,'d1':4}
 
-with con:
-    data = con.execute("SELECT * FROM USER WHERE age <= 220")
-    for row in data:
-        print(row)
+y=a|b
+a|=b
+c|=b
+
+print(y)
+print(a)
+
+print(c)
