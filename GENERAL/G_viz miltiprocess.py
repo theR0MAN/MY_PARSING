@@ -5,50 +5,47 @@ import lzma as lz
 import json
 import time
 
-
-
-markets=['FRTS']
-minutki=0
-onlymerge=0
-in_instruments = [ 'Si-12.22*FRTS','Si-3.23*FRTS','Si-6.23*FRTS' ,'Si-9.23*FRTS'  ]
+markets = ['FRTS']
+minutki = 0
+onlymerge = 0
+in_instruments = ['Si-12.22*FRTS', 'Si-3.23*FRTS', 'Si-6.23*FRTS', 'Si-9.23*FRTS']
 not_in_instruments = ['HANG']
 start_year, start_month, start_day, start_hour = 2022, 12, 2, 1
-stop_year, stop_month, stop_day, stop_hour = 	 2022, 12, 2, 22
-fixkf=True
+stop_year, stop_month, stop_day, stop_hour = 2022, 12, 2, 22
+fixkf = True
 getpath = 'G:\\DATA_SBOR' if system() == 'Windows' else '/media/roman/J/DATA_SBOR'
 
-
-
-stper=60 if minutki else 3600
-content = getdata_merge(onlymerge,minutki,markets,getpath, start_year, start_month, start_day, start_hour, stop_year, stop_month, stop_day, stop_hour)
+stper = 60 if minutki else 3600
+content = getdata_merge(onlymerge, minutki, markets, getpath, start_year, start_month, start_day, start_hour, stop_year,
+						stop_month, stop_day, stop_hour)
 print(content)
 
 data = dict()
-nomfile=-1
+nomfile = -1
 for cont in content:
-	a=dict()
+	a = dict()
 	for name in cont:
-		timer=time.time()
+		timer = time.time()
 		with lz.open(name) as f:
 			bb = dict(json.loads(lz.decompress(f.read()).decode('utf-8')))
 		print(f" unpasking time= {time.time() - timer}")
 		a |= bb
 		inlist = list(a)
 		inlist.sort()
-		print(len(inlist), "  ", inlist, "  ",name)
+		print(len(inlist), "  ", inlist, "  ", name)
 
-	nomfile+=1
+	nomfile += 1
 	for inst in a:
 		for ix in in_instruments:
 			for nix in not_in_instruments:
 				if ix in inst and nix not in inst:
 					if inst not in data:
-						data[inst]=dict()
+						data[inst] = dict()
 						data[inst]['askmas'] = []
 						data[inst]['bidmas'] = []
-						data[inst]['ixmas'] =[]
+						data[inst]['ixmas'] = []
 					for tmp in range(stper):
-						data[inst]['ixmas'].append(tmp+stper*nomfile)
+						data[inst]['ixmas'].append(tmp + stper * nomfile)
 						if str(tmp) in a[inst]:
 							if "kf" not in data[inst]:
 								try:
@@ -56,14 +53,14 @@ for cont in content:
 								except:
 									kf = 200 / (a[inst][str(tmp)]['a'] + a[inst][str(tmp)]['b'])
 								kf = 1 if fixkf == False else kf
-								data[inst]['kf']=kf
+								data[inst]['kf'] = kf
 								try:
 									data[inst]['lastask'] = a[inst][str(tmp)]['asks'][0][0]
 									data[inst]['lastbid'] = a[inst][str(tmp)]['bids'][0][0]
 								except:
 									data[inst]['lastask'] = a[inst][str(tmp)]['a']
 									data[inst]['lastbid'] = a[inst][str(tmp)]['b']
-								
+
 							try:
 								data[inst]['askmas'].append(a[inst][str(tmp)]['asks'][0][0] * data[inst]['kf'])
 								data[inst]['bidmas'].append(a[inst][str(tmp)]['bids'][0][0] * data[inst]['kf'])
@@ -82,8 +79,6 @@ for cont in content:
 							else:
 								data[inst]['askmas'].append(None)
 								data[inst]['bidmas'].append(None)
-
-
 
 print(list(data))
 color = get_color()

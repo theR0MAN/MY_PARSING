@@ -68,8 +68,8 @@ def moexsbor():
 				if len(asks) > 0 and len(bids) > 0:
 					if asks[0][0] > bids[0][0]:
 						a = dict()
-						a['a'] = asks[0][0]
-						a['b'] = bids[0][0]
+						# a['a'] = asks[0][0]
+						# a['b'] = bids[0][0]
 						a['asks'] = asks
 						a['bids'] = bids
 						Sborfrts.putter(name, a)
@@ -88,8 +88,8 @@ def moexsbor():
 				if len(asks) > 0 and len(bids) > 0:
 					if asks[0][0] > bids[0][0]:
 						a = dict()
-						a['a'] = asks[0][0]
-						a['b'] = bids[0][0]
+						# a['a'] = asks[0][0]
+						# a['b'] = bids[0][0]
 						a['asks'] = asks
 						a['bids'] = bids
 						Sbormoex.putter(name, a)
