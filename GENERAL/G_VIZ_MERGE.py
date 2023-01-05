@@ -8,12 +8,12 @@ import time
 
 
 markets=['FRTS']
-minutki=0
+minutki=1
 onlymerge=0
-in_instruments = [ 'Si-12.22*FRTS','Si-3.23*FRTS','Si-6.23*FRTS' ,'Si-9.23*FRTS'  ]
+in_instruments = [ 'NG-1.23*FRTS',  'NG-2.23*FRTS']
 not_in_instruments = ['HANG']
-start_year, start_month, start_day, start_hour = 2022, 12, 2, 1
-stop_year, stop_month, stop_day, stop_hour = 	 2022, 12, 2, 22
+start_year, start_month, start_day, start_hour = 2023, 1, 3, 10
+stop_year, stop_month, stop_day, stop_hour = 	 2023, 1, 3, 18
 fixkf=True
 getpath = 'G:\\DATA_SBOR' if system() == 'Windows' else '/media/roman/J/DATA_SBOR'
 
