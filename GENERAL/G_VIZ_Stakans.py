@@ -5,12 +5,12 @@ import lzma as lz
 import json
 import time
 
-markets = ['FRTS','MOEX']
+markets = ['FRTS']
 minutki = 0
 onlymerge = 0
-in_instruments = ['NG-1.23*FRTS']
+in_instruments = ['NG-1.23*FRTS']        # ,'NG-3.23*FRTS'
 not_in_instruments = ['HANG']
-start_year, start_month, start_day, start_hour = 2023, 1, 3, 10
+start_year, start_month, start_day, start_hour = 2023, 1, 5, 14
 fixkf = True
 getpath = 'G:\\DATA_SBOR' if system() == 'Windows' else '/media/roman/J/DATA_SBOR'
 
