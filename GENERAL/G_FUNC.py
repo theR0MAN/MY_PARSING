@@ -10,9 +10,9 @@ import datetime
 import pandas as pd
 
 
-def viz_stakan2(a,a2):
+def viz_stakan2(a, a2):
 	def frmt(value, len_zapis, prefix, zapoln):
-		v1 = (str(value)+prefix )[:len_zapis]
+		v1 = (str(value) + prefix)[:len_zapis]
 		if len(v1) < len_zapis:
 			v1 += (len_zapis - len(v1)) * zapoln
 		return v1
@@ -50,63 +50,62 @@ def viz_stakan2(a,a2):
 	firstbid = a2[next(iter(a2))]['bids'][0][0]
 	firstmeda2 = (firstbid + firstask) / 2
 
-	koefa2a= firstmeda/firstmeda2
+	koefa2a = firstmeda / firstmeda2
 	# Нормализация цен второго массива к мервому с привязкой по первой медиане
-	a3={}
+	a3 = {}
 	for key in a2:
 		for cenlist in a2[key]['asks']:
 			maxlen = max(maxlen, len(str(cenlist[1])))
 		for cenlist in a2[key]['bids']:
 			maxlen = max(maxlen, len(str(cenlist[1])))
 
-	maxlen+=2
+	maxlen += 2
 	for key in a2:
-		a3[key]=dict()
-		a3[key]['asks']=[]
+		a3[key] = dict()
+		a3[key]['asks'] = []
 		a3[key]['bids'] = []
 		for cenlist in a2[key]['asks']:
-			a3[key]['asks'].append ([round(cenlist[0]*koefa2a / shag) * shag,frmt(cenlist[1], maxlen, "ps", ' ')])
-			# print(f'{koefa2a} cenlist  {cenlist}    a3[key]["asks"]   {a3[key]["asks"]}')
+			a3[key]['asks'].append([round(cenlist[0] * koefa2a / shag) * shag, frmt(cenlist[1], maxlen, "ps", ' ')])
+		# print(f'{koefa2a} cenlist  {cenlist}    a3[key]["asks"]   {a3[key]["asks"]}')
 		for cenlist in a2[key]['bids']:
-			a3[key]['bids'].append ([round(cenlist[0]*koefa2a / shag) * shag,frmt(cenlist[1], maxlen, "ms", ' ')])
+			a3[key]['bids'].append([round(cenlist[0] * koefa2a / shag) * shag, frmt(cenlist[1], maxlen, "ms", ' ')])
 
 	# переформатну ка я первый словарь по объемам
-	a0={}
+	a0 = {}
 	for key in a:
-		a0[key]=dict()
-		a0[key]['asks']=[]
+		a0[key] = dict()
+		a0[key]['asks'] = []
 		a0[key]['bids'] = []
 		for cenlist in a[key]['asks']:
-			a0[key]['asks'].append ([cenlist[0],frmt(cenlist[1], maxlen, "pf", ' ')])
-			# print(f'{koefa2a} cenlist  {cenlist}    a3[key]["asks"]   {a0[key]["asks"]}')
+			a0[key]['asks'].append([cenlist[0], frmt(cenlist[1], maxlen, "pf", ' ')])
+		# print(f'{koefa2a} cenlist  {cenlist}    a3[key]["asks"]   {a0[key]["asks"]}')
 		for cenlist in a[key]['bids']:
-			a0[key]['bids'].append ([cenlist[0],frmt(cenlist[1], maxlen, "mf", ' ')])
+			a0[key]['bids'].append([cenlist[0], frmt(cenlist[1], maxlen, "mf", ' ')])
 
 	# имеем два словаря	a0  a3 , замержим их
 	# переименую, бо некрасиво, брутфорс -сила
-	c1=a0
-	c2=a3
+	c1 = a0
+	c2 = a3
 	lastc1 = c1[next(iter(c1))]
 	lastc2 = c2[next(iter(c2))]
 
-	d3={}
-	numc=1
-	startkey=min(int(next(iter(c1))),int(next(iter(c2))))
+	d3 = {}
+	numc = 1
+	startkey = min(int(next(iter(c1))), int(next(iter(c2))))
 	print(startkey)
-	for ikey in range(startkey,3600):
-		yes=False
+	for ikey in range(startkey, 3600):
+		yes = False
 		if str(ikey) in c1:
-			lastc1= c1[str(ikey)]
-			yes=True
+			lastc1 = c1[str(ikey)]
+			yes = True
 		if str(ikey) in c2:
-			lastc2= c2[str(ikey)]
+			lastc2 = c2[str(ikey)]
 			yes = True
 
 		if yes:
 			d3[str(numc)] = lastc1
-			d3[str(numc+1)] = lastc2
-			numc +=2
-
+			d3[str(numc + 1)] = lastc2
+			numc += 2
 
 	# максимум и минимум цены
 	masmax = []
@@ -161,14 +160,15 @@ def viz_stakan2(a,a2):
 			f.write(''.join(mas[i]) + '\n')
 
 	df = pd.DataFrame(mas)
-	df.to_excel('F:\\Все\\MY_PARSING\\GENERAL\\teams.xlsx', index=False,header=False)
+	df.to_excel('F:\\Все\\MY_PARSING\\GENERAL\\teams.xlsx', index=False, header=False)
 	print(df)
 	# subprocess.run(["C:\\Users\\milro\\AppData\\Local\\Programs\\Microsoft VS Code\\Code.exe", "STAKAN.txt"])
 	os.system('start excel.exe teams.xlsx')
 
+
 def viz_stakan1(a):
 	def frmt(value, len_zapis, prefix, zapoln):
-		v1 = (str(value)+prefix )[:len_zapis]
+		v1 = (str(value) + prefix)[:len_zapis]
 		if len(v1) < len_zapis:
 			v1 += (len_zapis - len(v1)) * zapoln
 		return v1
@@ -203,27 +203,27 @@ def viz_stakan1(a):
 
 	maxlen += 2
 	# переформатну ка я первый словарь по объемам
-	a0={}
+	a0 = {}
 	for key in a:
-		a0[key]=dict()
-		a0[key]['asks']=[]
+		a0[key] = dict()
+		a0[key]['asks'] = []
 		a0[key]['bids'] = []
 		for cenlist in a[key]['asks']:
-			a0[key]['asks'].append ([cenlist[0],frmt(cenlist[1], maxlen, "pf", ' ')])
+			a0[key]['asks'].append([cenlist[0], frmt(cenlist[1], maxlen, "pf", ' ')])
 		for cenlist in a[key]['bids']:
-			a0[key]['bids'].append ([cenlist[0],frmt(cenlist[1], maxlen, "mf", ' ')])
+			a0[key]['bids'].append([cenlist[0], frmt(cenlist[1], maxlen, "mf", ' ')])
 
 	# имеем два словаря	a0  a3 , замержим их
 	# переименую, бо некрасиво, брутфорс -сила
 	lastc1 = a0[next(iter(a0))]
 
-	d3={}
-	numc=1
-	startkey=int(next(iter(a0)))
+	d3 = {}
+	numc = 1
+	startkey = int(next(iter(a0)))
 	print(startkey)
-	for ikey in range(startkey,3600):
+	for ikey in range(startkey, 3600):
 		if str(ikey) in a0:
-			lastc1= a0[str(ikey)]
+			lastc1 = a0[str(ikey)]
 			d3[str(numc)] = lastc1
 			numc += 1
 
@@ -280,141 +280,146 @@ def viz_stakan1(a):
 			f.write(''.join(mas[i]) + '\n')
 
 	df = pd.DataFrame(mas)
-	df.to_excel('F:\\Все\\MY_PARSING\\GENERAL\\teams.xlsx', index=False,header=False)
+	df.to_excel('F:\\Все\\MY_PARSING\\GENERAL\\teams.xlsx', index=False, header=False)
 	print(df)
 	# subprocess.run(["C:\\Users\\milro\\AppData\\Local\\Programs\\Microsoft VS Code\\Code.exe", "STAKAN.txt"])
 	os.system('start excel.exe teams.xlsx')
 
 
-
-
 def get_color():
-    i = -1
-    def func():
-        colors = ['black', 'red', 'blue', 'brown', 'green', 'violet', 'yellow', 'maroon', 'gold', 'pink', 'silver',
-                   'coral', 'chocolate']
-        colors0 = ['aliceblue', 'antiquewhite', 'aqua', 'aquamarine', 'azure',
-                   'beige', 'bisque', 'black', 'blanchedalmond', 'blue',
-                   'blueviolet', 'brown', 'burlywood', 'cadetblue',
-                   'chartreuse', 'chocolate', 'coral', 'cornflowerblue',
-                   'cornsilk', 'crimson', 'cyan', 'darkblue', 'darkcyan',
-                   'darkgoldenrod', 'darkgray', 'darkgrey', 'darkgreen',
-                   'darkkhaki', 'darkmagenta', 'darkolivegreen', 'darkorange',
-                   'darkorchid', 'darkred', 'darksalmon', 'darkseagreen',
-                   'darkslateblue', 'darkslategray', 'darkslategrey',
-                   'darkturquoise', 'darkviolet', 'deeppink', 'deepskyblue',
-                   'dimgray', 'dimgrey', 'dodgerblue', 'firebrick',
-                   'floralwhite', 'forestgreen', 'fuchsia', 'gainsboro',
-                   'ghostwhite', 'gold', 'goldenrod', 'gray', 'grey', 'green',
-                   'greenyellow', 'honeydew', 'hotpink', 'indianred', 'indigo',
-                   'ivory', 'khaki', 'lavender', 'lavenderblush', 'lawngreen',
-                   'lemonchiffon', 'lightblue', 'lightcoral', 'lightcyan',
-                   'lightgoldenrodyellow', 'lightgray', 'lightgrey',
-                   'lightgreen', 'lightpink', 'lightsalmon', 'lightseagreen',
-                   'lightskyblue', 'lightslategray', 'lightslategrey',
-                   'lightsteelblue', 'lightyellow', 'lime', 'limegreen',
-                   'linen', 'magenta', 'maroon', 'mediumaquamarine',
-                   'mediumblue', 'mediumorchid', 'mediumpurple',
-                   'mediumseagreen', 'mediumslateblue', 'mediumspringgreen',
-                   'mediumturquoise', 'mediumvioletred', 'midnightblue',
-                   'mintcream', 'mistyrose', 'moccasin', 'navajowhite', 'navy',
-                   'oldlace', 'olive', 'olivedrab', 'orange', 'orangered',
-                   'orchid', 'palegoldenrod', 'palegreen', 'paleturquoise',
-                   'palevioletred', 'papayawhip', 'peachpuff', 'peru', 'pink',
-                   'plum', 'powderblue', 'purple', 'red', 'rosybrown',
-                   'royalblue', 'rebeccapurple', 'saddlebrown', 'salmon',
-                   'sandybrown', 'seagreen', 'seashell', 'sienna', 'silver',
-                   'skyblue', 'slateblue', 'slategray', 'slategrey', 'snow',
-                   'springgreen', 'steelblue', 'tan', 'teal', 'thistle', 'tomato',
-                   'turquoise', 'violet', 'wheat', 'white', 'whitesmoke',
-                   'yellow', 'yellowgreen']
-        nonlocal i
-        i += 1
-        if i<13:
-            return colors[i]
-        else:
-            return random.choice(colors0)
-    return func
+	i = -1
+
+	def func():
+		colors = ['black', 'red', 'blue', 'brown', 'green', 'violet', 'yellow', 'maroon', 'gold', 'pink', 'silver',
+				  'coral', 'chocolate']
+		colors0 = ['aliceblue', 'antiquewhite', 'aqua', 'aquamarine', 'azure',
+				   'beige', 'bisque', 'black', 'blanchedalmond', 'blue',
+				   'blueviolet', 'brown', 'burlywood', 'cadetblue',
+				   'chartreuse', 'chocolate', 'coral', 'cornflowerblue',
+				   'cornsilk', 'crimson', 'cyan', 'darkblue', 'darkcyan',
+				   'darkgoldenrod', 'darkgray', 'darkgrey', 'darkgreen',
+				   'darkkhaki', 'darkmagenta', 'darkolivegreen', 'darkorange',
+				   'darkorchid', 'darkred', 'darksalmon', 'darkseagreen',
+				   'darkslateblue', 'darkslategray', 'darkslategrey',
+				   'darkturquoise', 'darkviolet', 'deeppink', 'deepskyblue',
+				   'dimgray', 'dimgrey', 'dodgerblue', 'firebrick',
+				   'floralwhite', 'forestgreen', 'fuchsia', 'gainsboro',
+				   'ghostwhite', 'gold', 'goldenrod', 'gray', 'grey', 'green',
+				   'greenyellow', 'honeydew', 'hotpink', 'indianred', 'indigo',
+				   'ivory', 'khaki', 'lavender', 'lavenderblush', 'lawngreen',
+				   'lemonchiffon', 'lightblue', 'lightcoral', 'lightcyan',
+				   'lightgoldenrodyellow', 'lightgray', 'lightgrey',
+				   'lightgreen', 'lightpink', 'lightsalmon', 'lightseagreen',
+				   'lightskyblue', 'lightslategray', 'lightslategrey',
+				   'lightsteelblue', 'lightyellow', 'lime', 'limegreen',
+				   'linen', 'magenta', 'maroon', 'mediumaquamarine',
+				   'mediumblue', 'mediumorchid', 'mediumpurple',
+				   'mediumseagreen', 'mediumslateblue', 'mediumspringgreen',
+				   'mediumturquoise', 'mediumvioletred', 'midnightblue',
+				   'mintcream', 'mistyrose', 'moccasin', 'navajowhite', 'navy',
+				   'oldlace', 'olive', 'olivedrab', 'orange', 'orangered',
+				   'orchid', 'palegoldenrod', 'palegreen', 'paleturquoise',
+				   'palevioletred', 'papayawhip', 'peachpuff', 'peru', 'pink',
+				   'plum', 'powderblue', 'purple', 'red', 'rosybrown',
+				   'royalblue', 'rebeccapurple', 'saddlebrown', 'salmon',
+				   'sandybrown', 'seagreen', 'seashell', 'sienna', 'silver',
+				   'skyblue', 'slateblue', 'slategray', 'slategrey', 'snow',
+				   'springgreen', 'steelblue', 'tan', 'teal', 'thistle', 'tomato',
+				   'turquoise', 'violet', 'wheat', 'white', 'whitesmoke',
+				   'yellow', 'yellowgreen']
+		nonlocal i
+		i += 1
+		if i < 13:
+			return colors[i]
+		else:
+			return random.choice(colors0)
+
+	return func
 
 
-def getdata_merge(onlymerge,minutki,markets,getpath, start_year, start_month, start_day, start_hour, stop_year, stop_month, stop_day, stop_hour):
+def getdata_merge(onlymerge, minutki, markets, getpath, start_year, start_month, start_day, start_hour, stop_year,
+				  stop_month, stop_day, stop_hour):
+	"""  возвращает список списков файлов по маркетам в виде
+			[['G:\\DATA_SBOR\\FRTS\\2023\\5\\16\\10_mnt.roman', 'G:\\DATA_SBOR\\MOEX\\2023\\5\\16\\10_mnt.roman'],
+		 ['G:\\DATA_SBOR\\FRTS\\2023\\5\\16\\11_mnt.roman', 'G:\\DATA_SBOR\\MOEX\\2023\\5\\16\\11_mnt.roman']
+	"""
+	fln = '_mnt.roman' if minutki else '.roman'
+	dL = '\\' if system() == 'Windows' else '/'
 
-    fln = '_mnt.roman' if minutki else '.roman'
-    dL = '\\' if system() == 'Windows' else '/'
+	getpath = getpath + dL + markets[0]
+	if stop_year < start_year \
+			or stop_year == start_year and stop_month < start_month \
+			or stop_year == start_year and stop_month == start_month and stop_day < start_day \
+			or stop_year == start_year and stop_month == start_month and stop_day == start_day and stop_hour < start_hour:
+		print("  ошибка введенный конец периода начинается раньше его начала ")
+		quit()
+	if start_month > 12 or stop_month > 12 or start_day > 31 or stop_day > 31 or start_hour > 23 or stop_hour > 23:
+		print(" Ошибка - введено хреновое время")
+		quit()
+	if start_month <= 0 or stop_month <= 0 or start_day <= 0 or stop_day <= 0 or start_hour < 0 or stop_hour < 0:
+		print("Ошибка - введено отрицательное время")
+		quit()
+	global name
+	listfiles = []
+	flag = False
+	for y in range(start_year, stop_year + 1):
+		name1 = getpath + dL + str(y)
+		if flag:
+			break
+		if not os.path.exists(name1):
+			continue
+		for m in range(start_month, 13):
+			name2 = name1 + dL + str(m)
+			if flag:
+				break
+			if not os.path.exists(name2):
+				continue
+			for d in range(start_day, 32):
+				name3 = name2 + dL + str(d)
+				if flag:
+					break
+				if not os.path.exists(name3):
+					continue
+				for h in range(start_hour, 24):
+					name10 = name3 + dL + str(h) + fln
 
-    getpath = getpath +dL+ markets[0]
-    if stop_year < start_year \
-            or stop_year == start_year and stop_month < start_month \
-            or stop_year == start_year and stop_month == start_month and stop_day < start_day \
-            or stop_year == start_year and stop_month == start_month and stop_day == start_day and stop_hour < start_hour:
-        print("  ошибка введенный конец периода начинается раньше его начала ")
-        quit()
-    if start_month > 12 or stop_month > 12 or start_day > 31 or stop_day > 31 or start_hour > 23 or stop_hour > 23:
-        print(" Ошибка - введено хреновое время")
-        quit()
-    if start_month <= 0 or stop_month <= 0 or start_day <= 0 or stop_day <= 0 or start_hour < 0 or stop_hour < 0:
-        print("Ошибка - введено отрицательное время")
-        quit()
-    global name
-    listfiles = []
-    flag = False
-    for y in range(start_year, stop_year + 1):
-        name1 = getpath + dL + str(y)
-        if flag:
-            break
-        if not os.path.exists(name1):
-            continue
-        for m in range(start_month, 13):
-            name2 = name1 + dL + str(m)
-            if flag:
-                break
-            if not os.path.exists(name2):
-                continue
-            for d in range(start_day, 32):
-                name3 = name2 + dL + str(d)
-                if flag:
-                    break
-                if not os.path.exists(name3):
-                    continue
-                for h in range(start_hour, 24):
-                    name10 = name3 + dL + str(h) + fln
+					if os.path.exists(name10):
+						listfiles.append(name10)
 
+					if y > stop_year or \
+							y == stop_year and m > stop_month or \
+							y == stop_year and m == stop_month and d > stop_day or \
+							y == stop_year and m == stop_month and d == stop_day and h >= stop_hour:
+						flag = True
+						break
+				start_hour = 0
+			start_day = 1
+		start_month = 1
 
-                    if os.path.exists(name10):
-                        listfiles.append(name10)
-
-                    if y > stop_year or \
-                            y == stop_year and m > stop_month or \
-                            y == stop_year and m == stop_month and d > stop_day or \
-                            y == stop_year and m == stop_month and d == stop_day and h >= stop_hour:
-                        flag = True
-                        break
-                start_hour = 0
-            start_day = 1
-        start_month = 1
-
-        # podlist = []
-        # for market in markets:
-        #     z = name10.replace(markets[0], market)
-        #     if os.path.exists(z):
-        #         podlist.append(z)
-        # listfiles.append(podlist)
-    listfiles2 = []
-    for file in listfiles:
-        podlist = []
-        podlist.append(file)
-        for market in markets[1:]:
-            z = file.replace(markets[0], market)
-            if os.path.exists(z):
-                podlist.append(z)
-        # print(len(podlist),'==',len(markets))
-
-        if onlymerge:
-            if len(podlist)==len(markets):
-                listfiles2.append(podlist)
-        else:
-            listfiles2.append(podlist)
-    return listfiles2
+		# podlist = []
+		# for market in markets:
+		#     z = name10.replace(markets[0], market)
+		#     if os.path.exists(z):
+		#         podlist.append(z)
+		# listfiles.append(podlist)
+	listfiles2 = []
+	for file in listfiles:
+		podlist = []
+		podlist.append(file)
+		for market in markets[1:]:
+			z = file.replace(markets[0], market)
+			if os.path.exists(z):
+				podlist.append(z)
+		# print(len(podlist),'==',len(markets))
+		#   Гребаная срань. Разбирался что я тут написал больше чем писал))
+		# onlymerge - если тру, то добавляюся в список файлов файлы только если существуют файлы по всем маркетам за данный час, иначе -не добавляется ничего.
+		if onlymerge:
+			if len(podlist) == len(markets):
+				listfiles2.append(podlist)
+		else:
+			# ели не онлимердж, то добавляется файлы вне зависимости, существуют ли файлы по другим маркетам за данный период.
+			listfiles2.append(podlist)
+	return listfiles2
 
 
 class Histwrite2:
@@ -440,7 +445,7 @@ class Histwrite2:
 				self.a = {}
 				self.a_izm = {}
 				self.zapis = False
-				# self.mints =0
+			# self.mints =0
 
 		if not instr_name in self.a:
 			self.a_izm[instr_name] = dict_data
@@ -485,35 +490,35 @@ class Histwrite2:
 
 	def write_compress(self):
 		lz = lzma
-		namefile=self.get_filename()
-		namefileLZ =namefile+ '.roman'
-		namefileJS=namefile+ '_mnt.roman'
+		namefile = self.get_filename()
+		namefileLZ = namefile + '.roman'
+		namefileJS = namefile + '_mnt.roman'
 		with lz.open(namefileLZ, "w") as f:
 			f.write(lz.compress(json.dumps(self.a_cop).encode('utf-8')))
 			print(self.market, "   ЗАПИСАНО   ", namefileLZ)
 
 		# Вытаскиваем минутки from  a_cop
-		mina={}
+		mina = {}
 		for inst in self.a_cop:
-			mina[inst]={}
-			first_key=int(next(iter(self.a_cop[inst])))
+			mina[inst] = {}
+			first_key = int(next(iter(self.a_cop[inst])))
 			d = 60
-			first_key=int(first_key / d) * d + d
+			first_key = int(first_key / d) * d + d
 
-			for i in range(first_key,3600,d):
+			for i in range(first_key, 3600, d):
 				# mymin= str(int((self.mints+i)/60))
-				mymin = str(int( i / 60))
-				mina[inst][mymin]={}
-				key=self.find_key(self.a_cop[inst], str(i))
-				if key!=None:
+				mymin = str(int(i / 60))
+				mina[inst][mymin] = {}
+				key = self.find_key(self.a_cop[inst], str(i))
+				if key != None:
 					try:
-						mina[inst][mymin]["a"]= self.a_cop[inst][key] ['asks'][0][0]
-						mina[inst][mymin]["b"]= self.a_cop[inst][key] ['bids'][0][0]
+						mina[inst][mymin]["a"] = self.a_cop[inst][key]['asks'][0][0]
+						mina[inst][mymin]["b"] = self.a_cop[inst][key]['bids'][0][0]
 					except:
 						mina[inst][mymin]["a"] = self.a_cop[inst][key]['a']
 						mina[inst][mymin]["b"] = self.a_cop[inst][key]['b']
-				# else:
-				# 	print(f" Nonekey in {inst}  {str(i)} ")
+			# else:
+			# 	print(f" Nonekey in {inst}  {str(i)} ")
 
 		with lz.open(namefileJS, "w") as f:
 			f.write(lz.compress(json.dumps(mina).encode('utf-8')))

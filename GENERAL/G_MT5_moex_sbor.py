@@ -2,7 +2,7 @@ import MetaTrader5 as mt5
 from G_FUNC import Histwrite2
 import time
 import datetime
-
+from threading import Thread
 
 def moexsbor():
 	putpath = 'G:\\DATA_SBOR\\'
