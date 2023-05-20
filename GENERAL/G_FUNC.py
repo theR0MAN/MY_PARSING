@@ -8,6 +8,7 @@ import os
 import lzma
 import datetime
 import pandas as pd
+from multiprocessing import Process
 
 
 def viz_stakan2(a, a2):
@@ -441,7 +442,8 @@ class Histwrite2:
 			self.hr = hour
 			if self.zapis:
 				self.a_cop = self.a.copy()
-				Thread(self.write_compress()).start()
+				self.write_compress()
+				# Thread(target=self.write_compress(), daemon=True).start()
 				self.a = {}
 				self.a_izm = {}
 				self.zapis = False
@@ -493,9 +495,8 @@ class Histwrite2:
 		namefile = self.get_filename()
 		namefileLZ = namefile + '.roman'
 		namefileJS = namefile + '_mnt.roman'
-		with lz.open(namefileLZ, "w") as f:
-			f.write(lz.compress(json.dumps(self.a_cop).encode('utf-8')))
-			print(self.market, "   ЗАПИСАНО   ", namefileLZ)
+		Thread(target=COMRESS,args=(namefileLZ, self.a_cop,)).start()
+		# COMRESS(namefileLZ, self.a_cop)
 
 		# Вытаскиваем минутки from  a_cop
 		mina = {}
@@ -519,7 +520,14 @@ class Histwrite2:
 						mina[inst][mymin]["b"] = self.a_cop[inst][key]['b']
 			# else:
 			# 	print(f" Nonekey in {inst}  {str(i)} ")
+		Thread(target=COMRESS, args=(namefileJS, mina,)).start()
+		# COMRESS(namefileJS, mina)
 
-		with lz.open(namefileJS, "w") as f:
-			f.write(lz.compress(json.dumps(mina).encode('utf-8')))
-		print(self.market, "   ЗАПИСАНО   ", namefileJS)
+
+def COMRESS(namefile,data):
+	lz = lzma
+	# if __name__ == '__main__':
+	with lz.open(namefile, "w") as f:
+		print("   СТАРТ ЗАПИСИ  ", namefile)
+		f.write(lz.compress(json.dumps(data).encode('utf-8')))
+		print( "   ЗАПИСАНО   ", namefile)

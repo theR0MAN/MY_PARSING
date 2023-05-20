@@ -31,6 +31,7 @@ def moexsbor():
 		dat = datetime.datetime.utcfromtimestamp(int(time.time()))
 		day = dat.day
 		hour = dat.hour
+		print("пишем "  ,time.time())
 
 		if startsbor_hour <= stopsbor_hour:
 			usl = hour >= startsbor_hour and hour <= stopsbor_hour
