@@ -491,13 +491,21 @@ class Histwrite2:
 					return str(i)
 
 	def write_compress(self):
-		lz = lzma
 		namefile = self.get_filename()
 		namefileLZ = namefile + '.roman'
 		namefileJS = namefile + '_mnt.roman'
-		Thread(target=COMRESS,args=(namefileLZ, self.a_cop,)).start()
-		# COMRESS(namefileLZ, self.a_cop)
+		Thread(target=self.COMRESS,args=(namefileLZ, self.a_cop,)).start()
+		Thread(target=self.COMRESSmin, args=(namefileJS, )).start()
 
+
+	def COMRESS(self,namefile,data):
+		lz = lzma
+		with lz.open(namefile, "w") as f:
+			print("   СТАРТ ЗАПИСИ  ", namefile)
+			f.write(lz.compress(json.dumps(data).encode('utf-8')))
+			print( "   ЗАПИСАНО   ", namefile)
+
+	def COMRESSmin(self,namefile):
 		# Вытаскиваем минутки from  a_cop
 		mina = {}
 		for inst in self.a_cop:
@@ -518,16 +526,9 @@ class Histwrite2:
 					except:
 						mina[inst][mymin]["a"] = self.a_cop[inst][key]['a']
 						mina[inst][mymin]["b"] = self.a_cop[inst][key]['b']
-			# else:
-			# 	print(f" Nonekey in {inst}  {str(i)} ")
-		Thread(target=COMRESS, args=(namefileJS, mina,)).start()
-		# COMRESS(namefileJS, mina)
 
-
-def COMRESS(namefile,data):
-	lz = lzma
-	# if __name__ == '__main__':
-	with lz.open(namefile, "w") as f:
-		print("   СТАРТ ЗАПИСИ  ", namefile)
-		f.write(lz.compress(json.dumps(data).encode('utf-8')))
-		print( "   ЗАПИСАНО   ", namefile)
+		lz = lzma
+		with lz.open(namefile, "w") as f:
+			print("   СТАРТ ЗАПИСИ  ", namefile)
+			f.write(lz.compress(json.dumps(mina).encode('utf-8')))
+			print( "   ЗАПИСАНО   ", namefile)
