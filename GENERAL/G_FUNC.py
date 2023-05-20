@@ -428,7 +428,6 @@ class Histwrite2:
 		self.path = path
 		self.market = market
 		self.hr = None
-		self.a_cop = {}
 		self.a = {}
 		self.a_izm = {}
 		self.zapis = False
@@ -441,8 +440,7 @@ class Histwrite2:
 		if hour != self.hr:
 			self.hr = hour
 			if self.zapis:
-				self.a_cop = self.a.copy()
-				self.write_compress()
+				self.write_compress(self.a)
 				# Thread(target=self.write_compress(), daemon=True).start()
 				self.a = {}
 				self.a_izm = {}
@@ -490,12 +488,12 @@ class Histwrite2:
 				if str(i) in dct:
 					return str(i)
 
-	def write_compress(self):
+	def write_compress(self, data):
 		namefile = self.get_filename()
 		namefileLZ = namefile + '.roman'
 		namefileJS = namefile + '_mnt.roman'
-		Thread(target=self.COMRESS,args=(namefileLZ, self.a_cop,)).start()
-		Thread(target=self.COMRESSmin, args=(namefileJS,self.a_cop, )).start()
+		Thread(target=self.COMRESS,args=(namefileLZ, data,)).start()
+		Thread(target=self.COMRESSmin, args=(namefileJS,data, )).start()
 
 
 	def COMRESS(self,namefile,data):
