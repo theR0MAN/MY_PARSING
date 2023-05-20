@@ -1,42 +1,25 @@
-from multiprocessing import Process ,freeze_support
-import  time
-from threading import Thread
+# from chernovik9 import *
 
-def disp(name):
-	for x in range (5) :
-		time.sleep(1)
-		print(name,"  ",x)
-
-
-def startt(name):
-	print("__name__ ==  ",__name__)
-	# if __name__ == '__main__':
-	freeze_support()
-	Process(target=disp,args=(name,)).start()
-
-
-
-# startt("first")
-# startt("second")
+from multiprocessing import Process
+import time
 
 
 
 def count(txt):
 	for x in range(5):
 		time.sleep(1)
-		print(x,txt)
-
-def count2():
-	for x in range(5):
-		time.sleep(1)
-		print('hty  ',x)
-
-def ts1():
-	Thread(target=count, args=('first',)).start()
+		print(x, '   ', txt)
 
 
-def ts2():
-	Thread(target=count2).start()
-
-print('пошла жара')
+def proc():
+	if __name__ == '__main__':
+		Process(target=count, args=('first1',)).start()
+		Process(target=count, args=('first2',)).start()
+		Process(target=count, args=('first4',)).start()
+		Process(target=count, args=('first5',)).start()
+		Process(target=count, args=('first6',)).start()
+		Process(target=count, args=('first7',)).start()
+		Process(target=count, args=('first8',)).start()
+		Process(target=count, args=('first9',)).start()
+		Process(target=count, args=('first10',)).start()
 
