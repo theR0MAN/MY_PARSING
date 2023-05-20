@@ -491,18 +491,26 @@ class Histwrite2:
 					return str(i)
 
 	def write_compress(self):
-		lz = lzma
 		namefile = self.get_filename()
 		namefileLZ = namefile + '.roman'
 		namefileJS = namefile + '_mnt.roman'
-		Thread(target=COMRESS,args=(namefileLZ, self.a_cop,)).start()
-		# COMRESS(namefileLZ, self.a_cop)
+		Thread(target=self.COMRESS,args=(namefileLZ, self.a_cop,)).start()
+		Thread(target=self.COMRESSmin, args=(namefileJS,self.a_cop, )).start()
 
+
+	def COMRESS(self,namefile,data):
+		lz = lzma
+		with lz.open(namefile, "w") as f:
+			print("   СТАРТ ЗАПИСИ  ", namefile)
+			f.write(lz.compress(json.dumps(data).encode('utf-8')))
+			print( "   ЗАПИСАНО   ", namefile)
+
+	def COMRESSmin(self,namefile, data):
 		# Вытаскиваем минутки from  a_cop
 		mina = {}
-		for inst in self.a_cop:
+		for inst in data:
 			mina[inst] = {}
-			first_key = int(next(iter(self.a_cop[inst])))
+			first_key = int(next(iter(data[inst])))
 			d = 60
 			first_key = int(first_key / d) * d + d
 
@@ -510,24 +518,17 @@ class Histwrite2:
 				# mymin= str(int((self.mints+i)/60))
 				mymin = str(int(i / 60))
 				mina[inst][mymin] = {}
-				key = self.find_key(self.a_cop[inst], str(i))
+				key = self.find_key(data[inst], str(i))
 				if key != None:
 					try:
-						mina[inst][mymin]["a"] = self.a_cop[inst][key]['asks'][0][0]
-						mina[inst][mymin]["b"] = self.a_cop[inst][key]['bids'][0][0]
+						mina[inst][mymin]["a"] = data[inst][key]['asks'][0][0]
+						mina[inst][mymin]["b"] = data[inst][key]['bids'][0][0]
 					except:
-						mina[inst][mymin]["a"] = self.a_cop[inst][key]['a']
-						mina[inst][mymin]["b"] = self.a_cop[inst][key]['b']
-			# else:
-			# 	print(f" Nonekey in {inst}  {str(i)} ")
-		Thread(target=COMRESS, args=(namefileJS, mina,)).start()
-		# COMRESS(namefileJS, mina)
+						mina[inst][mymin]["a"] = data[inst][key]['a']
+						mina[inst][mymin]["b"] = data[inst][key]['b']
 
-
-def COMRESS(namefile,data):
-	lz = lzma
-	# if __name__ == '__main__':
-	with lz.open(namefile, "w") as f:
-		print("   СТАРТ ЗАПИСИ  ", namefile)
-		f.write(lz.compress(json.dumps(data).encode('utf-8')))
-		print( "   ЗАПИСАНО   ", namefile)
+		lz = lzma
+		with lz.open(namefile, "w") as f:
+			print("   СТАРТ ЗАПИСИ  ", namefile)
+			f.write(lz.compress(json.dumps(mina).encode('utf-8')))
+			print( "   ЗАПИСАНО   ", namefile)
