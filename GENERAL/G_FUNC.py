@@ -526,7 +526,6 @@ class Histwrite2:
 					except:
 						mina[inst][mymin]["a"] = data[inst][key]['a']
 						mina[inst][mymin]["b"] = data[inst][key]['b']
-
 		lz = lzma
 		with lz.open(namefile, "w") as f:
 			print("   СТАРТ ЗАПИСИ  ", namefile)
