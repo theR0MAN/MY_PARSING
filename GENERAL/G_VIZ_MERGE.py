@@ -10,11 +10,11 @@ import time
 markets=['FRTS','MOEX']
 minutki=1
 onlymerge=0
-in_instruments = ['SBRF-',"SBER",'SBPR-']
+in_instruments = ['GAZR','GAZP']
 	# [ 'NG-1.23*FRTS',  'NG-2.23*FRTS',  'NG-3.23*FRTS']
 not_in_instruments = ['HANG']
-start_year, start_month, start_day, start_hour = 2023, 5, 2, 11
-stop_year, stop_month, stop_day, stop_hour = 	 2023, 5, 2, 20
+start_year, start_month, start_day, start_hour = 2023, 5, 23, 5
+stop_year, stop_month, stop_day, stop_hour = 	 2023, 5, 23, 20
 fixkf=1
 getpath = 'G:\\DATA_SBOR' if system() == 'Windows' else '/media/roman/J/DATA_SBOR'
 
