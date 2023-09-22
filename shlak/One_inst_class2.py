@@ -231,7 +231,10 @@ class Myinst:
 # https://plotly.com/python/marker-style/
 # https://qwertybox.ru/articles/39244/
 
+# https://digitrain.ru/articles/218557/
+# https://www.youtube.com/watch?v=mvVt-raJIpo
 # from plotly.subplots import make_subplots
+# https://dash.gallery/Portal/
 # import plotly.graph_objects as go
 #
 # fig = make_subplots(rows=3, cols=2)
@@ -245,3 +248,12 @@ class Myinst:
 # fig.update_layout(height=1000, width=1000, title_text="Stacked Subplots")
 # fig.update_layout(height=1000, width=1000, title_text="Stacked Subplots")
 # fig.show()
+
+# Тестирование - смотреть что будет когда возьмут в стакане объем, который ты бы взял.  Так получится избежать отсутствие влияние на цену при тесте.
+# для изи стратегий - изменчивость размера спреда считать и сравнивать с издержками  издержки-шаг зигзага
+
+# функция , которая выдает из истории котировку инструмента - аналаг как в   реале
+# сперва в словарь пишем инструмент-котировка , а ужев следующем операторе цикле тестировщик изсловаря берет данные
+#  т.е они идут один за одним . не эффективно, но удобно
+# использовать try ключ , ане "if  key in dict" дабы избежать итераций поиска
+#     сделки пишутся в фпйл (), на основании этого идет обработчик и визуализатор

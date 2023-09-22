@@ -1,4 +1,5 @@
-from G_FUNC import *
+from PROJECT.TEST.Test_lib import getdata_merge
+from Viz_lib import get_color
 from platform import system
 import plotly.express as px
 import lzma as lz
