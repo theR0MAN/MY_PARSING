@@ -9,13 +9,13 @@ import time
 
 
 markets=['FRTS','MOEX']  #,'MOEX'
-minutki=1
+minutki=0
 onlymerge=0
 in_instruments = ['NG-']
 	# [ 'NG-1.23*FRTS',  'NG-2.23*FRTS',  'NG-3.23*FRTS']
 not_in_instruments = ['HANG']
-start_year, start_month, start_day, start_hour = 2023, 8, 10, 8
-stop_year, stop_month, stop_day, stop_hour = 	 2023, 9, 4, 20
+start_year, start_month, start_day, start_hour = 2023, 9, 22, 8
+stop_year, stop_month, stop_day, stop_hour = 	 2023, 9, 22, 14
 fixkf=1
 getpath = 'G:\\DATA_SBOR' if system() == 'Windows' else '/media/roman/J/DATA_SBOR'
 
@@ -27,6 +27,7 @@ print(content)
 
 data = dict()
 nomfile=-1
+timer2=time.time()
 for cont in content:
 	a=dict()
 	for name in cont:
@@ -87,7 +88,7 @@ for cont in content:
 								data[inst]['bidmas'].append(None)
 
 
-
+print(f" 2 time= {time.time() - timer2}")
 print(list(data))
 color = get_color()
 fig = px.line()

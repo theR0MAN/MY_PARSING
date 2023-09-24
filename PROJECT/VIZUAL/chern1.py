@@ -3,7 +3,7 @@ import time
 
 
 def F(x):
-	z = x**4000000
+	z = x ** 4000000
 	return x
 
 
@@ -16,14 +16,11 @@ if __name__ == '__main__':
 	print(time.time() - timer)
 
 	timer = time.time()
-	p = Process(target=F, args=(10, ))
-	print('work0')
-	p.start()
-	
-	print(time.time() - timer)
-	print('work')
+	with Pool(processes=8) as pool:
+		results = pool.map(F, l)
+		print(results)
 
-	p.join()
-	p.close()
+
 	print(time.time() - timer)
 	print('End program')
+
