@@ -1,7 +1,19 @@
 
 from platform import system
 import os
+import datetime
+import time
 
+def gettm(z):
+	'''получает путь , возвращает время в юникод'''
+	x = z.split('\\')
+	l = len(x)
+	year = int(x[l - 4])
+	mon = int(x[l - 3])
+	day = int(x[l - 2])
+	hr = int(x[l - 1].split('.')[0])
+	tm = int(time.mktime(datetime.datetime(year, mon, day, hr).timetuple()))
+	return tm
 
 def getdata_merge(onlymerge, minutki, markets, getpath, start_year, start_month, start_day, start_hour, stop_year,
 				  stop_month, stop_day, stop_hour):
@@ -86,3 +98,4 @@ def getdata_merge(onlymerge, minutki, markets, getpath, start_year, start_month,
 			# ели не онлимердж, то добавляется файлы вне зависимости, существуют ли файлы по другим маркетам за данный период.
 			listfiles2.append(podlist)
 	return listfiles2
+

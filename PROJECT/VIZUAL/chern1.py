@@ -1,26 +1,23 @@
-from multiprocessing import Pool,Process
+# зачача -распараллелить распаковку, синх мап  , распаковывать порциями - чтобы оперативы  хватило, но
+# не больше чем ядер за раз
+# а потом скармливать по одному в общее тело - для  тестера понадобится
+from multiprocessing import Pool
+from PROJECT.TEST.Test_lib import getdata_merge, gettm
+from Viz_lib import get_color
+from platform import system
+import plotly.express as px
+import lzma
+import json
 import time
+import datetime
+from numba import njit
 
 
-def F(x):
-	z = x ** 4000000
-	return x
+# while True:
+# 	dat = datetime.datetime.utcfromtimestamp(int(time.time()))
+# 	time.sleep(1)
+# 	print(dat.second)
 
-
-if __name__ == '__main__':
-
-	l = [10, 9, 8, 7, 6, 5, 4, 3]
-
-	timer = time.time()
-	z = list(map(F, l))
-	print(time.time() - timer)
-
-	timer = time.time()
-	with Pool(processes=8) as pool:
-		results = pool.map(F, l)
-		print(results)
-
-
-	print(time.time() - timer)
-	print('End program')
-
+for i in range(10):
+	i=str(i)
+	print(i+'m')

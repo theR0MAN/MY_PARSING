@@ -3,7 +3,7 @@ from threading import Thread
 from multiprocessing import Process
 import time
 from One_inst_class import Myinst
-
+ 
 
 
 from plotly.subplots import make_subplots
