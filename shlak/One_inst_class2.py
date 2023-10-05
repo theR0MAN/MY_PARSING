@@ -9,6 +9,7 @@ class Myinst:
 		self.asks=[]
 		self.bids = []
 		self.sredn = []
+		self.sredne = []
 		self.mediana = []
 		self.supersredn=[]
 		self.supermediana = []
@@ -30,6 +31,9 @@ class Myinst:
 		self.countsm = 0
 
 		self.q= deque()
+		self.qe = deque()
+		self.nake = 0
+		self.counte = 0
 		self.qmo = deque()
 		self.qsm = deque()
 
@@ -38,7 +42,7 @@ class Myinst:
 
 
 
-	def takedata(self,tm,data):
+	def takedata(self,data):
 		Ask=data["asks"][0][0]
 		Bid=data["bids"][0][0]
 		# Ask=200
@@ -50,6 +54,10 @@ class Myinst:
 		self.bids.append(Bid)
 		SR=self.getsredn((Ask+Bid)/2)
 		self.sredn.append(SR)
+
+		SRe = self.geteasy((Ask + Bid) / 2)
+		self.sredne.append(SRe)
+
 		SS=self.getsupersredn(SR,(Ask+Bid)/2)
 		self.supersredn.append(SS)
 		MD=self.getmediana((Ask + Bid) / 2)
@@ -88,6 +96,22 @@ class Myinst:
 		else:
 			self.nak=self.nak-self.nak/self.period_sred + data
 			return (self.nak/self.period_sred)
+
+
+
+	def geteasy(self,data):
+		if self.counte<self.period_sred:
+			self.qe.append(data)
+			self.nake += data
+			self.counte+=1
+			return(None)
+		else:
+			self.qe.append(data)
+			last=self.qe.popleft()
+			# print(last)
+			# l = list(self.qe)
+			self.nake = self.nake - last + data
+			return (self.nake / self.period_sred)
 
 	def getsupersredn(self,sr,kotir): # kotir - (Ask+Bid)/2
 		if sr==None:
@@ -132,6 +156,8 @@ class Myinst:
 			ln=len(l)
 			d = l[int(ln / 2)] if ln % 2 == 1 else (l[int(ln / 2)] + l[int(ln / 2) - 1]) / 2
 			return(d)
+
+
 
 	def getsupermediana(self,MD,kotir): # kotir - (Ask+Bid)/2
 		if MD==None:
@@ -183,16 +209,18 @@ class Myinst:
 		clr = color()
 		fig.add_scatter(x=ix, y=self.sredn, line_color=clr, name=' sredn')
 		clr = color()
-		fig.add_scatter(x=ix, y=self.supersredn, line_color=clr, name=' supersredn')
+		fig.add_scatter(x=ix, y=self.sredne, line_color=clr, name=' sredne')
+		# clr = color()
+		# fig.add_scatter(x=ix, y=self.supersredn, line_color=clr, name=' supersredn')
 		#
 		clr = color()
-		# fig.add_scatter(x=ix, y=self.mediana, line_color=clr, name=' mediana')
+		fig.add_scatter(x=ix, y=self.mediana, line_color=clr, name=' mediana')
 		# clr = color()
 		# fig.add_scatter(x=ix, y=self.supermediana, line_color=clr, name=' supermediana')
 
-		clr = color()
-		fig.add_scatter(x=ix, y=self.asksrotkl, line_color=clr, name=' asksrotkl')
-		fig.add_scatter(x=ix, y=self.bidsrotkl, line_color=clr, name=' asksrotkl')
+		# clr = color()
+		# fig.add_scatter(x=ix, y=self.asksrotkl, line_color=clr, name=' asksrotkl')
+		# fig.add_scatter(x=ix, y=self.bidsrotkl, line_color=clr, name=' asksrotkl')
 		#
 		# clr = color()
 		# fig.add_scatter(x=ix, y=self.askmedotkl, line_color=clr, name=' askmedotkl')
@@ -257,3 +285,4 @@ class Myinst:
 #  т.е они идут один за одним . не эффективно, но удобно
 # использовать try ключ , ане "if  key in dict" дабы избежать итераций поиска
 #     сделки пишутся в фпйл (), на основании этого идет обработчик и визуализатор
+# сопоставить фильтры - двойная медиана против двойной средней против одиночной медианы , отпалированной средней . простой средней

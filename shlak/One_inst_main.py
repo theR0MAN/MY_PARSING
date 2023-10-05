@@ -21,7 +21,7 @@ onlymerge=0
 instrument = 'Si-6.23*FRTS'
 # 'SBRF-6.23'
 start_year, start_month, start_day, start_hour = 2023, 5, 23, 12
-stop_year, stop_month, stop_day, stop_hour = 	 2023, 5, 23, 20
+stop_year, stop_month, stop_day, stop_hour = 	 2023, 5, 23, 14
 fixkf=1
 getpath = 'G:\\DATA_SBOR' if system() == 'Windows' else '/media/roman/J/DATA_SBOR'
 
@@ -49,7 +49,7 @@ for cont in content:
 
 	for key in a[instrument]:
 		utime=tm+int(key)
-		ch_inst.takedata(utime,a[instrument][key])
+		ch_inst.takedata(a[instrument][key])
 
 
 ch_inst.chartdt()

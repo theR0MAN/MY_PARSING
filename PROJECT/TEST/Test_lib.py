@@ -3,17 +3,10 @@ from platform import system
 import os
 import datetime
 import time
+import lzma as lz
+import json
 
-def gettm(z):
-	'''получает путь , возвращает время в юникод'''
-	x = z.split('\\')
-	l = len(x)
-	year = int(x[l - 4])
-	mon = int(x[l - 3])
-	day = int(x[l - 2])
-	hr = int(x[l - 1].split('.')[0])
-	tm = int(time.mktime(datetime.datetime(year, mon, day, hr).timetuple()))
-	return tm
+
 
 def getdata_merge(onlymerge, minutki, markets, getpath, start_year, start_month, start_day, start_hour, stop_year,
 				  stop_month, stop_day, stop_hour):
@@ -99,3 +92,58 @@ def getdata_merge(onlymerge, minutki, markets, getpath, start_year, start_month,
 			listfiles2.append(podlist)
 	return listfiles2
 
+
+
+
+
+# 	класс распаковки и получения списка инстр
+class Getl2:
+	def __init__(self, content):
+		self.content=content
+		# self.output=[]  #список инструментов
+	def gettm(self,z):
+		'''получает путь , возвращает время в юникод'''
+		x = z.split('\\')
+		l = len(x)
+		self.year = int(x[l - 4])
+		self.mon = int(x[l - 3])
+		self.day = int(x[l - 2])
+		self.hr = int(x[l - 1].split('.')[0])
+		tm = int(time.mktime(datetime.datetime(self.year, self.mon, self.day, self.hr).timetuple()))
+		return tm  # ,year,mon,day,hr
+
+	def getd(self):
+		for cont in self.content:
+			a = dict()
+			for name in cont:
+				with lz.open(name) as f:
+					bb = dict(json.loads(lz.decompress(f.read()).decode('utf-8')))
+				a |= bb
+				yield [a,self.gettm(cont[0])]
+
+
+	def get_l2(self):
+		z = self.getd()
+		L2 = dict()
+		while True:
+			cc = next(z)
+			a = cc[0]
+			self.output = list(a)
+			starttime = cc[1]
+
+			# обозначим списки инструментов
+			for inst in a:
+				if inst not in L2:
+					if True:  # inst == 'Eu-12.23*FRTS'
+						L2[inst] = dict()
+						L2[inst]['asks'] = []
+						L2[inst]['bids'] = []
+
+			for ttm in range(3600):
+				tmp = str(ttm)
+				self.ttime=starttime + ttm
+				for inst in a:
+					if tmp in a[inst]:
+						L2[inst]['asks'] = a[inst][tmp]['asks']
+						L2[inst]['bids'] = a[inst][tmp]['bids']
+				yield L2
