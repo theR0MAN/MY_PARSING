@@ -5,7 +5,7 @@ import datetime
 import time
 import lzma as lz
 import json
-
+from numpy import argsort
 
 
 def getdata_merge(onlymerge, minutki, markets, getpath, start_year, start_month, start_day, start_hour, stop_year,
@@ -100,6 +100,7 @@ def getdata_merge(onlymerge, minutki, markets, getpath, start_year, start_month,
 class Getl2:
 	def __init__(self, content):
 		self.content=content
+		self.timer=0
 		# self.output=[]  #список инструментов
 	def gettm(self,z):
 		'''получает путь , возвращает время в юникод'''
@@ -115,11 +116,15 @@ class Getl2:
 	def getd(self):
 		for cont in self.content:
 			a = dict()
+			print(cont, 'время предыдущего  расчета  ', time.time() - self.timer)
+			# self.timer = time.time()
 			for name in cont:
 				with lz.open(name) as f:
 					bb = dict(json.loads(lz.decompress(f.read()).decode('utf-8')))
 				a |= bb
-				yield [a,self.gettm(cont[0])]
+			# print( 'время распаковки ', time.time() - self.timer)
+			self.timer=time.time()
+			yield [a,self.gettm(cont[0])]
 
 
 	def get_l2(self):
@@ -140,6 +145,7 @@ class Getl2:
 						L2[inst]['bids'] = []
 
 			for ttm in range(3600):
+				self.hoursec = ttm
 				tmp = str(ttm)
 				self.ttime=starttime + ttm
 				for inst in a:
@@ -147,3 +153,84 @@ class Getl2:
 						L2[inst]['asks'] = a[inst][tmp]['asks']
 						L2[inst]['bids'] = a[inst][tmp]['bids']
 				yield L2
+
+# помойная функция, но пусть будет -использовать нужно ту что ниже
+def getfut0(l):
+	REZ=dict()
+	for inst in l:
+		if"-" in inst and '.' in inst:
+			REZ[inst]=[]
+			REZ[inst].append([])
+			REZ[inst].append([])
+			REZ[inst].append([])
+	for inst0 in l:
+		if"-" in inst0 and '.' in inst0:
+			bodyit = inst0[:inst0.find('-')]
+			x = inst0[inst0.find('-') + 1:inst0.find('*')].split(".")
+			x2 = float(x[0]) + float(x[1]) * 12
+			for inst in l:
+				if "-" in inst and '.' in inst:
+					bodyinst = inst[:inst.find('-')]
+					xi = inst[inst.find('-') + 1:inst.find('*')].split(".")
+					x2i = float(xi[0]) + float(xi[1]) * 12
+					if bodyinst==bodyit and not x2==x2i:
+						REZ[inst0][0].append(inst)
+						if x2<x2i:
+							REZ[inst0][1].append(inst)
+						if x2>x2i:
+							REZ[inst0][2].append(inst)
+	return REZ
+# словарь списков фьючей с более поздним и ранник сроком экспирации
+# instr в список не входит -получать из ключа
+# REZ[instr][0] - все
+# REZ[instr][1] - более поздние
+# REZ[instr][2]  -более ранние
+
+#  сортирует словарь по значениям
+def sortdict(dict) :
+	keys = list(dict.keys())
+	values = list(dict.values())
+	sorted_value_index = argsort(values)
+	return {keys[i]: values[i] for i in sorted_value_index}
+
+# принимает список фьючей - возвращает
+# список инструментов
+# словарь для календарок в виде
+# {'HOME': ['HOME-12.23*FRTS', 'HOME-3.24*FRTS'], 'MGNT': ['MGNT-12.23*FRTS', 'MGNT-3.24*FRTS', 'MGNT-6.24*FRTS'],
+def get_fut(l):
+	pred=dict()
+	dinst=[]
+	instset=set()
+	for inst in l:
+		if"-" in inst and '.' in inst:
+			dinst.append(inst)
+			bodyit = inst[:inst.find('-')]
+			instset.add(bodyit)
+	for i in instset:
+		pred[i] = dict()
+		for inst in l:
+			if "-" in inst and '.' in inst:
+				bodyit = inst[:inst.find('-')]
+				xi = inst[inst.find('-') + 1:inst.find('*')].split(".")
+				x2i = float(xi[0]) + float(xi[1]) * 12
+				if i == bodyit:
+					pred[i][inst]=x2i
+	pred2=dict()
+	for key in pred:
+		pred2[key]=[]
+		pred[key]= sortdict(pred[key])
+	for key in pred2:
+		for key2 in pred[key]:
+			pred2[key].append(key2)
+
+	# брать список с минимум 2 инструментами
+	pred3=pred2.copy()
+	for key in pred2:
+		if len(pred2[key])==1:
+			print(key,   '     ',len(pred2[key]))
+			dinst.remove(pred3[key][0])
+			del pred3[key]
+
+
+
+	return (dinst,pred3)

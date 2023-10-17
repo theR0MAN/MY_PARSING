@@ -32,16 +32,28 @@ ixmas = []
 tm = 0
 # z = get_l2(content)
 
-heart=Myheartbeat(100,50,0.8,2)
+heart=Myheartbeat(100,50,0.95,3)
 exem = Getl2(content)
 z = exem.get_l2()  # получает словарь котиров
+count = 0
 while True:
 	try:
 		dt = next(z)
 		tme=exem.ttime
+		hrs=exem.hoursec
 		a=heart.get_heartbeats(dt,tme)
-		print(a[instrument ]['medheartbeat'])
+		count+=1
+		# print(a[instrument ]['medheartbeat'])
+		if hrs>180:  # пропускаем первые 3 минуты часа - там задержка по записи
+			# считаем каждые 30 секунд
+			if count>30:
+				count=0
+				for inst in a:
+					if a[inst]['medheartbeat']!=None and tme-a[inst]['lasttime']>a[inst]['medheartbeat']:
+						print(inst,"    ",a[inst]['medheartbeat'],"    ",tme-a[inst]['lasttime'], hrs)
 
+
+			
 		# print(tme)
 		# for key in dt:
 		# 	if key not  in a:
