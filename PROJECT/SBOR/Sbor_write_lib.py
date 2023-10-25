@@ -4,11 +4,11 @@ import time
 import os
 import lzma
 import datetime
-from multiprocessing import Queue
-QE = Queue()
+
+
 
 # _mnt.
-def Compress():
+def Compress(QE):
 
 	def COMRESS0(namefile,data):
 		lz = lzma
@@ -59,12 +59,11 @@ def Compress():
 			zz=QE.get()
 			namefile=zz[0]
 			data=zz[1]
+			namefileLZ = namefile + '.roman'
+			namefileJS = namefile + '_mnt.roman'
 
-
-			if "_mnt." in namefile:
-				COMRESSmin(namefile, data)
-			else:
-				COMRESS0(namefile, data)
+			COMRESSmin(namefileJS , data)
+			COMRESS0(namefileLZ, data)
 		else:
 			# print(" ПУСТОЙ")
 			time.sleep(10)
@@ -73,13 +72,14 @@ def Compress():
 
 
 class Histwrite2:
-	def __init__(self, path=None, market=None):
+	def __init__(self, path, market,QE):
 		self.path = path
 		self.market = market
 		self.hr = None
 		self.a = {}
 		self.a_izm = {}
 		self.zapis = False
+		self.QE=QE
 
 	def putter(self, instr_name, dict_data):
 		instr_name += "*" + self.market
@@ -132,11 +132,9 @@ class Histwrite2:
 
 	def write_compress(self, data):
 		namefile = self.get_filename()
-		namefileLZ = namefile + '.roman'
-		namefileJS = namefile + '_mnt.roman'
 		#  тут добавить в очередь
-		QE.put((namefileLZ,data))
-		QE.put((namefileJS, data))
+		self.QE.put((namefile,data))
+
 		# результат записи приме
 	#  '2243': {
 	# 			'asks': [[79430.0, 21], [79435.0, 2], [79436.0, 2], [79438.0, 1], [79439.0, 13], [79440.0, 4], [79441.0, 5],

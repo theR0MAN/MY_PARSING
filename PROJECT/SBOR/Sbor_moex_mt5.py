@@ -4,13 +4,13 @@ import time
 import datetime
 from threading import Thread
 
-def moexsbor():
+def moexsbor(QE):
 	putpath = 'G:\\DATA_SBOR\\'
 	startsbor_hour = 4
 	stopsbor_hour = 21
 
-	Sborfrts = Histwrite2(putpath, 'FRTS')
-	Sbormoex = Histwrite2(putpath, 'MOEX')
+	Sborfrts = Histwrite2(putpath, 'FRTS',QE)
+	Sbormoex = Histwrite2(putpath, 'MOEX',QE)
 
 	if not mt5.initialize("G:\\Открытие ФОРТС\\terminal64.exe", timeout=30):
 		print("initialize() failed, error code =", mt5.last_error(), "? once TRY again")

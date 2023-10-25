@@ -2,15 +2,22 @@ from collections import deque
 
 class Myheartbeat:
 	def __init__(self,periodhertbeat,periodraschet,part,mnoz):
+		# periodraschet через какой период перерасчитывать хертбиты- это для понижения нагрузки
+		# part - 0,5 - медиана  1-самый хвост сортированных хартбитов
+		# mnoz - уможение расчетного хартбита на коф для сравнения с текущим
+
 		self.a = dict()
+		self.b = dict()
 		self.periodhertbeat=periodhertbeat
 		self.periodraschet=periodraschet
 		self.part=part
 		self.mnoz=mnoz
 
+
 	def get_heartbeats(self,dt,tme):
 		for key in dt:
 			if key not  in self.a:
+				self.b[key]=False
 				self.a[key] =dict()
 				self.a[key]['asks'] =dt[key]['asks']
 				self.a[key]['bids'] = dt[key]['bids']
@@ -38,7 +45,10 @@ class Myheartbeat:
 						l.sort()
 						ln=int(self.periodhertbeat*self.part)
 						self.a[key]['medheartbeat'] =l[ln]*self.mnoz
-		return  self.a
+			if self.a[key]['medheartbeat']!=None:
+				self.b[key] =tme - self.a[key]['lasttime'] < self.a[key]['medheartbeat']
+		# False -инструмент спит
+		return  self.b
 
 
 class Mysredn:

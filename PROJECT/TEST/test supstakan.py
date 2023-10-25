@@ -28,7 +28,7 @@ instrument3 = 'GOLD-6.24*FRTS'
 # instrument3 = 'NG-11.23*FRTS'
 
 start_year, start_month, start_day, start_hour = 2023, 10, 6, 14
-stop_year, stop_month, stop_day, stop_hour = 	 2023, 10, 10, 15
+stop_year, stop_month, stop_day, stop_hour = 	 2023, 10, 19, 15
 
 getpath = 'G:\\DATA_SBOR' if system() == 'Windows' else '/media/roman/J/DATA_SBOR'
 content = getdata_merge(onlymerge, minutki, markets, getpath, start_year, start_month, start_day, start_hour, stop_year,
@@ -72,7 +72,6 @@ z = exem.get_l2()  # получает словарь котиров
 day0 = -1
 kso=1
 total=0
-ksdel=0
 # koefdict=dict()
 medper = 0
 A = dict()
@@ -113,15 +112,16 @@ while True:
 			spisinstr = list()
 			for key in dt0:
 				spisinstr.append(key)
-			# получения списка, где есть более ранние фьючи
+			# получения списка только фьючей и  минимум парных, игрорируя индексы и прочую дичь
 			A, B = get_fut(spisinstr)
 			# D=dict()
 			print(A)
 			print(B)
-		# 	получение  словаря по дневному списку
+
+		#  нужно заполнить список фильтрованных инструменов
 		dt = dict()
 		for key in A:
-			# обозначаем переменные для тестирования
+			dt[key] = dt0[key]
 			if key not in deals:
 				deals[key] = dict()
 				deals[key]["profit"]=0
@@ -129,40 +129,46 @@ while True:
 				deals[key]["flaglong"] = True
 				deals[key]["lastlong"]=None
 				deals[key]["lastshort"]=None
-			dt[key] = dt0[key]
-		# 	получение хертбитов на основе словаря
-		b = heart.get_heartbeats2(dt, tme)
-		# print(a)
 
-		# 	если мажор укладывается в хертбит считаем медианы
+		# 	получение расширенного датафида (+ хертбит) на основе фильтрованных инструменов
+		a = heart.get_heartbeats(dt, tme)
+		z=a.copy()
+		# 	если мажор укладывается в хертбит считаем медианы через persec секунд
 		if medper < persec:
 			medper += 1
 		else:
 			medper = 0
 			for key in B:
-				if b[B[key][0]]:#если мажорный фьюч не спит
+				if a[B[key][0]]['medheartbeat'] != None and tme - a[B[key][0]]['lasttime'] < a[B[key][0]][
+					'medheartbeat']:
 					yes = True
 					for i in B[key]:
-						# сперва проверка на нормальность  всех котиров для кореектной синхронизации медианы
-						if dt[i]['asks'] == [] or dt[i]['bids'] == []:
+						# сперва проверка на нормальность  всех котиров фьючей с общей базой для кореектной синхронизации медианы
+						if a[i]['asks'] == [] or a[i]['bids'] == []:
 							yes = False
+					# если всё ок
 					if yes:
 						for i in B[key]:
-							Ask = dt[i]['asks'][0][0]
-							Bid = dt[i]['bids'][0][0]
+							Ask = a[i]['asks'][0][0]
+							Bid = a[i]['bids'][0][0]
 							data = (Ask + Bid) / 2
-
 							mediana = scie.getshlifmed_exp(data, i, medperiod)
 							if mediana != None:
-								# заполнение корректировочных кэфов
+								# заполнение корректировочных кэфов по каждому инструменту
 								baza[i] = 100 / mediana
-
 		for key in B:
 			mascen = []
 			for i in B[key]:
 				if i in baza:
-					Ask = dt[i]['asks'][0][0]
-					Bid = dt[i]['bids'][0][0]
+					# перемножить все цены на кэфы и впаковать в суперстакан доп
+					for k in z[i]['asks']:
+						z[i]['asks'][k][0]=z[i]['asks'][k][0]*baza[i]
+					for k in z[i]['bids']:
+						z[i]['bids'][k][0]=z[i]['bids'][k][0]*baza[i]
+
+						                              
+					Ask = a[i]['asks'][0][0]
+					Bid = a[i]['bids'][0][0]
 					data = baza[i] * (Ask + Bid) / 2
 					mascen.append((i, data))
 			if mascen != []:
@@ -172,33 +178,24 @@ while True:
 					sc += 1
 					mainf = mascen[ln - sc][0]
 					b0 = mascen[:ln - sc]
-					bz = []
+					b = []
 					for xo in b0:
-						bz.append(xo[1])
-					bazasred[mainf] = mean(bz)
+						b.append(xo[1])
+					bazasred[mainf] = mean(b)
 				# print(mainf,"   ",bazasred[mainf])
 
-		for inst in A:
-			if inst in bazasred:
-				Ask = baza[inst] *dt[inst]['asks'][0][0]
-				Bid = baza[inst] *dt[inst]['bids'][0][0]
-				otkl= abs(((Ask + Bid) / 2)-bazasred [inst])*kso
-				bazaso[inst] = scie.getsredn_exp(otkl, inst+'otkl', medperiod*persec*2) #
-				# if so!=None:
-				# 	Askotl= Ask+so
-				# 	Bidotkl=Bid-so
+
 
 		for instrument in A:
 			# заполним массивы для вывод
-			# print(instrument)
-			# print(b[instrument])
-			if b[instrument] and instrument in bazasred and bazaso[instrument] != None :
+			if a[instrument]['medheartbeat']!=None and instrument in bazasred and bazaso[instrument] != None and \
+					tme - a[instrument]['lasttime'] < a[instrument]['medheartbeat']:
 
 
-				Ask = dt[instrument]['asks'][0][0] * baza[instrument]
-				Bid = dt[instrument]['bids'][0][0] * baza[instrument]
-				Ask2 = dt[instrument]['asks'][0][0]
-				Bid2 = dt[instrument]['bids'][0][0]
+				Ask = a[instrument]['asks'][0][0] * baza[instrument]
+				Bid = a[instrument]['bids'][0][0] * baza[instrument]
+				Ask2 = a[instrument]['asks'][0][0]
+				Bid2 = a[instrument]['bids'][0][0]
 
 				deals[instrument]["longvh"] = ((bazasred[instrument]- Ask) - Akoefin * (Ask - Bid)) - (comis + forain)
 				deals[instrument]["shortvh"] =  ((Bid - bazasred[instrument]) - Akoefin * (Ask - Bid)) - (comis + forain)
@@ -214,9 +211,8 @@ while True:
 						pr=-comis+100*(deals[instrument]["lastshort"]-deals[instrument]["lastlong"])/ deals[instrument]["lastshort"]
 						deals[instrument]["profit"]+= pr
 						total += pr
-						ksdel += 1
 						print(
-							f' instrument=  {instrument}    LONG profit =  {deals[instrument]["profit"]}   total {total}    ksdel {ksdel}')
+							f' instrument=  {instrument}    LONG profit =  {deals[instrument]["profit"]}   total {total} ')
 					except:
 						pass
 
@@ -230,9 +226,8 @@ while True:
 						pr=-comis+100*( deals[instrument]["lastshort"]-deals[instrument]["lastlong"]) / deals[instrument]["lastlong"]
 						deals[instrument]["profit"] += pr
 						total+= pr
-						ksdel += 1
 						print(
-							f'  instrument=  {instrument}  SHORT profit =  {deals[instrument]["profit"] }  total {total}    ksdel {ksdel}')
+							f'  instrument=  {instrument}  SHORT profit =  {deals[instrument]["profit"] }  total {total}  ')
 					except:
 						pass
 

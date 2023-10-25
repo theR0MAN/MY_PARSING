@@ -230,7 +230,119 @@ def get_fut(l):
 			print(key,   '     ',len(pred2[key]))
 			dinst.remove(pred3[key][0])
 			del pred3[key]
-
-
-
 	return (dinst,pred3)
+
+def get_futforst(spisinstr):
+	rez = dict()
+	for inst in spisinstr:
+		if "-" in inst and '.' in inst:
+			bodyit = inst[:inst.find('-')]
+			if bodyit in rez:
+				rez[bodyit].append(inst)
+			else:
+				rez[bodyit] = []
+				rez[bodyit].append(inst)
+	return rez
+
+# принимает список словарей, содержащий стаканы - возвращает кумулятивный стакан
+def megamerge_stakan(spis):
+	def mergestakan (asks1,bids1,asks2,bids2):
+		def askmerge(a1,a2):
+			rez = []
+			la1 = len(a1)
+			la2 = len(a2)
+			cnt1 = 0
+			cnt2 = 0
+			fcnt1 = True
+			fcnt2 = True
+			while True:
+				if cnt1==la1:
+					fcnt1=False
+				if cnt2==la2:
+					fcnt2=False
+				if not fcnt1 and not fcnt2 :
+					break
+
+				if  fcnt1 and fcnt2:
+					if(a1[cnt1][0]<a2[cnt2][0]):
+						rez.append(a1[cnt1])
+						cnt1+=1
+					elif (a1[cnt1][0] > a2[cnt2][0]):
+						rez.append(a2[cnt2])
+						cnt2 += 1
+					else:
+						rez.append([a1[cnt1][0],a1[cnt1][1]+a2[cnt2][1]])
+						cnt1 += 1
+						cnt2 += 1
+				elif fcnt1:
+					rez.append(a1[cnt1])
+					cnt1 += 1
+				elif fcnt2:
+					rez.append(a2[cnt2])
+					cnt2 += 1
+			return rez
+
+		def bidmerge(b1,b2):
+			rez = []
+			lb1 = len(b1)
+			lb2 = len(b2)
+			cnt1 = 0
+			cnt2 = 0
+			fcnt1 = True
+			fcnt2 = True
+			while True:
+				if cnt1==lb1:
+					fcnt1=False
+				if cnt2==lb2:
+					fcnt2=False
+
+				if not fcnt1 and not fcnt2 :
+					break
+
+				if  fcnt1 and fcnt2:
+					if(b1[cnt1][0]>b2[cnt2][0]):
+						rez.append(b1[cnt1])
+						cnt1+=1
+					elif (b1[cnt1][0] < b2[cnt2][0]):
+						rez.append(b2[cnt2])
+						cnt2 += 1
+					else:
+						rez.append([b1[cnt1][0],b1[cnt1][1]+b2[cnt2][1]])
+						cnt1 += 1
+						cnt2 += 1
+				elif fcnt1:
+					rez.append(b1[cnt1])
+					cnt1 += 1
+				elif fcnt2:
+					rez.append(b2[cnt2])
+					cnt2 += 1
+			return rez
+
+
+		def funreb(asks, bids):
+			while asks[0][0] <= bids[0][0]:
+				minus = min(asks[0][1], bids[0][1])
+				asks[0][1] = asks[0][1] - minus
+				bids[0][1] = bids[0][1] - minus
+				if asks[0][1] == 0:
+					asks.pop(0)
+				if bids[0][1] == 0:
+					bids.pop(0)
+
+				if len(asks) == 0 or len(bids) == 0:
+					break
+			return asks, bids
+		return funreb (askmerge(asks1,asks2),bidmerge(bids1,bids2))
+
+	startasks=[]
+	startbids=[]
+	for st in spis:
+		asks=st['asks']
+		bids=st['bids']
+		startasks,startbids=mergestakan(startasks, startbids, asks, bids)
+	rz=dict()
+	rz['asks']=startasks
+	rz['bids']=startbids
+	return rz
+
+

@@ -1,12 +1,16 @@
 from PROJECT.TEST.Test_lib import *
 from PROJECT.VIZUAL.Viz_lib import get_color
 from PROJECT.SCIENTIC.sc_sredn_lib import *
+import plotly.graph_objects as go
+from plotly.subplots import make_subplots
 from platform import system
 import plotly.express as px
 from collections import deque
 import datetime, time  # timer=time.time()
 import traceback
 from statistics import mean
+flaglong=True
+flagshort=True
 
 markets = ['FRTS']  # ,'MOEX'
 minutki = 0
@@ -15,7 +19,7 @@ onlymerge = 0
 # instrument2 = 'Si-3.24*FRTS'
 # instrument3 = 'Si-6.24*FRTS'
 
-instrument = 'Si-3.24*FRTS'
+instrument = 'NG-11.23*FRTS'
 instrument2 = 'GOLD-3.24*FRTS'
 instrument3 = 'GOLD-6.24*FRTS'
 
@@ -23,8 +27,8 @@ instrument3 = 'GOLD-6.24*FRTS'
 # instrument2 = 'NG-10.23*FRTS'
 # instrument3 = 'NG-11.23*FRTS'
 
-start_year, start_month, start_day, start_hour = 2023, 10, 13, 11
-stop_year, stop_month, stop_day, stop_hour = 	 2023, 10, 13, 12
+start_year, start_month, start_day, start_hour = 2023, 10, 12, 14
+stop_year, stop_month, stop_day, stop_hour = 	 2023, 10, 12, 15
 
 getpath = 'G:\\DATA_SBOR' if system() == 'Windows' else '/media/roman/J/DATA_SBOR'
 content = getdata_merge(onlymerge, minutki, markets, getpath, start_year, start_month, start_day, start_hour, stop_year,
@@ -34,6 +38,12 @@ print(content)
 bazmas = []
 askmas = []
 bidmas = []
+
+ylongmas = []
+yshortmas = []
+
+xlongmas = []
+xshortmas = []
 
 comisaskmas = []
 comisbidmas = []
@@ -83,8 +93,15 @@ Akoefin=2
 
 persec = 1
 medperiod = 50
-comis=0.01
-forain=0.01
+comis=0.001
+forain=0.001
+
+limsig=2
+
+deals=dict()
+lastlong=None
+lastshort=None
+profit=0
 while True:
 	try:
 		dt0 = next(z)  # это якобы на серваке - к нему нужен доступ
@@ -169,19 +186,62 @@ while True:
 			# заполним массивы для вывод
 		if a[instrument]['medheartbeat']!=None and instrument in bazasred and bazaso[instrument] != None and tme - a[instrument]['lasttime'] < a[instrument]['medheartbeat']: #TypeError: '<' not supported between instances of 'int' and 'NoneType'
 			x += 1
+
+
 			Ask = a[instrument]['asks'][0][0] * baza[instrument]
 			Bid = a[instrument]['bids'][0][0] * baza[instrument]
 			askmas.append(Ask)
 			bidmas.append(Bid)
+			Ask2 = a[instrument]['asks'][0][0]
+			Bid2 = a[instrument]['bids'][0][0]
+			askmas2.append(Ask2)
+			bidmas2.append(Bid2)
+
 			bazmas.append(bazasred[instrument])
 
-			comisaskmas.append(bazasred[instrument]+comis)
-			comisbidmas.append(bazasred[instrument] - comis)
+			longvh = ((bazasred[instrument]- Ask) - Akoefin * (Ask - Bid)) - (comis + forain)
+			shortvh =  ((Bid - bazasred[instrument]) - Akoefin * (Ask - Bid)) - (comis + forain)
 
-			Askotkl=bazasred[instrument]+bazaso[instrument]
-			Bidotkl=bazasred[instrument]-bazaso[instrument]
-			askotklmas.append(Askotkl)
-			bidotklmas.append(Bidotkl)
+			LONG = longvh < limsig and longvh > 0
+			SHORT = shortvh < limsig and shortvh > 0
+
+			if LONG and flaglong:
+				lastlong = Ask2
+				ylongmas.append(Ask)
+				xlongmas.append(x)
+				flaglong =False
+				flagshort=True
+				try:
+					profit+=100*(lastshort-lastlong)/ lastshort
+				except:
+					pass
+				print(f'LONG profit =  {profit}  lastlong=  {lastlong}  lastshort= {lastshort}  '  )
+
+				# print("LONG   ",Ask2)
+			if SHORT and flagshort:
+				lastshort = Bid2
+				yshortmas.append(Bid)
+				xshortmas.append(x)
+				flagshort=False
+				flaglong = True
+				try:
+					profit += 100*( lastshort-lastlong) / lastlong
+				except:
+					pass
+				print(f' SHORT profit =  {profit}  lastlong=  {lastlong}  lastshort= {lastshort}  '  )
+
+
+
+				# print("SHORT  ", Bid2)
+
+
+			# comisaskmas.append(bazasred[instrument]+comis)
+			# comisbidmas.append(bazasred[instrument] - comis)
+			# 
+			# Askotkl=bazasred[instrument]+bazaso[instrument]
+			# Bidotkl=bazasred[instrument]-bazaso[instrument]
+			# askotklmas.append(Askotkl)
+			# bidotklmas.append(Bidotkl)
 
 
 
@@ -203,19 +263,37 @@ while True:
 
 # 	выведем эту радость
 #
-color = get_color()
-fig = px.line()
-
-clr = color()
-fig.add_scatter(x=ixmas, y=askmas, line_color=clr, name=' ask')
-fig.add_scatter(x=ixmas, y=bidmas, line_color=clr, name=' bid')
-clr = color()
-fig.add_scatter(x=ixmas, y=bazmas, line_color=clr, name=' baza')
-# fig.add_scatter(x=ixmas, y=bidmas2, line_color=clr, name=' bid2')
-clr = color()
+# color = get_color()
+# fig = px.line()
+#
+# # clr = color()
+# fig.add_scatter(x=ixmas, y=askmas, line_color=clr, name=' ask')
+# fig.add_scatter(x=ixmas, y=bidmas, line_color=clr, name=' bid')
+# clr = color()
+# fig.add_scatter(x=ixmas, y=bazmas, line_color=clr, name=' baza')
+# clr = color()
 # fig.add_scatter(x=ixmas, y=askotklmas, line_color=clr, name=' askotk')
 # fig.add_scatter(x=ixmas, y=bidotklmas, line_color=clr, name=' bidotk')
 # clr = color()
 # fig.add_scatter(x=ixmas, y=comisaskmas, line_color=clr, name=' comisask')
 # fig.add_scatter(x=ixmas, y=comisbidmas, line_color=clr, name=' comisbid')
+
+fig = make_subplots(rows=2, cols=1)
+
+color = get_color()
+clr = color()
+fig.add_trace(go.Scatter( x=ixmas,     y=askmas, line_color=clr, name=' ask'), row=1, col=1)
+fig.add_trace(go.Scatter(  x=ixmas, y=bidmas, line_color=clr, name=' bid'), row=1, col=1)
+clr = color()
+fig.add_trace(go.Scatter(  x=ixmas, y=bazmas, line_color=clr, name=' baza'), row=1, col=1)
+
+clr = color()
+fig.add_trace(go.Scatter( x=ixmas,     y=askmas2, line_color=clr, name=' ask'), row=2, col=1)
+fig.add_trace(go.Scatter(  x=ixmas, y=bidmas2, line_color=clr, name=' bid'), row=2, col=1)
+
+clr = color()
+fig.add_trace(go.Scatter( x=xlongmas,     y=ylongmas, line_color=clr, name=' LONG', mode='markers'), row=1, col=1)
+clr = color()
+fig.add_trace(go.Scatter(  x=xshortmas, y=yshortmas, line_color=clr, name=' SHORT', mode='markers'), row=1, col=1)
+
 fig.show()

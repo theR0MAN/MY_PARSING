@@ -11,11 +11,11 @@ import time
 markets=['FRTS']  #,'MOEX'
 minutki=0
 onlymerge=0
-in_instruments = ['WHEAT-']
+in_instruments = ['SBRF-']
 	# [ 'NG-1.23*FRTS',  'NG-2.23*FRTS',  'NG-3.23*FRTS']
-not_in_instruments = ['HANG']
-start_year, start_month, start_day, start_hour = 2023, 10, 12, 12
-stop_year, stop_month, stop_day, stop_hour = 	 2023, 10, 12, 13
+not_in_instruments = ['AED']
+start_year, start_month, start_day, start_hour = 2023, 10, 1, 8
+stop_year, stop_month, stop_day, stop_hour = 	 2023, 10, 9, 20
 fixkf=1
 getpath = 'G:\\DATA_SBOR' if system() == 'Windows' else '/media/roman/J/DATA_SBOR'
 
@@ -40,7 +40,7 @@ for cont in content:
 		inlist.sort()
 		print(len(inlist), "  ", inlist, "  ",name)
 		# print(a['Si-9.23*FRTS'])
-	print(a)
+	# print(a)
 
 	nomfile+=1
 	for inst in a:
