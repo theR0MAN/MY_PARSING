@@ -131,7 +131,7 @@ while True:
 				deals[key]["lastshort"]=None
 			dt[key] = dt0[key]
 		# 	получение хертбитов на основе словаря
-		b = heart.get_heartbeats2(dt, tme)
+		b = heart.get_heartbeats(dt, tme)
 		# print(a)
 
 		# 	если мажор укладывается в хертбит считаем медианы

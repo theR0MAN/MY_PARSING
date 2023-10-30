@@ -115,20 +115,21 @@ while True:
 				spisinstr.append(key)
 			# получения списка, где есть более ранние фьючи
 			A, B = get_fut(spisinstr)
+			for key in A:
+				# обозначаем переменные для тестирования
+				if key not in deals:
+					deals[key] = dict()
+					deals[key]["profit"] = 0
+					deals[key]["flagshort"] = True
+					deals[key]["flaglong"] = True
+					deals[key]["lastlong"] = None
+					deals[key]["lastshort"] = None
 			# D=dict()
 			print(A)
 			print(B)
-		# 	получение  словаря по дневному списку
+		# 	получение  датафида по дневному списку
 		dt = dict()
 		for key in A:
-			# обозначаем переменные для тестирования
-			if key not in deals:
-				deals[key] = dict()
-				deals[key]["profit"]=0
-				deals[key]["flagshort"] = True
-				deals[key]["flaglong"] = True
-				deals[key]["lastlong"]=None
-				deals[key]["lastshort"]=None
 			dt[key] = dt0[key]
 		# 	получение хертбитов на основе словаря
 		b = heart.get_heartbeats(dt, tme)
