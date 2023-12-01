@@ -1,4 +1,5 @@
 from collections import deque
+from copy import deepcopy
 
 class Myheartbeat:
 	def __init__(self,periodhertbeat,periodraschet,part,mnoz):
@@ -249,5 +250,137 @@ def megamerge_stakan(spis):
 	return rz
 
 
+def punchvolS(stk,rs,tot,vol0,comis,fora,kspreads):
+	# comis - комис в проц
+	# fora - фора к комис
+	# kspreads- к-во спредов
+	# rs  True -расширение спреда по сигналу
+	# tot- True максимизация по тоталпрофит -те с учетом объема, False - максимизация по проценту сигнала
 
+	index=4 if tot else 3
+
+	Ask0=stk['asks'][0][0]
+	Bid0= stk['bids'][0][0]
+	spread0=100*(Ask0-Bid0)/Ask0
+
+	vol=vol0
+	masva = []
+	sumvol=0
+	sumproizv=0
+	vzcen=0
+	count=0
+
+	mas = deepcopy(stk['bids'])
+
+	cen = Bid0
+	ln=len(stk['asks'])
+	for i in stk['asks']:
+		if vol>= i[1]:
+			vol -= i[1]
+			if rs:
+				vvl = i[1]
+				while vvl > 0:
+					if mas == []:
+						break
+					elif vvl > mas[0][1]:
+						vvl -= mas[0][1]
+						cen = mas[0][0]
+						mas.pop(0)
+					elif vvl < mas[0][1]:
+						mas[0][1] -= vvl
+						vvl = 0
+					elif vvl == mas[0][1]:
+						vvl = 0
+						cen = mas[0][0]
+						mas.pop(0)
+				spread = 100 * (Ask0 - cen) / Ask0
+				# print('spread2=', spread)
+			else:
+				spread =spread0
+
+			sumproizv+=i[1]*i[0]
+			sumvol+= i[1]
+			if count<ln-1:
+				count += 1
+				vzcen= sumproizv/sumvol
+				endcen=stk['asks'][count][0]
+				procprofit=100*(endcen-vzcen)/vzcen-comis-fora-spread*kspreads
+				totalprofit=(100*(endcen-vzcen)/vzcen-comis-fora-spread*kspreads)*sumvol
+				masva.append([sumvol,vzcen,endcen,procprofit,totalprofit])
+			else:
+				break
+		else:
+			break
+
+	masvb = []
+	vol = vol0
+	sumvol=0
+	sumproizv=0
+	vzcen=0
+	count=0
+	mas = deepcopy(stk['asks'])
+	cen = Ask0
+	ln=len(stk['bids'])
+	for i in stk['bids']:
+		if vol>= i[1]:
+			vol -= i[1]
+			if rs:
+				vvl=i[1]
+				while vvl > 0:
+					if mas == []:
+						break
+					elif vvl > mas[0][1]:
+						vvl -= mas[0][1]
+						cen = mas[0][0]
+						mas.pop(0)
+					elif vvl < mas[0][1]:
+						mas[0][1] -= vvl
+						vvl = 0
+					elif vvl == mas[0][1]:
+						vvl = 0
+						cen = mas[0][0]
+						mas.pop(0)
+				spread = 100 * (cen - Bid0) / cen
+				# print('spread1=',spread)
+			else:
+				spread =spread0
+			sumproizv+=i[1]*i[0]
+			sumvol+= i[1]
+			if count<ln-1:
+				count += 1
+				vzcen= sumproizv/sumvol
+				endcen=stk['bids'][count][0]
+				procprofit=100*(vzcen-endcen)/vzcen-comis-fora-spread*kspreads
+				totalprofit=(100*(vzcen-endcen)/vzcen-comis-fora-spread*kspreads)*sumvol
+				masvb.append([sumvol,vzcen,endcen,procprofit,totalprofit])
+			# sumvol-  объем входа
+			# vzcen  -  взвешенная цена входа после сделки
+			# endcen -  до куда продавили цену
+
+			else:
+				break
+		else:
+			break
+
+	maxbuy=[]
+	profit=-99999999999999
+	for i in masva:
+		if i[index]>profit:
+			profit=i[index]
+			maxbuy=i
+	maxsell=[]
+	profit=-99999999999999
+	for i in masvb:
+		if i[index]>profit:
+			profit=i[index]
+			maxsell=i
+	#
+	# print(masva)
+	# print(masvb)
+	# print(maxbuy)
+	# print(maxsell)
+
+	return maxbuy,maxsell
+
+# punchvolS(st4,True,True,90,0.01,0.01,1)
 

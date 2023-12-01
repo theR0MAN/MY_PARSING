@@ -66,7 +66,7 @@ def Compress(QE):
 			COMRESS0(namefileLZ, data)
 		else:
 			# print(" ПУСТОЙ")
-			time.sleep(10)
+			time.sleep(20)
 
 
 
@@ -90,7 +90,6 @@ class Histwrite2:
 			self.hr = hour
 			if self.zapis:
 				self.write_compress(self.a)
-				# Thread(target=self.write_compress(), daemon=True).start()
 				self.a = {}
 				self.a_izm = {}
 				self.zapis = False

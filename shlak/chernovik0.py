@@ -1,5 +1,5 @@
-from numba import njit
-import time
+from copy import deepcopy
+
 # st1=dict()
 # st2=dict()
 # st3=dict()
@@ -21,11 +21,16 @@ import time
 
 
 
-# та же функция но с отсечкой - противоположный банд продавливается на  объем входа, расширяя спред
-def punchvolS2(stk,rs,vol0,comis,fora,kspreads):
+
+def punchvolS(stk,rs,tot,vol0,comis,fora,kspreads):
 	# comis - комис в проц
 	# fora - фора к комис
 	# kspreads- к-во спредов
+	# rs  True -расширение спреда по сигналу
+	# tot- True максимизация по тоталпрофит -те с учетом объема, False - максимизация по проценту сигнала
+
+	index=5 if tot else 4
+
 	Ask0=stk['asks'][0][0]
 	Bid0= stk['bids'][0][0]
 	spread0=100*(Ask0-Bid0)/Ask0
@@ -36,13 +41,14 @@ def punchvolS2(stk,rs,vol0,comis,fora,kspreads):
 	sumproizv=0
 	vzcen=0
 	count=0
-	mas = stk['bids'].copy()
+
+	mas = deepcopy(stk['bids'])
+
 	cen = Bid0
 	ln=len(stk['asks'])
 	for i in stk['asks']:
 		if vol>= i[1]:
 			vol -= i[1]
-
 			if rs:
 				vvl = i[1]
 				while vvl > 0:
@@ -60,7 +66,7 @@ def punchvolS2(stk,rs,vol0,comis,fora,kspreads):
 						cen = mas[0][0]
 						mas.pop(0)
 				spread = 100 * (Ask0 - cen) / Ask0
-				print('spread2=', spread)
+				# print('spread2=', spread)
 			else:
 				spread =spread0
 
@@ -69,10 +75,11 @@ def punchvolS2(stk,rs,vol0,comis,fora,kspreads):
 			if count<ln-1:
 				count += 1
 				vzcen= sumproizv/sumvol
+				prevcen = stk['asks'][count - 1][0]
 				endcen=stk['asks'][count][0]
 				procprofit=100*(endcen-vzcen)/vzcen-comis-fora-spread*kspreads
 				totalprofit=(100*(endcen-vzcen)/vzcen-comis-fora-spread*kspreads)*sumvol
-				masva.append([sumvol,vzcen,endcen,procprofit,totalprofit])
+				masva.append([sumvol,vzcen,prevcen,endcen,procprofit,totalprofit])
 			else:
 				break
 		else:
@@ -84,7 +91,7 @@ def punchvolS2(stk,rs,vol0,comis,fora,kspreads):
 	sumproizv=0
 	vzcen=0
 	count=0
-	mas = stk['asks'].copy()
+	mas = deepcopy(stk['asks'])
 	cen = Ask0
 	ln=len(stk['bids'])
 	for i in stk['bids']:
@@ -107,7 +114,7 @@ def punchvolS2(stk,rs,vol0,comis,fora,kspreads):
 						cen = mas[0][0]
 						mas.pop(0)
 				spread = 100 * (cen - Bid0) / cen
-				print('spread1=',spread)
+				# print('spread1=',spread)
 			else:
 				spread =spread0
 			sumproizv+=i[1]*i[0]
@@ -115,10 +122,16 @@ def punchvolS2(stk,rs,vol0,comis,fora,kspreads):
 			if count<ln-1:
 				count += 1
 				vzcen= sumproizv/sumvol
-				endcen=stk['bids'][count][0]
+				prevcen=stk['bids'][count-1][0]
+				endcen = stk['bids'][count][0]
 				procprofit=100*(vzcen-endcen)/vzcen-comis-fora-spread*kspreads
 				totalprofit=(100*(vzcen-endcen)/vzcen-comis-fora-spread*kspreads)*sumvol
-				masvb.append([sumvol,vzcen,endcen,procprofit,totalprofit])
+				masvb.append([sumvol,vzcen,prevcen,endcen,procprofit,totalprofit])
+			# sumvol-  объем входа
+			# vzcen  -  взвешенная цена входа после сделки
+			# endcen -  до куда продавили цену
+			# prevcen -до куда бить лимиткой
+
 			else:
 				break
 		else:
@@ -127,32 +140,24 @@ def punchvolS2(stk,rs,vol0,comis,fora,kspreads):
 	maxbuy=[]
 	profit=-99999999999999
 	for i in masva:
-		if i[4]>profit:
-			profit=i[4]
+		if i[index]>profit:
+			profit=i[index]
 			maxbuy=i
 	maxsell=[]
 	profit=-99999999999999
 	for i in masvb:
-		if i[4]>profit:
-			profit=i[4]
+		if i[index]>profit:
+			profit=i[index]
 			maxsell=i
-
+	#
 	print(masva)
 	print(masvb)
 	print(maxbuy)
 	print(maxsell)
+
 	return maxbuy,maxsell
-
-
-
-
 st4=dict()
-st4['asks']=[[90,5],[100,8],[110,2],[120,30],[130,11]]
-st4['bids']=[[70,8],[60,2],[50,30],[40,10],[30,10]]
+st4['asks']=[[9,8],[10,3],[11,1],[12,3],[13,1]]
+st4['bids']=[[7,2],[6,10],[5,3],[4,1],[3,1]]
 
-punchvolS2(st4,True,50,0.01,0.01,1)
-
-
-
-
-
+punchvolS(st4,True,True,12,0.01,0.01,1)
