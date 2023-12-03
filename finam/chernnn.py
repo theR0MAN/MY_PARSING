@@ -8,11 +8,6 @@ putpath = 'G:\\DATA_SBOR\\'
 # 		os.mkdir(putpath + name)
 
 
-dat = datetime.datetime.utcfromtimestamp(int(time.time()))
-year = str(dat.year)
-month=str(dat.month)
-day = str(dat.day)
-
-
-name=year+'-'+month+'-'+day
-print(name)
+name='RU000A101MT7'
+print(len(name))
+print(name[:2])

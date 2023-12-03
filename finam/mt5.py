@@ -16,7 +16,75 @@ if not mt5.initialize("E:\\FinamMT5\\terminal64.exe", timeout=40):
 		print('initialize2 sucsess')
 else:
 	print('initialize1 sucsess')
+
+
+
+symbols = mt5.symbols_get()
+allsym = {}
+for i in symbols:
+	sym = i._asdict()
+	if sym['name'] in allsym:
+		print("fuckingsheat", sym['name'])
+	else:
+		allsym[sym['name']] = sym
+
+t = int(time.time()) + 86400
+# for sym in allsym:
+# 	# expt=allsym[sym]['expiration_time']
+# 	if "MFUT\\" in allsym[sym]['path'] and allsym[sym]['expiration_time'] >t:
+# 		print(sym, allsym[sym]['expiration_time'], allsym[sym]['path'])
 #
+# for sym in allsym:
+# 	sym= allsym[sym]
+# 	if "MOEX\\" in sym['path'] and  sym['expiration_time']>t:
+# 		print(sym['name'],  sym['expiration_time'])
+
+
+# for sym in allsym:
+# 	sym= allsym[sym]
+# 	if "MOEX\\" in sym['path'] and ( sym['expiration_time']>t or sym['expiration_time']==0 ) :
+# 		name= sym['name']
+# 		lnn=len(name)
+# 		perf=name[:2]
+# 		if lnn>10 and (perf=='XS' or perf=='RU' or perf=='SU' ):
+# 			print(sym['name'],  sym['expiration_time'])
+# 	else:
+# 		pass       ETHEUR
+a={}
+name= 'ETHEUR'
+print (mt5.market_book_add(name))
+print (mt5.market_book_get(name))
+# asks = []
+# bids = []
+# for i in stakan:
+# 	i = i._asdict()
+# 	if i['type'] == 1:
+# 		asks.append((i['price'], i['volume']))
+# 	if i['type'] == 2:
+# 		bids.append((i['price'], i['volume']))
+# asks.reverse()
+# if len(asks) > 0 and len(bids) > 0:
+# 	if asks[0][0] > bids[0][0] and bids[0][0] > 0:
+# 		a['asks'] = asks
+# 		a['bids'] = bids
+# 		Ask = a['asks'][0][0]
+# 		Bid = a['bids'][0][0]
+# print(a)
+# count =0
+# countst =0
+# for sym in allsym:
+# 	sym= allsym[sym]
+# 	if "Indicative continuous\\" in sym['path'] :    #"MCUR\\crossrate"
+# 	# if "MCUR\\crossrate\\" in sym['path']:
+# 		if mt5.market_book_add(sym['name']):
+# 			# print(sym['name'])
+# 			countst+=1
+# 		else:
+# 			count+=1
+# 			print(sym['name'])
+
+# print(count)
+# print(countst)
 # putpath = 'G:\\SYMBOLS_INFO\\'
 # dat = datetime.datetime.utcfromtimestamp(int(time.time()))
 # year = str(dat.year)
@@ -72,51 +140,51 @@ else:
 # mt5.market_book_release('AA.US')
 # mt5.symbol_select('AA.US', False)    'USDRUR'
 
-
-name = 'SiZ3'
-z = mt5.market_book_add(name)
-
-Askst0 = 0
-Bidst0 = 0
-Ask0 = 0
-Bid0 = 0
-
-while True:
-	time.sleep(0.01)
-	symbol_info_dict = mt5.symbol_info(name)._asdict()
-	Ask = symbol_info_dict['ask']
-	Bid = symbol_info_dict['bid']
-
-	stakan = mt5.market_book_get(name)
-	Askst = 0
-	Bidst = 0
-
-	if stakan != None and z:
-		asks = []
-		bids = []
-		for i in stakan:
-			i = i._asdict()
-			if i['type'] == 1:
-				asks.append((i['price'], i['volume']))
-			if i['type'] == 2:
-				bids.append((i['price'], i['volume']))
-		asks.reverse()
-		if len(asks) > 0 and len(bids) > 0:
-			if asks[0][0] > bids[0][0]:
-				Askst = asks[0][0]
-				Bidst = bids[0][0]
-
-
-
-	if Ask!= Askst or Bid!= Bidst:
-		print(f'ERROR!!!!!! Ask= {Ask} Askst={Askst}     Bid= {Bid} Bidst= {Bidst}  ')
-
-	if Ask!= Ask0 or Bid!= Bid0 or Askst!= Askst0 or Bidst!= Bidst0 :
-		Askst0 = Askst
-		Bidst0 = Bidst
-		Ask0 = Ask
-		Bid0 = Bid
-		print(f'Ask= {Ask} Askst={Askst}     Bid= {Bid} Bidst= {Bidst}  ')
+#
+# name = 'SiZ3'
+# z = mt5.market_book_add(name)
+#
+# Askst0 = 0
+# Bidst0 = 0
+# Ask0 = 0
+# Bid0 = 0
+#
+# while True:
+# 	time.sleep(0.01)
+# 	symbol_info_dict = mt5.symbol_info(name)._asdict()
+# 	Ask = symbol_info_dict['ask']
+# 	Bid = symbol_info_dict['bid']
+#
+# 	stakan = mt5.market_book_get(name)
+# 	Askst = 0
+# 	Bidst = 0
+#
+# 	if stakan != None and z:
+# 		asks = []
+# 		bids = []
+# 		for i in stakan:
+# 			i = i._asdict()
+# 			if i['type'] == 1:
+# 				asks.append((i['price'], i['volume']))
+# 			if i['type'] == 2:
+# 				bids.append((i['price'], i['volume']))
+# 		asks.reverse()
+# 		if len(asks) > 0 and len(bids) > 0:
+# 			if asks[0][0] > bids[0][0]:
+# 				Askst = asks[0][0]
+# 				Bidst = bids[0][0]
+#
+#
+#
+# 	if Ask!= Askst or Bid!= Bidst:
+# 		print(f'ERROR!!!!!! Ask= {Ask} Askst={Askst}     Bid= {Bid} Bidst= {Bidst}  ')
+#
+# 	if Ask!= Ask0 or Bid!= Bid0 or Askst!= Askst0 or Bidst!= Bidst0 :
+# 		Askst0 = Askst
+# 		Bidst0 = Bidst
+# 		Ask0 = Ask
+# 		Bid0 = Bid
+# 		print(f'Ask= {Ask} Askst={Askst}     Bid= {Bid} Bidst= {Bidst}  ')
 
 # mt5.symbol_select('AA.US', True)
 

@@ -12,6 +12,8 @@ def moexsbor(QE):
 
 	def getstakan(name):
 		a = {}
+		Ask=0
+		Bid=0
 		stakan = mt5.market_book_get(name)
 		asks = []
 		bids = []
@@ -23,27 +25,30 @@ def moexsbor(QE):
 				bids.append((i['price'], i['volume']))
 		asks.reverse()
 		if len(asks) > 0 and len(bids) > 0:
-			if asks[0][0] > bids[0][0]:
+			if asks[0][0] > bids[0][0] and bids[0][0]>0 :
 				a['asks'] = asks
 				a['bids'] = bids
 		return a
 
-	mymarkets=['FRTS2','MOEX2','USAFUT','CUR','CURcross']
+	mymarkets=['FRTS2','MOEX2','USAFUT','CUR','CURcross',"RAW"]
 	for name in mymarkets:
 		if not os.path.exists(putpath + name ):
 			os.mkdir(putpath + name )
 
 	SborFRTS2= Histwrite2(putpath, 'FRTS2',QE) #  ФОРТС
 	SborMOEX2 = Histwrite2(putpath, 'MOEX2',QE)  #   ММВБ
+	SborOBLIG= Histwrite2(putpath, 'OBLIG', QE) #   ММВБ  OBLIG
 	SborUSAFUT = Histwrite2(putpath, 'USAFUT', QE) # американские фьючи
 	SborCUR= Histwrite2(putpath, 'CUR', QE)  #  валютная секция
 	SborCURcross= Histwrite2(putpath, 'CURcross', QE) # из дирректории crossrate
 	allnames = []
 	namesFRTS2 = []
 	namesMOEX2 = []
+	namesOBLIG  = []
 	namesUSAFUT = []
 	namesCUR = []
 	namesCURcross = []
+	namesRAW = []
 
 	if not mt5.initialize("E:\\FinamMT5\\terminal64.exe", timeout=30):
 		print("initialize() failed, error code =", mt5.last_error(), "? once TRY again")
@@ -95,12 +100,14 @@ def moexsbor(QE):
 				allnames=[]
 				namesFRTS2 = []
 				namesMOEX2 = []
+				namesOBLIG = []
 				namesUSAFUT = []
 				namesCUR = []
 				namesCURcross = []
 
 				t = int(time.time()) + 86400
 				for sym in allsym:
+					sym = allsym[sym]
 					if "MFUT\\" in sym['path'] and sym['expiration_time']>t :
 						if mt5.market_book_add(sym['name']):
 							namesFRTS2.append(sym['name'])
@@ -114,61 +121,73 @@ def moexsbor(QE):
 							namesCUR.append(sym['name'])
 							allnames.append(sym['name'])
 					if "MCUR\\crossrate" in sym['path'] :
-						if mt5.market_book_add(sym['name']):
+						if mt5.symbol_select(sym['name'], True):
 							namesCURcross.append(sym['name'])
 							allnames.append(sym['name'])
 					if "MOEX\\" in sym['path'] and ( sym['expiration_time']>t or sym['expiration_time']==0 ) :
 						if mt5.market_book_add(sym['name']):
-							namesMOEX2 .append(sym['name'])
 							allnames.append(sym['name'])
-					time.sleep(5)
+							name = sym['name']
+							lnn = len(name)
+							perf = name[:2]
+							if lnn > 10 and (perf == 'XS' or perf == 'RU' or perf == 'SU'):
+								namesOBLIG.append(sym['name'])
+							else:
+								namesMOEX2 .append(sym['name'])
 
-					count=0
-					namestodel=[]
-					for sym in allsym:
-						if sym['select']==True:
-							count+=1
-							if sym not in allnames:
-								namestodel.append(sym)
-								mt5.market_book_release(sym['name'])
-								mt5.symbol_select(sym['name'], False)
-					print( "Выбрано символов",count,"    Лишние символы в количестве",len(namestodel),"  подробней -  ", namestodel)
-					if count >4900:
+				time.sleep(10)
+
+				count=0
+				namestodel=[]
+				for sym in allsym:
+					sym = allsym[sym]
+					if sym['select']==True:
+						count+=1
+						if sym['name'] not in allnames:
+							namestodel.append(sym['name'])
+							mt5.market_book_release(sym['name'])
+							mt5.symbol_select(sym['name'], False)
+				# print('ALL NAMES  ',allnames)
+				print( "Выбрано символов",count,"    Лишние символы в количестве",len(namestodel),"  подробней -  ", namestodel)
+				if count >4900:
 						print(" ВНИМАНИЕ!  ПРЕГРУЗКА по количеству символов!!!!!!!!! ")
 
-
-
-
+			timer =time.time()
 			for name in namesFRTS2:
 				st=getstakan(name)
 				if st!={} :
 					Ask=st['asks'][0][0]
 					Bid=st['bids'][0][0]
-					SborFRTS2.putter(name,st )
+					SborFRTS2.putter(name,[Ask,Bid],st )
 			for name in namesUSAFUT:
 				st=getstakan(name)
 				if st != {}:
 					Ask=st['asks'][0][0]
 					Bid=st['bids'][0][0]
-					SborUSAFUT.putter(name,st )
+					SborUSAFUT.putter(name,[Ask,Bid],st )
 			for name in namesCUR:
 				st=getstakan(name)
 				if st != {}:
 					Ask=st['asks'][0][0]
 					Bid=st['bids'][0][0]
-					SborUSAFUT.putter(name,st )
+					SborCUR.putter(name,[Ask,Bid],st )
 			for name in namesCURcross:
-				st=getstakan(name)
-				if st != {}:
-					symbol_info_dict = mt5.symbol_info(name)._asdict()
-					Ask = symbol_info_dict['ask']
-					Bid = symbol_info_dict['bid']
-					SborCURcross.putter(name,st )
+				symbol_info_dict = mt5.symbol_info(name)._asdict()
+				Ask = symbol_info_dict['ask']
+				Bid = symbol_info_dict['bid']
+				if Ask>Bid and Ask>0 and Bid>0:
+					SborCURcross.putter(name,[Ask,Bid],{} )
 			for name in namesMOEX2:
 				st=getstakan(name)
 				if st != {}:
 					Ask=st['asks'][0][0]
 					Bid=st['bids'][0][0]
-					SborMOEX2.putter(name,st )
+					SborMOEX2.putter(name,[Ask,Bid],st )
+			for name in namesOBLIG:
+				st = getstakan(name)
+				if st != {}:
+					Ask = st['asks'][0][0]
+					Bid = st['bids'][0][0]
+					SborOBLIG.putter(name, [Ask, Bid], st)
 
-
+			print("получено и обработано за" , time.time()-timer )

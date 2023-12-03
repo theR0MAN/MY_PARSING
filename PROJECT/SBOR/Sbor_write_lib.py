@@ -9,61 +9,16 @@ import datetime
 
 # _mnt.
 def Compress(QE):
-
 	def COMRESS0(namefile,data):
 		lz = lzma
 		with lz.open(namefile, "w") as f:
 			print("   СТАРТ ЗАПИСИ  ", namefile)
 			f.write(lz.compress(json.dumps(data).encode('utf-8')))
 			print( "   ЗАПИСАНО   ", namefile)
-
-	def COMRESSmin(namefile, data):
-		def find_key(dct, key):
-			if key in dct:
-				return key
-			else:
-				for i in range(int(key) - 1, -1, -1):
-					if str(i) in dct:
-						return str(i)
-		# Вытаскиваем минутки from  a_cop
-		# пример записи минуток
-		# {'1': {'a': 79401.0, 'b': 79394.0}, '2': {'a': 79427.0, 'b': 79416.0}, '3': {'a': 79428.0, 'b': 79417.0},
-		mina = {}
-		for inst in data:
-			mina[inst] = {}
-			first_key = int(next(iter(data[inst])))
-			d = 60
-			first_key = int(first_key / d) * d + d
-
-			for i in range(first_key, 3600, d):
-				# mymin= str(int((self.mints+i)/60))
-				mymin = str(int(i / 60))
-				mina[inst][mymin] = {}
-				key = find_key(data[inst], str(i))
-				if key != None:
-					try:
-						mina[inst][mymin]["a"] = data[inst][key]['asks'][0][0]
-						mina[inst][mymin]["b"] = data[inst][key]['bids'][0][0]
-					except:
-						mina[inst][mymin]["a"] = data[inst][key]['a']
-						mina[inst][mymin]["b"] = data[inst][key]['b']
-		lz = lzma
-		with lz.open(namefile, "w") as f:
-			print("   СТАРТ ЗАПИСИ  ", namefile)
-			f.write(lz.compress(json.dumps(mina).encode('utf-8')))
-			print( "   ЗАПИСАНО   ", namefile)
-
 	while True:
 		if not QE.empty():
 			print(" УРА - полный")
-			zz=QE.get()
-			namefile=zz[0]
-			data=zz[1]
-			namefileLZ = namefile + '.roman'
-			namefileJS = namefile + '_mnt.roman'
-
-			COMRESSmin(namefileJS , data)
-			COMRESS0(namefileLZ, data)
+			COMRESS0(QE.get()[0],QE.get()[1])
 		else:
 			# print(" ПУСТОЙ")
 			time.sleep(20)
@@ -73,36 +28,68 @@ def Compress(QE):
 
 class Histwrite2:
 	def __init__(self, path, market,QE):
+		self.timekeyminute0='0'
 		self.path = path
 		self.market = market
 		self.hr = None
 		self.a = {}
+		self.ab = {}
+		self.abm = {}
+
 		self.a_izm = {}
+		self.ab_izm = {}
 		self.zapis = False
+		self.zapisab = False
 		self.QE=QE
 
-	def putter(self, instr_name, dict_data):
+	def putter(self, instr_name,askbid, dict_data):
+		if askbid==[]:
+			return
 		instr_name += "*" + self.market
 		dat = datetime.datetime.utcfromtimestamp(int(time.time()))
 		hour = dat.hour
 		timekey = str(dat.minute * 60 + dat.second)
+		timekeyminute = str(dat.minute)
 		if hour != self.hr:
 			self.hr = hour
+			if self.zapisab:
+				self.write_compress('abt',self.ab)
+				self.write_compress('abm',self.abm)
+				self.abm = {}
+				self.ab = {}
+				self.ab_izm = {}
+				self.zapisab = False
+
 			if self.zapis:
-				self.write_compress(self.a)
+				self.write_compress('stk',self.a)
 				self.a = {}
 				self.a_izm = {}
 				self.zapis = False
-			# self.mints =0
 
-		if not instr_name in self.a:
-			self.a_izm[instr_name] = dict_data
-			self.a[instr_name] = {}
-			self.a[instr_name][timekey] = dict_data
-		if self.a_izm[instr_name] != dict_data:
-			self.a_izm[instr_name] = dict_data
-			self.a[instr_name][timekey] = dict_data
-			self.zapis = True
+		if not instr_name in self.ab:
+			self.abm[instr_name] = {}
+			self.ab[instr_name] = {}
+			self.ab[instr_name][timekey] = askbid
+			self.ab_izm[instr_name] = askbid
+		if self.ab_izm[instr_name] != askbid:
+			self.ab_izm[instr_name] = askbid
+			self.ab[instr_name][timekey] = askbid
+			self.zapisab = True
+		if timekeyminute != self.timekeyminute0 and instr_name in self.ab_izm:
+			self.timekeyminute0 = timekeyminute
+			self.abm[instr_name][timekeyminute] = self.ab_izm[instr_name]
+
+		if  dict_data!={}:
+			if not instr_name in self.a:
+				self.a[instr_name] = {}
+				self.a[instr_name][timekey] = dict_data
+				self.a_izm[instr_name] = dict_data
+			if self.a_izm[instr_name] != dict_data:
+				self.a_izm[instr_name] = dict_data
+				self.a[instr_name][timekey] = dict_data
+				self.zapis = True
+
+			
 
 	def get_filename(self):
 		dL = '\\' if system() == 'Windows' else '/'
@@ -127,12 +114,8 @@ class Histwrite2:
 			os.mkdir(nextpath)
 		return nextpath + dL + str(hour)
 
-
-
-	def write_compress(self, data):
-		namefile = self.get_filename()
-		#  тут добавить в очередь
-		self.QE.put((namefile,data))
+	def write_compress(self,c, data):
+		self.QE.put((self.get_filename()+c+'.roman',data))
 
 		# результат записи приме
 	#  '2243': {
