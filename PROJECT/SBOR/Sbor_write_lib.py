@@ -18,7 +18,9 @@ def Compress(QE):
 	while True:
 		if not QE.empty():
 			print(" УРА - полный")
-			COMRESS0(QE.get()[0],QE.get()[1])
+			a=QE.get()   # нужно 1 обращение чтобы очередь не слетела
+			COMRESS0(a[0],a[1])
+
 		else:
 			# print(" ПУСТОЙ")
 			time.sleep(20)
@@ -43,7 +45,8 @@ class Histwrite2:
 		self.QE=QE
 
 	def putter(self, instr_name,askbid, dict_data):
-		if askbid==[]:
+		if askbid==[0,0]:
+			# print(instr_name)
 			return
 		instr_name += "*" + self.market
 		dat = datetime.datetime.utcfromtimestamp(int(time.time()))
@@ -115,7 +118,9 @@ class Histwrite2:
 		return nextpath + dL + str(hour)
 
 	def write_compress(self,c, data):
-		self.QE.put((self.get_filename()+c+'.roman',data))
+		name= self.get_filename()+c+'.roman'
+		print( 'кинуто в очередь ',name)
+		self.QE.put((name,data))
 
 		# результат записи приме
 	#  '2243': {

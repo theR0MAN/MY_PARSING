@@ -30,6 +30,7 @@ for i in symbols:
 
 t = int(time.time()) + 86400
 # for sym in allsym:
+# 	print(allsym[sym])
 # 	# expt=allsym[sym]['expiration_time']
 # 	if "MFUT\\" in allsym[sym]['path'] and allsym[sym]['expiration_time'] >t:
 # 		print(sym, allsym[sym]['expiration_time'], allsym[sym]['path'])
@@ -50,10 +51,12 @@ t = int(time.time()) + 86400
 # 			print(sym['name'],  sym['expiration_time'])
 # 	else:
 # 		pass       ETHEUR
-a={}
-name= 'ETHEUR'
-print (mt5.market_book_add(name))
-print (mt5.market_book_get(name))
+# a={}
+# name= 'Нефть Brent'
+# print (mt5.market_book_add(name))
+# stakan=mt5.market_book_get(name)
+# print(stakan)
+# print(type(stakan))
 # asks = []
 # bids = []
 # for i in stakan:
@@ -74,17 +77,19 @@ print (mt5.market_book_get(name))
 # countst =0
 # for sym in allsym:
 # 	sym= allsym[sym]
-# 	if "Indicative continuous\\" in sym['path'] :    #"MCUR\\crossrate"
-# 	# if "MCUR\\crossrate\\" in sym['path']:
+# 	if "Indicative continuous\\Сырье\\" in sym['path'] :    #"MCUR\\crossrate"
 # 		if mt5.market_book_add(sym['name']):
-# 			# print(sym['name'])
-# 			countst+=1
-# 		else:
-# 			count+=1
 # 			print(sym['name'])
-
-# print(count)
-# print(countst)
+# 			countst+=1
+name='Медь'
+data = mt5.symbol_info(name)
+symbol_info_dict = data._asdict()
+Ask = symbol_info_dict['ask']
+Bid = symbol_info_dict['bid']
+print(Ask,"    ",Bid)
+print (mt5.market_book_add(name))
+stakan=mt5.market_book_get(name)
+print(stakan)
 # putpath = 'G:\\SYMBOLS_INFO\\'
 # dat = datetime.datetime.utcfromtimestamp(int(time.time()))
 # year = str(dat.year)

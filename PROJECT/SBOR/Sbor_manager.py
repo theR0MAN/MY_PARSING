@@ -1,5 +1,5 @@
 from Sbor_write_lib import Compress
-from Sbor_moex_mt5 import moexsbor
+from Sbor_moex_mt52 import moexsbor
 from multiprocessing import Process,Queue
 from time import sleep
 QE = Queue()
