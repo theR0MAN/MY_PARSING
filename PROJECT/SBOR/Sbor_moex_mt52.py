@@ -10,6 +10,9 @@ def moexsbor(QE):
 	startsbor_hour = 4# 4
 	stopsbor_hour = 21# 21
 	# печатать инструменты с пустыми стаканами
+	def write_compressifo(name, data):
+		print( 'кинуто в очередь ',name)
+		QE.put((name,data))
 
 	def getstakan(stakan):
 		a = {}
@@ -46,12 +49,12 @@ def moexsbor(QE):
 	# 		os.mkdir(putpath + name )
 
 	SborFRTS2= Histwrite2(putpath, 'FRTS2',QE) #  ФОРТС
-	SborRAW= Histwrite2(putpath, 'RAW', QE)  # сырье
 	SborUSAFUT = Histwrite2(putpath, 'USAFUT', QE)  # американские фьючи
 	SborCUR= Histwrite2(putpath, 'CUR', QE)  #  валютная секция
 	SborMOEX2 = Histwrite2(putpath, 'MOEX2',QE)  #   ММВБ
 	SborOBLIG= Histwrite2(putpath, 'OBLIG', QE) #   ММВБ  OBLIG
 	SborCURcross= Histwrite2(putpath, 'CURcross', QE) # из дирректории crossrate
+	SborRAW = Histwrite2(putpath, 'RAW', QE)  # сырье
 
 	allnamesst = []
 	allnamesab= []
@@ -64,20 +67,20 @@ def moexsbor(QE):
 	namesRAW = []
 
 	if not mt5.initialize("E:\\FinamMT5\\terminal64.exe", timeout=30):
-		print("initialize() failed, error code =", mt5.last_error(), "? once TRY again")
+		print("initialize() failed, FinamMT5 error code =", mt5.last_error(), "? once TRY again")
 		time.sleep(40)
 		if not mt5.initialize("E:\\FinamMT5\\terminal64.exe", timeout=30):
-			print("QUIT!!!!!!!!!!!! initialize() failed, error code =", mt5.last_error())
+			print("QUIT!!!!!!!!!!!! FinamMT5 initialize() failed, error code =", mt5.last_error())
 			quit()
 		else:
-			print('initialize2 sucsess')
+			print('initialize2  FinamMT5 sucsess')
 	else:
-		print('initialize1 sucsess')
+		print('initialize1 FinamMT5 sucsess')
 	# ежедневно обновлять список инструментов
 	day0 = None
 	sec0=0
 	while True:
-
+		time.sleep(0.005)
 		dat = datetime.datetime.utcfromtimestamp(int(time.time()))
 		year=dat.year
 		day = dat.day
@@ -90,7 +93,7 @@ def moexsbor(QE):
 			else:  # так как при переходе через 0 может быть ошибочно
 				usl = hour >= startsbor_hour or hour <= stopsbor_hour
 
-			if True:
+			if usl:
 				if day != day0:
 					day0 = day
 					symbols = mt5.symbols_get()
@@ -110,21 +113,20 @@ def moexsbor(QE):
 					pth=pth+ '\\'+ str(dat.month)
 					if not os.path.exists(pth):
 						os.mkdir(pth)
-					infoname = pth+'\\'+str(dat.day) + '-'  + 'finammt5.json'
+					infoname = pth+'\\'+str(dat.day) + '-'  + 'finammt5.roman'
 					if not os.path.exists(infoname ):
-						with open(infoname , "w") as file:
-							json.dump(allsym, file)
-					# with open(putpath + infoname + 'finammt5.json', "r") as read_file:
-					# 	data = json.load(read_file)
-					# for i in range (2):
+						write_compressifo(infoname,allsym)
+
 					allnamesst=[]
 					allnamesab = []
+
 					namesFRTS2 = []
 					namesMOEX2 = []
 					namesOBLIG = []
 					namesUSAFUT = []
 					namesCUR = []
 					namesCURcross = []
+					namesRAW = []
 
 					t = int(time.time()) + 86400
 					timer = time.time()
@@ -134,10 +136,6 @@ def moexsbor(QE):
 						if "MFUT\\" in sym['path'] and sym['expiration_time']>t :
 							if mt5.market_book_add(sym['name']):
 								namesFRTS2.append(sym['name'])
-								allnamesst.append(sym['name'])
-						if "Indicative continuous\\Сырье\\" in sym['path'] :
-							if mt5.market_book_add(sym['name']):
-								namesRAW.append(sym['name'])
 								allnamesst.append(sym['name'])
 						if "MCT\\Futures\\" in sym['path']and sym['expiration_time']>t :
 							if mt5.market_book_add(sym['name']):
@@ -161,6 +159,10 @@ def moexsbor(QE):
 						if "MCUR\\crossrate" in sym['path'] :
 							if mt5.symbol_select(sym['name'], True):
 								namesCURcross.append(sym['name'])
+								allnamesab.append(sym['name'])
+						if "Indicative continuous\\Сырье\\" in sym['path'] :
+							if mt5.symbol_select(sym['name'], True):
+								namesRAW.append(sym['name'])
 								allnamesab.append(sym['name'])
 
 					print("размотали имена за", time.time() - timer)
@@ -192,32 +194,28 @@ def moexsbor(QE):
 				# тупо вгоняем стаканы в словарь -чтобы сэкономить 0,2 секунды в среднем на обработке  -чтобы меньшить рассинхрон
 				slovarab = {}
 				stslovar={}
-				timer =time.time()
+				# timer =time.time()
 				for name in namesFRTS2:
-					stslovar[name]= mt5.market_book_get(name)
-				for name in namesRAW:
 					stslovar[name]= mt5.market_book_get(name)
 				for name in namesUSAFUT:
 					stslovar[name] = mt5.market_book_get(name)
 				for name in namesCUR:
 					stslovar[name] = mt5.market_book_get(name)
+				for name in namesRAW:
+					slovarab[name] = mt5.symbol_info(name)
 				for name in namesCURcross:
 					slovarab[name] = mt5.symbol_info(name)
 				for name in namesMOEX2:
 					stslovar[name] = mt5.market_book_get(name)
 				for name in namesOBLIG:
 					stslovar[name] = mt5.market_book_get(name)
-				# print("получено за" , time.time()-timer )
+				# print("получено за", time.time() - timer)
 
 				# обработка словаря на сборщик
-				timer =time.time()
+				# timer =time.time()
 				for name in namesFRTS2:
 					ab,st= getstakan (stslovar[name])
 					SborFRTS2.putter(name, ab, st)
-				for name in namesRAW:
-					stslovar[name]= mt5.market_book_get(name)
-					ab, st = getstakan(stslovar[name])
-					SborRAW.putter(name, ab, st)
 				for name in namesUSAFUT:
 					ab, st = getstakan(stslovar[name])
 					SborUSAFUT.putter(name, ab, st)
@@ -233,6 +231,15 @@ def moexsbor(QE):
 				for name in namesCURcross:
 					ab, st = getAB(slovarab[name])
 					SborCURcross.putter(name, ab, st)
+				for name in namesRAW:
+					ab, st = getAB(slovarab[name])
+					SborRAW.putter(name, ab, st)
 				# print("обработано за" , time.time()-timer )
-
+# ---------------------------------------------------------------
+# ---------------------------------------------------------------
+# ---------------------------------------------------------------
+# ---------------------------------------------------------------
+# ---------------------------------------------------------------
+# ---------------------------------------------------------------
+# ---------------------------------------------------------------
 

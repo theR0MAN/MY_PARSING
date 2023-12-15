@@ -5,11 +5,11 @@ import time
 import json
 import os
 
-if not mt5.initialize("E:\\FinamMT5\\terminal64.exe", timeout=40):
+if not mt5.initialize("E:\\AlpariMT5\\terminal64.exe", timeout=40):
 	print("initialize() failed, error code =", mt5.last_error(), "? once TRY again")
 	print('SLEEP')
 	time.sleep(10)
-	if not mt5.initialize("E:\\FinamMT5\\terminal64.exe", timeout=30):
+	if not mt5.initialize("E:\\AlpariMT5\\terminal64.exe", timeout=30):
 		print("QUIT!!!!!!!!!!!! initialize() failed, error code =", mt5.last_error())
 		quit()
 	else:
@@ -28,9 +28,11 @@ for i in symbols:
 	else:
 		allsym[sym['name']] = sym
 
-t = int(time.time()) + 86400
-# for sym in allsym:
-# 	print(allsym[sym])
+for sym in allsym:
+	print(allsym[sym])
+
+
+
 # 	# expt=allsym[sym]['expiration_time']
 # 	if "MFUT\\" in allsym[sym]['path'] and allsym[sym]['expiration_time'] >t:
 # 		print(sym, allsym[sym]['expiration_time'], allsym[sym]['path'])
@@ -51,28 +53,27 @@ t = int(time.time()) + 86400
 # 			print(sym['name'],  sym['expiration_time'])
 # 	else:
 # 		pass       ETHEUR
-# a={}
-# name= 'Нефть Brent'
-# print (mt5.market_book_add(name))
-# stakan=mt5.market_book_get(name)
-# print(stakan)
-# print(type(stakan))
-# asks = []
-# bids = []
-# for i in stakan:
-# 	i = i._asdict()
-# 	if i['type'] == 1:
-# 		asks.append((i['price'], i['volume']))
-# 	if i['type'] == 2:
-# 		bids.append((i['price'], i['volume']))
-# asks.reverse()
-# if len(asks) > 0 and len(bids) > 0:
-# 	if asks[0][0] > bids[0][0] and bids[0][0] > 0:
-# 		a['asks'] = asks
-# 		a['bids'] = bids
-# 		Ask = a['asks'][0][0]
-# 		Bid = a['bids'][0][0]
-# print(a)
+a={}
+name= 'EURUSD'
+print (mt5.market_book_add(name))
+stakan=mt5.market_book_get(name)
+print(type(stakan))
+asks = []
+bids = []
+for i in stakan:
+	i = i._asdict()
+	if i['type'] == 1:
+		asks.append((i['price'], i['volume']))
+	if i['type'] == 2:
+		bids.append((i['price'], i['volume']))
+asks.reverse()
+if len(asks) > 0 and len(bids) > 0:
+	if asks[0][0] > bids[0][0] and bids[0][0] > 0:
+		a['asks'] = asks
+		a['bids'] = bids
+		Ask = a['asks'][0][0]
+		Bid = a['bids'][0][0]
+print(a)
 # count =0
 # countst =0
 # for sym in allsym:
@@ -80,16 +81,16 @@ t = int(time.time()) + 86400
 # 	if "Indicative continuous\\Сырье\\" in sym['path'] :    #"MCUR\\crossrate"
 # 		if mt5.market_book_add(sym['name']):
 # 			print(sym['name'])
-# 			countst+=1
-name='Медь'
-data = mt5.symbol_info(name)
-symbol_info_dict = data._asdict()
-Ask = symbol_info_dict['ask']
-Bid = symbol_info_dict['bid']
-print(Ask,"    ",Bid)
-print (mt5.market_book_add(name))
-stakan=mt5.market_book_get(name)
-print(stakan)
+# # 			countst+=1
+# name= 'EURUSD'
+# data = mt5.symbol_info(name)
+# symbol_info_dict = data._asdict()
+# Ask = symbol_info_dict['ask']
+# Bid = symbol_info_dict['bid']
+# print(Ask,"    ",Bid)
+# print (mt5.market_book_add(name))
+# stakan=mt5.market_book_get(name)
+# print(stakan)
 # putpath = 'G:\\SYMBOLS_INFO\\'
 # dat = datetime.datetime.utcfromtimestamp(int(time.time()))
 # year = str(dat.year)
