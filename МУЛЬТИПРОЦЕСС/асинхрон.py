@@ -2,46 +2,29 @@ import asyncio
 import time
 
 
+import platform
+
+print(platform.python_version())
 
 a=[]
 
-async  def my():
-    while True:
-        print(a)
-        await asyncio.sleep(11)
 
-async def fun0():
+async def fun0(num):
     while True:
-        a.append('shit')
         await asyncio.sleep(5)
-        # return a
-
-async def fun2(x):
-    n=0
-    tm0=int (time.time())
-    while True:
-        tm=int(time.time())
-        if tm0!= tm:
-            tm0=tm
-            n+=1
-            # print(x,'  func',n*x)
-            a.append(n*x)
-        await asyncio.sleep(0.005)
-        # return n
+        print( num)
 
 
 async def main(num):
-    tasks=[]
-    taskmaim=asyncio.create_task(my())
-    task0= asyncio.create_task(fun0())
-    for i in range (num):
-        tasks.append(asyncio.create_task(fun2(i)))
 
-    await  task0
-    for task in tasks:
-        await task
-    await  taskmaim
-
+    # for i in range (10):
+    #     task=asyncio.create_task(fun0(i))
+    task1 = asyncio.create_task(fun0(1))
+    task2 = asyncio.create_task(fun0(2))
+    task3 = asyncio.create_task(fun0(3))
+    # await task1
+    # await task2
+    # await task3
 
 asyncio.run(main(10))
 

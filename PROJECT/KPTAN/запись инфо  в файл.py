@@ -1,39 +1,44 @@
 
-import  ccxt
-import ccxt.pro 
-import os ,datetime
-import time
+import  asyncio
+import ccxt.pro as ccxt
+import traceback
 from PROJECT.my_lib import *
 errors=[]
+myexs=dict()
 
-myexs={}
-exch = ccxt.pro.exchanges
-for ex in exch:
-	print(ex)
-	try:
-		birza = getattr (ccxt, ex) ()
-		markets =  birza.load_markets()
-		myexs[ex]=markets
-	except:
-		errors.append(ex)
-		print(ex, 'ERROR')
+def markload():
+	async def lm(ex):
+		birza = getattr(ccxt, ex)()
+		try:
+			markets = await birza.load_markets()
+			myexs[ex]=markets
+			print(ex)
+			await birza.close()
+		except Exception:
+			await birza.close()
+			errors.append(ex)
+			print('ERROR load market ', birza,'   ',ex)
+			# traceback.print_exc()
 
 
-print(errors)
-dat = datetime.datetime.utcfromtimestamp(int(time.time()))
-year = dat.year
-day = dat.day
-putpath = 'G:\\DATA_SBOR'
-pth = putpath + '\\ASYMBOLS_INFO'
-if not os.path.exists(pth):
-	os.mkdir(pth)
-pth = pth + '\\' + str(dat.year)
-if not os.path.exists(pth):
-	os.mkdir(pth)
-pth = pth + '\\' + str(dat.month)
-if not os.path.exists(pth):
-	os.mkdir(pth)
-infoname = pth + '\\' + str(dat.day) + '-' + 'Kriptoinf.roman'
-if not os.path.exists(infoname):
-	myput(infoname,myexs)
+	async def main():
+		tasks=[]
+		exch = ccxt.exchanges
+		for ex in exch:
+			tasks.append(lm(ex))
+		await  asyncio.gather(*tasks)
 
+		tasks=[]
+		print(errors)
+		for ex in errors:
+			tasks.append(lm(ex))
+		errors.append('NEXT')
+		await  asyncio.gather(*tasks)
+
+	asyncio.run(main())
+	myput('Kriptoinf.roman',myexs)
+	print(errors)
+	print('finish')
+
+markload()
+# ['bitpanda', 'alpaca', 'bittrex', 'coinbase', 'binanceus', 'phemex']

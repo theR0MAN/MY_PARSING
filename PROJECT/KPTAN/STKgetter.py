@@ -1,6 +1,6 @@
+
 import ccxt.pro as ccxt
 from PROJECT.my_lib import *
-import ccxt as ccxt0
 import time
 import datetime
 import asyncio
@@ -12,12 +12,15 @@ count = 0
 
 data=myload('Frez')
 
-async def counter():
-	global count
-	while True:
-		await  asyncio.sleep(1)
-		print(count)
-		count = 0
+async def loader(birza,ex):
+	try:
+		await asyncio.wait_for(birza.load_markets(),300)
+		print('load market ', birza,'   ',ex)
+	except Exception:
+		print('ERROR load market ', birza,'   ',ex)
+		traceback.print_exc()
+
+
 
 
 async def fun1(M,ex,sym):
@@ -30,11 +33,11 @@ async def fun1(M,ex,sym):
 			tm0 = tm
 			try:
 				start=time.time()
-				orderbook = await asyncio.wait_for(M.watch_order_book(sym), 30)
+				orderbook = await asyncio.wait_for(M.watch_order_book(sym,None), 1000)
 				count += 1
-				print(ex)
-				print(orderbook)
-				print(time.time())
+				# print(ex)
+				# print(orderbook)
+				# print(time.time())
 				bid = orderbook['bids'][0][0] if len(orderbook['bids']) > 0 else 0
 				ask = orderbook['asks'][0][0] if len(orderbook['asks']) > 0 else 0
 				# timer = time.time() - start
@@ -43,7 +46,9 @@ async def fun1(M,ex,sym):
 				if (ask0[ex][sym] != ask or bid0[ex][sym] != bid):
 					ask0[ex][sym] = ask
 					bid0[ex][sym] = bid
-					# print(ex,' ',sym, "   ", ask, "   ", bid)
+					print(ex,' ',sym, "   ", ask, "   ", bid)
+					timer = time.time() - start
+					print(ex, '  ', timer)
 			except asyncio.TimeoutError:
 				print(ex,' imeoutError', sym)
 			except Exception:
@@ -51,61 +56,38 @@ async def fun1(M,ex,sym):
 				traceback.print_exc()
 
 
-# async def LM():
-# 	await ccxt.gate().load_markets()
-# 	await ccxt.binance().load_markets()
-# 	# await ccxt.gate().close()
-# 	# await ccxt.binance().close()
+# https://superfastpython.com/asyncio-coroutine-was-never-awaited/
+
 
 async def main():
+	countex=0
+	countsyms=0
+	tasksload = []
 	tasks = []
 	birzas=dict()
 	for ex in data:
-		birzas[ex] = getattr(ccxt, ex)()
+		if ex in ['bybit'] :  #ex in ['binance','bybit','gate','kraken']
+			birzas[ex] = getattr(ccxt, ex)()
+			tasksload.append(loader(birzas[ex],ex))
+			ask0[ex] = {}
+			bid0[ex] = {}
+			for sym in data[ex]:
+				if True:    #sym in ["BTC/USDT",'ETH/USDT']  ':USDT'not in sym
+					tasks.append(fun1(birzas[ex], ex, sym))
+					countex+=1
+					if countex >350 :
+						break
+					print(sym)
+					ask0[ex][sym]=0
+					bid0[ex][sym] = 0
+	# markets = await self.fetch_markets(params)
+	print('start load tasks')
+	await asyncio.gather(*tasksload)
+	print('STOP load tasks')
+	print('start MAIN tasks')
+	await asyncio.gather(*tasks)
+	print('STOP MAIN tasks')
 
-	# for ex in data:
-	# 	for sym in data[ex]:
-	# 		print(type(birzas[ex]))
-	# 		tasks.append(asyncio.create_task(fun1(birzas[ex],ex, sym)))
-
-	ask0['kraken']={}
-	bid0['kraken']={}
-	ask0['kraken']['BTC/USDT'] = 0
-	bid0['kraken']['BTC/USDT'] = 0
-
-	ask0['gate'] = {}
-	bid0['gate'] = {}
-	ask0['gate']['BTC/USDT'] = 0
-	bid0['gate']['BTC/USDT'] = 0
-
-	ask0['binance'] = {}
-	bid0['binance'] = {}
-	ask0['binance']['BTC/USDT'] = 0
-	bid0['binance']['BTC/USDT'] = 0
-
-	ask0['bybit']={}
-	bid0['bybit']={}
-	ask0['bybit']['BTC/USDT'] = 0
-	bid0['bybit']['BTC/USDT'] = 0
-
-	# ccxt0.kraken().load_markets()
-	# ccxt0.gate().load_markets()
-	# ccxt0.binance().load_markets()
-	# ccxt0.bybit().load_markets()
-	# await ccxt.gate().close()
-	# await ccxt.binance().close()
-
-	task= asyncio.create_task(fun1(ccxt.kraken(),'kraken', 'BTC/USDT'))
-	task2 = asyncio.create_task(fun1(ccxt.gate(), 'gate', 'BTC/USDT'))
-	task3 = asyncio.create_task(fun1(ccxt.binance(), 'binance', 'BTC/USDT'))
-	task4 = asyncio.create_task(fun1(ccxt.bybit(), 'bybit', 'BTC/USDT'))
-	await task
-	await task2
-	await task3
-	await task4
-	# task0 = asyncio.create_task(counter())
-	# await task0
-	# await asyncio.gather(*tasks)
 
 
 asyncio.run(main())

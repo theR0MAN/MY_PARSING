@@ -6,7 +6,7 @@ import os
 import json
 
 def moexsbor(QE):
-	putpath = 'G:\\DATA_SBOR'
+	putpath = 'G:\\DATA_SBOR\\MOSCOWEXCH\\FINAM'
 	startsbor_hour = 4# 4
 	stopsbor_hour = 21# 21
 	# печатать инструменты с пустыми стаканами
@@ -113,7 +113,7 @@ def moexsbor(QE):
 					pth=pth+ '\\'+ str(dat.month)
 					if not os.path.exists(pth):
 						os.mkdir(pth)
-					infoname = pth+'\\'+str(dat.day) + '-'  + 'finammt5.roman'
+					infoname = pth+'\\'+str(dat.day) + '.roman'
 					if not os.path.exists(infoname ):
 						write_compressifo(infoname,allsym)
 

@@ -1,0 +1,19 @@
+ccxt.base.errors.ExchangeError: kucoinfutures watchOrderBook 'limit' argument must be None, 20 or 100
+ccxt.base.errors.NotSupported: kraken watchOrderBook accepts limit values of 10, 25, 100, 500 and 1000 only
+ccxt.base.errors.ExchangeError: kucoin watchOrderBook 'limit' argument must be None, 20 or 100
+ccxt.base.errors.ExchangeError: bitfinex2 watchOrderBook limit argument must be None, 25 or 100
+ccxt.base.errors.ExchangeError: bitmex watchOrderBook limit argument must be None(L2), 25(L2) or 10(L3)
+ccxt.base.errors.ExchangeError: bitopro watchOrderBook limit argument must be None, 5, 10, 20, 50, 100, 500 or 1000
+ccxt.base.errors.ExchangeError: bitfinex watchOrderBook limit argument must be None, 25 or 100
+ccxt.base.errors.BadRequest: bingx watchOrderBook()(swap) only supports limit 5, 10, 20, 50, and 100
+ccxt.base.errors.BadRequest: poloniexfutures watchOrderBook limit argument must be none, 5 or 50 if using method /contractMarket/level2
+ccxt.base.errors.ExchangeError: huobi watchOrderBook market accepts limits of 20 and 150 only
+ccxt.base.errors.ExchangeError: htx watchOrderBook market accepts limits of 20 and 150 only
+binanceusdm watchOrderBook limit argument must be None, 5, 10, 20, 50, 100, 500 or 1000
+ coinex  raise NotSupported(self.id + ' watchOrderBook() limit must be one of ' + ', '.join(limits))
+coinbasepro requires "apiKey" credential
+bequant markets not loaded
+bitcoincom markets not loaded
+
+
+
