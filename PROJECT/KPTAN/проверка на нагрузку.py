@@ -18,25 +18,29 @@ godset = set()
 exchanges = {}
 exchdepth = {}
 data = myload('Frez')
-# {'bitopro', 'gate', 'okx', 'whitebit', 'hollaex', 'cryptocom', 'upbit', 'kraken', 'bitrue', 'probit', 'ascendex', 'gateio', 'bybit', 'kucoin', 'poloniex', 'huobi', 'bingx', 'kucoinfutures', 'binance', 'mexc', 'bitfinex2', 'bitmart', 'blockchaincom', 'bitmex', 'bitfinex', 'phemex', 'wazirx', 'binanceusdm', 'bitget', 'poloniexfutures'}
-otborex= ( 'binance',)
+# kvo birz  53
+# 122 {'BTC': 82, 'ETH': 77, 'XRP': 64, 'LTC': 60, 'EOS': 58, 'SOL': 55, 'DOGE': 55, 'ETC': 54, 'MATIC': 52, 'ADA': 52, 'LINK': 52, 'AVAX': 51, 'APE': 50, 'DOT': 49, 'TRX': 49, 'UNI': 48, 'ATOM': 48, 'BCH': 48, 'XLM': 47, 'SAND': 47, 'AXS': 46, 'FIL': 45, 'APT': 44, 'FTM': 44, 'ARB': 44, 'NEAR': 44, 'BNB': 43, 'AAVE': 42, 'SHIB': 42, 'CRV': 42, 'CHZ': 42, 'MANA': 41, 'XTZ': 41, 'OP': 41, 'BLUR': 40, 'FET': 40, 'ALGO': 40, 'SUI': 40, 'COMP': 40, 'SNX': 40, 'SUSHI': 39, 'ICP': 39, 'YFI': 39, 'MKR': 39, 'WOO': 39, 'RNDR': 39, 'LRC': 39, 'GRT': 38, 'DYDX': 38, 'WAVES': 38, 'GALA': 38, 'LDO': 38, 'MASK': 38, 'BAT': 38, 'ZRX': 37, 'NEO': 37, 'EGLD': 37, '1INCH': 37, 'IMX': 37, 'ENS': 36, 'INJ': 36, 'WLD': 36, 'KSM': 36, 'JASMY': 35, 'GMT': 35, 'FLOW': 35, 'ENJ': 35, 'OMG': 34, 'TIA': 34, 'TRB': 34, 'BAND': 34, 'USDC': 34, 'MINA': 34, 'THETA': 34, 'KNC': 34, 'SSV': 34, 'ZIL': 33, 'XMR': 33, 'GMX': 33, 'ACH': 33, 'BNT': 33, 'AGIX': 33, 'GAL': 33, 'KAVA': 33, 'ID': 32, 'CAKE': 32, 'FLOKI': 32, 'HBAR': 32, 'STORJ': 32, 'STG': 32, 'BIGTIME': 32, 'PEPE': 32, 'ONE': 32, 'YGG': 32, 'MEME': 32, 'REN': 32, 'ORDI': 32, 'AGLD': 32, 'ACE': 32, 'VET': 32, 'LPT': 31, 'OGN': 31, 'ZEC': 31, 'SEI': 31, 'KLAY': 31, 'PYTH': 31, 'STX': 31, 'QTUM': 31, 'RSR': 31, 'BAL': 31, 'ETHW': 30, 'ANKR': 30, 'LUNC': 30, 'MAGIC': 30, 'RVN': 30, 'PEOPLE': 30, 'RDNT': 30, 'QNT': 30, 'OCEAN': 30, 'BICO': 30, 'AR': 30, 'WAXP': 30}
+# all exc 28 {'gate': 264, 'gateio': 264, 'okx': 244, 'binance': 241, 'bitget': 231, 'bingx': 229, 'bybit': 224, 'phemex': 216, 'bitmart': 214, 'huobi': 211, 'htx': 211, 'mexc': 149, 'bitcoincom': 144, 'hitbtc': 144, 'whitebit': 135, 'ascendex': 132, 'binanceusdm': 122, 'kucoinfutures': 120, 'bitrue': 119, 'kucoin': 119, 'bitfinex2': 109, 'wazirx': 105, 'coinex': 102, 'cryptocom': 101, 'poloniex': 94, 'bequant': 77, 'probit': 76, 'bitfinex': 65}
+
+# futures  21 {'gate': 142, 'gateio': 142, 'okx': 132, 'binanceusdm': 122, 'binance': 122, 'kucoinfutures': 120, 'mexc': 120, 'bybit': 118, 'phemex': 117, 'bitget': 117, 'bingx': 109, 'coinex': 102, 'bitmart': 98, 'htx': 92, 'huobi': 92, 'ascendex': 49, 'bitfinex2': 44, 'whitebit': 32, 'bitcoincom': 27, 'hitbtc': 27, 'bequant': 21}
+# onlyspot 7 {'kucoin': 119, 'bitrue': 119, 'wazirx': 105, 'cryptocom': 101, 'poloniex': 94, 'probit': 76, 'bitfinex': 65}
+# option markets   {'gateio', 'gate'}
+otborex= ( 'bybit',)
 # 'bybit','binance','poloniex',
 # print(len(otborex))
 # quit()
-limit=150
+# 'bybit' 100+100
+# 'binance'100
+count=0
+limits=300
 for ex in otborex:
 	exchanges[ex] = []
 	exchdepth[ex] = 1
-	count=0
-	for sym in data[ex]['futures']:
+	counts = 0
+	for sym in data[ex]:
 		exchanges[ex].append(sym)
-		count+=1
-		if count> limit:
-			break
-	for sym in data[ex]['spot']:
-		exchanges[ex].append(sym)
-		count+=1
-		if count> limit:
+		counts+=1
+		if counts>= limits:
 			break
 
 	print(f" {ex} get symbols {len(exchanges[ex])}  ")
@@ -71,23 +75,16 @@ async def counter():
 		if tm0 + 1 <= tm:
 			tm0 = tm
 			print(' тормознули на ',round( tm-tmlast,2), ' answers ', count-count0," aliveeset ",len( aliveset) ," erreoeset ",len( errorset), errorset)
-
 			count0=count
 
-async def loader(ex):
-	exchange = getattr(ccxt, ex)()
-	try:
-		await exchange.load_markets()
-		print('load market ',ex)
-	except Exception:
-		print('ERROR load market ',ex)
-		# traceback.print_exc()
 
 
-async def poll(exch, symb, depth):
+async def poll(exch, symb, depth,stsl,num):
 	global count
 	exchange = getattr(ccxt, exch)()
 	tm0 = time.time()
+	await asyncio.sleep(stsl)
+	print("START ",exch,symb,"  ",num)
 	while True:
 		await asyncio.sleep(0.05)
 		tm = time.time()
@@ -120,17 +117,19 @@ async def poll(exch, symb, depth):
 
 
 async def main():
-	taskslosd=[]
-	for ex in exchanges:
-		taskslosd.append(loader(ex) )
 
 	task0=counter()
 	tasks = []
 	for ex in exchanges:
+		exchange = getattr(ccxt, ex)()
+		exchange.rateLimit = 10
+		stsl = 0
+		num = 0
 		for sym in exchanges[ex]:
-			tasks.append(poll(ex, sym, exchdepth[ex]))
+			num+=1
+			stsl+=1
+			tasks.append(poll(ex, sym, exchdepth[ex],stsl,num))
 
-	await asyncio.gather(*taskslosd)
 	await asyncio.gather(*tasks,task0)
 
 

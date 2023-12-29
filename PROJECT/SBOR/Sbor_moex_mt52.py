@@ -6,6 +6,7 @@ import os
 import json
 
 def moexsbor(QE):
+	sboroblig=False    # собирать облигации
 	putpath = 'G:\\DATA_SBOR\\MOSCOWEXCH\\FINAM'
 	startsbor_hour = 4# 4
 	stopsbor_hour = 21# 21
@@ -52,7 +53,8 @@ def moexsbor(QE):
 	SborUSAFUT = Histwrite2(putpath, 'USAFUT', QE)  # американские фьючи
 	SborCUR= Histwrite2(putpath, 'CUR', QE)  #  валютная секция
 	SborMOEX2 = Histwrite2(putpath, 'MOEX2',QE)  #   ММВБ
-	SborOBLIG= Histwrite2(putpath, 'OBLIG', QE) #   ММВБ  OBLIG
+	if sboroblig:
+		SborOBLIG= Histwrite2(putpath, 'OBLIG', QE)  #   ММВБ  OBLIG
 	SborCURcross= Histwrite2(putpath, 'CURcross', QE) # из дирректории crossrate
 	SborRAW = Histwrite2(putpath, 'RAW', QE)  # сырье
 
@@ -146,14 +148,17 @@ def moexsbor(QE):
 								namesCUR.append(sym['name'])
 								allnamesst.append(sym['name'])
 						if "MOEX\\" in sym['path'] and ( sym['expiration_time']>t or sym['expiration_time']==0 ) :
-							if mt5.market_book_add(sym['name']):
-								allnamesst.append(sym['name'])
-								name = sym['name']
-								lnn = len(name)
-								perf = name[:2]
-								if lnn > 10 and (perf == 'XS' or perf == 'RU' or perf == 'SU'):
-									namesOBLIG.append(sym['name'])
-								else:
+							name = sym['name']
+							lnn = len(name)
+							perf = name[:2]
+							if  lnn > 10 and (perf == 'XS' or perf == 'RU' or perf == 'SU'):
+								if sboroblig:
+									if mt5.market_book_add(sym['name']):
+										allnamesst.append(sym['name'])
+										namesOBLIG.append(sym['name'])
+							else:
+								if mt5.market_book_add(sym['name']):
+									allnamesst.append(sym['name'])
 									namesMOEX2 .append(sym['name'])
 
 						if "MCUR\\crossrate" in sym['path'] :
@@ -170,7 +175,8 @@ def moexsbor(QE):
 					print(len(allnamesst)+len(allnamesab), " из них  стаканы  ",len(allnamesst), " только аск/бид ", len(allnamesab) )
 					print(f' namesFRTS2   {len(namesFRTS2 )}')
 					print(f' namesMOEX2  {len(namesMOEX2)} ')
-					print(f' namesOBLIG  {len(namesOBLIG)}  ')
+					if sboroblig:
+						print(f' namesOBLIG  {len(namesOBLIG)}  ')
 					print(f' namesUSAFUT  {len(namesUSAFUT)}  ')
 					print(f' namesCUR  {len(namesCUR)}  ')
 					print(f' namesRAW   {len(namesRAW)}')
@@ -207,8 +213,9 @@ def moexsbor(QE):
 					slovarab[name] = mt5.symbol_info(name)
 				for name in namesMOEX2:
 					stslovar[name] = mt5.market_book_get(name)
-				for name in namesOBLIG:
-					stslovar[name] = mt5.market_book_get(name)
+				if sboroblig:
+					for name in namesOBLIG:
+						stslovar[name] = mt5.market_book_get(name)
 				# print("получено за", time.time() - timer)
 
 				# обработка словаря на сборщик
@@ -225,9 +232,10 @@ def moexsbor(QE):
 				for name in namesMOEX2:
 					ab, st = getstakan(stslovar[name])
 					SborMOEX2.putter(name, ab, st)
-				for name in namesOBLIG:
-					ab, st = getstakan(stslovar[name])
-					SborOBLIG.putter(name, ab, st)
+				if sboroblig:
+					for name in namesOBLIG:
+						ab, st = getstakan(stslovar[name])
+						SborOBLIG.putter(name, ab, st)
 				for name in namesCURcross:
 					ab, st = getAB(slovarab[name])
 					SborCURcross.putter(name, ab, st)

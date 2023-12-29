@@ -23,7 +23,7 @@ def Compress(QE):
 
 		else:
 			# print(" ПУСТОЙ")
-			time.sleep(1)
+			time.sleep(10)
 
 
 
@@ -45,6 +45,7 @@ class Histwrite2:
 		self.QE=QE
 
 	def putter(self, instr_name,askbid, dict_data):
+		# print(self.market,instr_name,askbid)
 		if askbid==[0,0]:
 			# print(instr_name)
 			return
