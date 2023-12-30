@@ -54,7 +54,6 @@ def mycontget(dct):
 		z = sym.partition('*')
 		instr=z[0]
 		ex=z[2]
-		# print(z)
 		if results[count]!=None:
 			rez[ex][instr]= pickle.loads(results[count])
 		else:

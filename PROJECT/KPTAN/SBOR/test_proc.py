@@ -1,15 +1,12 @@
 import asyncio
 import datetime
-import os
-import sys
 import time
 
 from multiprocessing import Process
 
 import ccxt.pro as ccxt1  # noqa: E402
-import traceback
 from PROJECT.my_lib import *
-from PROJECT.KPTAN.SBOR.getmaindata import rez_dict
+from SBOR.getmaindata import rez_dict
 
 #
 # 'binance' 5,8/137 - 137  42- соберем фьючи, слишком тяжелый   на Каймановых островах

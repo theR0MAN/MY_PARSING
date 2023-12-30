@@ -3,9 +3,8 @@ import time
 import os
 import datetime
 import ccxt.pro as ccxt
-from PROJECT.my_lib import *
-
-
+from my_lib import *
+#  только для инфо использовать
 # minpovtinst=25  #  убрать инструменты, которые повторяются меньше чем на minpovtinst рынках
 # minkinstbirz=40   # убрать биржи, на которых оставшихся инструментов меньше  minkinstbirz
 # topsyms=50# оставить в итоге символы из топа в количестве не более  topsyms
@@ -14,8 +13,9 @@ from PROJECT.my_lib import *
 # all- все
 # onlyfut-только фьючи
 
-def rez_dict(minkinstbirz,topsyms,all,onlyfut,flaghard=False):
-	minpovtinst=len(all)+len(onlyfut)
+
+
+def rez_dict(minpovtinst,minkinstbirz,topsyms,all,onlyfut,flaghard=False):
 	loadset = set()
 	def markload():
 		async def lm(ex):
@@ -44,8 +44,17 @@ def rez_dict(minkinstbirz,topsyms,all,onlyfut,flaghard=False):
 		if not os.path.exists(infoname) or flaghard:
 			print('NOT EXIST')
 			async def main():
+				for i in range (2):
+					tasks=[]
+					exch = ccxt.exchanges
+					for ex in exch:
+						if ex not in loadset:
+							tasks.append(lm(ex))
+							print(i," GO",ex)
+					await  asyncio.gather(*tasks)
+					time.sleep(2)
 
-				for i in range(4):
+				for i in range(3):
 					tasks = []
 					nessex=all+onlyfut
 					for ex in nessex:
@@ -59,12 +68,12 @@ def rez_dict(minkinstbirz,topsyms,all,onlyfut,flaghard=False):
 						break
 
 			asyncio.run(main())
-			myput(infoname,myexs)
+			# myput(infoname,myexs)
 			print('PUT')
 
 		else:
 			print ("LOAD MF")
-			myexs=myload(infoname)
+			# myexs=myload(infoname)
 		return myexs
 	a=markload()
 	def take_dat(data):
@@ -171,14 +180,19 @@ def rez_dict(minkinstbirz,topsyms,all,onlyfut,flaghard=False):
 			for sym in itog[ex]:
 				if ":USDT" in sym:
 					A[ex].append(sym)
-	myput(putpath2,A)
-
-	aa = myload(putpath2)
-	for ex in aa:
-		print(ex,aa[ex])
+	# myput(putpath2,A)
+	#
+	# aa = myload(putpath2)
+	# for ex in aa:
+	# 	print(ex,aa[ex])
 	return itog
 
 
-# all0 = ('bingx', 'whitebit','bitfinex2',)
-# onlyfut0 = ('bybit', 'binance', 'huobi', 'binanceusdm',)
-# MY=rez_dict(20,50,all0,onlyfut0,True)
+all0 = ('bingx', 'whitebit','bitfinex2',)
+onlyfut0 = ('bybit', 'binance', 'huobi', 'binanceusdm',)
+MY=rez_dict(25,40,50,all0,onlyfut0,True)
+
+
+
+
+

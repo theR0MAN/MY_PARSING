@@ -1,18 +1,18 @@
 import asyncio
 import datetime
-import os
-import sys
 import time
-import multiprocessing
+# import multiprocessing
 from multiprocessing import Process
 
 import ccxt.pro as ccxt
-import traceback
-from PROJECT.my_lib import *
-from PROJECT.KPTAN.SBOR.getlocaldata import rez_dict
+
+from getlocaldata import rez_dict
+from my_lib import *
 
 
-
+#
+# print(' wait 0')
+# time.sleep(10)
 #
 # 'binance' 5,8/137 - 137  42- соберем фьючи, слишком тяжелый   на Каймановых островах
 # 'bybit' 4,4/224 -224    20 круто    Дубай  -надо собрать всё ,но соберем фьючи
@@ -29,18 +29,19 @@ from PROJECT.KPTAN.SBOR.getlocaldata import rez_dict
 
 # 'bitfinex2'
 
-all= ('bitfinex2','poloniex','bingx', 'whitebit',) #,'whitebit',
+# all= ('bitfinex2','poloniex','bingx', 'whitebit',) #,'whitebit',
 # all= ('bingx','bitfinex','bitfinex2','poloniex','kucoinfutures','binanceusdm','whitebit')
 # onlyfut=('bybit','binance','phemex',"huobi")
-onlyfut=() #'bybit','binance','huobi','binanceusdm',
+# onlyfut=() #'bybit','binance','huobi','binanceusdm',
 
 
 # all = ('bitfinex2',)
 
 
 
-count=0
+count = 0
 def mfun(ex):
+
 	exchdepth = {}
 	exchdepth['kucoinfutures'] = 20
 	exchdepth['kraken'] = 10
@@ -100,12 +101,22 @@ def mfun(ex):
 					timer = time.time()
 					stk=await asyncio.wait_for(exchange.watch_order_book(symb, depth),1200)
 					dc=dict()
-					dc['asks']=stk['asks']
-					dc['bids'] = stk['bids']
-					dc['timestamp'] = stk['timestamp']
-					dc['zad']= time.time() - timer
-					myredput(symb+'*'+exch,dc)
-					count+=1
+					if len(stk['asks']) >0 and len(stk['bids']) >0 :
+						try:
+							Ask = stk['asks'][0][0]
+							Bid = stk['bids'][0][0]
+							if Ask > 0 and Bid > 0 and Ask >Bid:
+								dc['asks']=stk['asks']
+								dc['bids'] = stk['bids']
+								if stk['timestamp'] != None:
+									dc['timestamp'] = stk['timestamp'] / 1000
+								else:
+									dc['timestamp'] = None
+								dc['zad']= time.time() - timer
+								myredput(symb+'*'+exch,dc)
+								count+=1
+						except:
+							print(exch," какая то херь в криптомашине с",symb )
 
 					aliveset.add(exch+symb)
 					if exch+symb in errorset:
@@ -122,10 +133,10 @@ def mfun(ex):
 
 	async def main(ex):
 		asyncio.create_task(counter())
-		day0=0
+		day0=-1
 		vorksymbols=set()
 		while True:
-			await  asyncio.sleep(10)
+			await  asyncio.sleep(5)
 			# раз в день проверять обновления символов
 			dat = datetime.datetime.utcfromtimestamp(time.time())
 			day=dat.day
@@ -152,13 +163,13 @@ def mfun(ex):
 	asyncio.run(main(ex))
 
 
-
 if __name__ == "__main__":
 
-	all = ('bingx', 'whitebit', 'bitfinex2','poloniex',)
-	onlyfut = ('bybit', 'binance', 'huobi', 'binanceusdm',)
-	all = ('whitebit',)
-	onlyfut = (  'huobi', 'binanceusdm','bybit',)
+
+	# all = ('bingx', 'whitebit', 'bitfinex2','poloniex',)
+	# onlyfut = ('bybit', 'binance', 'huobi', 'binanceusdm',)
+	all = ('whitebit','bingx',)
+	onlyfut = (  'huobi', 'binance', 'binanceusdm','bybit',)
 	rez=rez_dict(20, 50, all, onlyfut, True)
 
 	dat = datetime.datetime.utcfromtimestamp(time.time())
@@ -174,7 +185,7 @@ if __name__ == "__main__":
 	# 	print('process name  ',process.name)
 
 	while True:
-		time.sleep(20)
+		time.sleep(10)
 		dat = datetime.datetime.utcfromtimestamp(time.time())
 		day = dat.day
 		mnt = dat.minute
@@ -182,7 +193,7 @@ if __name__ == "__main__":
 			day00 = day
 			rez_dict(20, 50, all, onlyfut, True)
 
-	
+
 
 
 

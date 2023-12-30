@@ -9,6 +9,7 @@ import datetime
 
 # _mnt.
 def Compress(QE):
+	print("запуск компрессора")
 	def COMRESS0(namefile,data):
 		lz = lzma
 		with lz.open(namefile, "w") as f:
@@ -16,14 +17,14 @@ def Compress(QE):
 			f.write(lz.compress(json.dumps(data).encode('utf-8')))
 			print( "   ЗАПИСАНО   ", namefile)
 	while True:
+		time.sleep(5)
 		if not QE.empty():
-			# print(" УРА - полный")
+			print(" УРА - полный")
 			a=QE.get()   # нужно 1 обращение чтобы очередь не слетела
 			COMRESS0(a[0],a[1])
+		# else:
+		# 	print(" ПУСТОЙ")
 
-		else:
-			# print(" ПУСТОЙ")
-			time.sleep(10)
 
 
 
