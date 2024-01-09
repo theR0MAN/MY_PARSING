@@ -10,5 +10,5 @@ if __name__ == '__main__':
 	Process(target=Compress,args=(QE,)).start()
 	Process(target=moexsbor,args=(QE,)).start()
 	Process(target=forexsbor,args=(QE,)).start()
-	Process(target=kriptosbor, args=(QE,)).start()
+	# Process(target=kriptosbor, args=(QE,)).start()
 

@@ -168,8 +168,10 @@ if __name__ == "__main__":
 
 	# all = ('bingx', 'whitebit', 'bitfinex2','poloniex',)
 	# onlyfut = ('bybit', 'binance', 'huobi', 'binanceusdm',)
-	all = ('whitebit','bingx',)
-	onlyfut = (  'huobi', 'binance', 'binanceusdm','bybit',)
+	all = ('whitebit','bingx','bybit','poloniex',)
+	onlyfut = (  'huobi', 'binance','kucoinfutures',)
+	# all = ('whitebit','bingx',)
+	# onlyfut = ('huobi',  'binanceusdm', 'bybit', )
 	rez=rez_dict(20, 50, all, onlyfut, True)
 
 	dat = datetime.datetime.utcfromtimestamp(time.time())

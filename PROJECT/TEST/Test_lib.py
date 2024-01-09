@@ -1,4 +1,4 @@
-
+# import '__main__'
 from platform import system
 import os
 import datetime
@@ -14,7 +14,18 @@ def getdata_merge(onlymerge, minutki, markets, getpath, start_year, start_month,
 			[['G:\\DATA_SBOR\\FRTS\\2023\\5\\16\\10_mnt.roman', 'G:\\DATA_SBOR\\MOEX\\2023\\5\\16\\10_mnt.roman'],
 		 ['G:\\DATA_SBOR\\FRTS\\2023\\5\\16\\11_mnt.roman', 'G:\\DATA_SBOR\\MOEX\\2023\\5\\16\\11_mnt.roman']
 	"""
-	fln = '_mnt.roman' if minutki else '.roman'
+	# fln = '_mnt.roman' if minutki else '.roman'
+
+	fln = 'stk.roman'
+	if minutki==0:
+		fln = 'abt.roman'
+	elif minutki==1:
+		fln = 'abm.roman'
+	else:
+		minutki=2
+		fln = 'stk.roman'
+
+
 	dL = '\\' if system() == 'Windows' else '/'
 
 	getpath = getpath + dL + markets[0]
@@ -83,7 +94,7 @@ def getdata_merge(onlymerge, minutki, markets, getpath, start_year, start_month,
 				podlist.append(z)
 		# print(len(podlist),'==',len(markets))
 		#   Гребаная срань. Разбирался что я тут написал больше чем писал))
-		# onlymerge - если тру, то добавляюся в список файлов файлы только если существуют файлы по всем маркетам за данный час, иначе -не добавляется ничего.
+		# onlymerge - если тру, то добавляюся в список файлов файлы только если существуют файлы по всем маркетам за данный час
 		if onlymerge:
 			if len(podlist) == len(markets):
 				listfiles2.append(podlist)
@@ -109,7 +120,7 @@ class Getl2:
 		self.year = int(x[l - 4])
 		self.mon = int(x[l - 3])
 		self.day = int(x[l - 2])
-		self.hr = int(x[l - 1].split('.')[0])
+		self.hr = int(x[l - 1].split('.')[0][:2])
 		tm = int(time.mktime(datetime.datetime(self.year, self.mon, self.day, self.hr).timetuple()))
 		return tm  # ,year,mon,day,hr
 
@@ -139,10 +150,10 @@ class Getl2:
 			# обозначим списки инструментов
 			for inst in a:
 				if inst not in L2:
-					if True:  # inst == 'Eu-12.23*FRTS'
-						L2[inst] = dict()
-						L2[inst]['asks'] = []
-						L2[inst]['bids'] = []
+					# if True:  # inst == 'Eu-12.23*FRTS'
+					L2[inst] = dict()
+					L2[inst]['asks'] = []
+					L2[inst]['bids'] = []
 
 			for ttm in range(3600):
 				self.hoursec = ttm
@@ -152,6 +163,8 @@ class Getl2:
 					if tmp in a[inst]:
 						L2[inst]['asks'] = a[inst][tmp]['asks']
 						L2[inst]['bids'] = a[inst][tmp]['bids']
+				# 	возможно лучше нон прислать по первому ключу при отсутствии данных, чтобы обозначить инструменты
+				# просто идея -самы весящий -тот кто меньш отклоняется от среднего -проще считать, нежели с быстрым
 				yield L2
 
 # помойная функция, но пусть будет -использовать нужно ту что ниже

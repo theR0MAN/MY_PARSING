@@ -37,7 +37,11 @@ def myredget(key):
 	else:
 		return None
 
+
+
 def mycontget(dct):
+	# получать данные по крипте из редиса в виде снапшота словарей
+	# dct словарь списков  в формате A[биржа].append(символ)  - нуен тобы не делать перебор по ключам в редис
 	rez=dict()
 	symspis = []
 	for ex in dct:

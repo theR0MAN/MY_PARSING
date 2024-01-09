@@ -41,7 +41,7 @@ def kriptosbor(QE):
 					zaderzka=stk['zad']
 					timestamp = stk['timestamp']
 					askbid = [Ask, Bid, timestamp, zaderzka]
-					Sbor[ex].putter(sym , askbid, {})
+					Sbor[ex].putter(sym , askbid, stk)
 
 
 # kriptosbor(QE)

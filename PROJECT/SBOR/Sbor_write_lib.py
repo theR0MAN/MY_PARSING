@@ -19,7 +19,7 @@ def Compress(QE):
 	while True:
 		time.sleep(5)
 		if not QE.empty():
-			print(" УРА - полный")
+			# print(" УРА - полный")
 			a=QE.get()   # нужно 1 обращение чтобы очередь не слетела
 			COMRESS0(a[0],a[1])
 		# else:
@@ -90,9 +90,11 @@ class Histwrite2:
 				self.a[instr_name][timekey] = dict_data
 				self.a_izm[instr_name] = dict_data
 			if self.a_izm[instr_name] != dict_data:
+				self.ab[instr_name][timekey] = askbid   #строка для того чтобы вписывались изм в тики тоже -для лучшего хартбита
 				self.a_izm[instr_name] = dict_data
 				self.a[instr_name][timekey] = dict_data
 				self.zapis = True
+
 
 			
 
