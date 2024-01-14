@@ -7,7 +7,7 @@ import json
 
 
 def forexsbor(QE):
-	putpath = 'G:\\DATA_SBOR\\FOREX\\ALPARI'
+	putpath = 'G:\\DATA_SBOR'
 	startsbor_hour = 4  # 4
 	stopsbor_hour = 21  # 21
 
@@ -84,7 +84,7 @@ def forexsbor(QE):
 							print("fuckingsheat", sym['name'])
 						else:
 							allsym[sym['name']] = sym
-					pth = putpath + '\\ASYMBOLS_INFO'
+					pth = 'G:\\SYMBOLS_INFO\\FXSYMBOLS_INFO'
 					if not os.path.exists(pth):
 						os.mkdir(pth)
 					pth = pth + '\\' + str(dat.year)
@@ -106,11 +106,11 @@ def forexsbor(QE):
 					print('GO Alpari')
 					for sym in allsym:
 						sym = allsym[sym]
-						if "Forex\\" in sym['path'] :
+						if  'Forex\\' in sym['path'] and 'USD' in sym['name']:
 							if mt5.market_book_add(sym['name']):
 								namesFxCUR.append(sym['name'])
 								allnamesst.append(sym['name'])
-						if "Spot Metals\\" in sym['path'] or "CFD Comodts\\" in sym['path']:
+						if "Spot Metals\\" in sym['path'] or 'Commodity CFD\\' in sym['path']:
 							if mt5.market_book_add(sym['name']):
 								namesFxMETBR.append(sym['name'])
 								allnamesst.append(sym['name'])

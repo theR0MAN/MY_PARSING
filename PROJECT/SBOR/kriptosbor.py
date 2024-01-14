@@ -8,8 +8,8 @@ from my_lib import *
 
 def kriptosbor(QE):
 	time.sleep(300)
-	putpath = 'G:\\DATA_SBOR\\KRIPTA'
-	dct = myload('G:\\DATA_SBOR\\KRIPTA\\ASYMBOLS_INFO\\log.roman')
+	putpath = 'G:\\DATA_SBOR'
+	dct = myload('G:\\SYMBOLS_INFO\\KRIPTASYMBOLS_INFO\\log.roman')
 	print(' запуск kriptosbor')
 	Sbor=dict()
 	for ex in dct:
@@ -28,7 +28,7 @@ def kriptosbor(QE):
 			day=dat.day
 			mnt=dat.minute
 			if day0!=day and mnt>10:
-				dct = myload('G:\\DATA_SBOR\\KRIPTA\\ASYMBOLS_INFO\\log.roman')
+				dct = myload('G:\\SYMBOLS_INFO\\KRIPTASYMBOLS_INFO\\log.roman')
 				day0 = day
 				print('day0!=day and mnt>5 MANAGER')
 			a = mycontget(dct)
@@ -41,7 +41,9 @@ def kriptosbor(QE):
 					zaderzka=stk['zad']
 					timestamp = stk['timestamp']
 					askbid = [Ask, Bid, timestamp, zaderzka]
-					Sbor[ex].putter(sym , askbid, stk)
+					# Sbor[ex].putter(sym , askbid, stk)
+					Sbor[ex].putter(sym, askbid, {})
+
 
 
 # kriptosbor(QE)

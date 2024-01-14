@@ -29,9 +29,8 @@ def rez_dict(minkinstbirz,topsyms,all,onlyfut,flaghard=False):
 			except Exception:
 				await birza.close()
 		myexs = dict()
-		putpath = 'G:\\DATA_SBOR\\KRIPTA'
 		dat = datetime.datetime.utcfromtimestamp(int(time.time()))
-		pth = putpath + '\\ASYMBOLS_INFO'
+		pth = 'G:\\SYMBOLS_INFO\\KRIPTASYMBOLS_INFO'
 		if not os.path.exists(pth):
 			os.mkdir(pth)
 		pth = pth + '\\' + str(dat.year)
@@ -157,7 +156,7 @@ def rez_dict(minkinstbirz,topsyms,all,onlyfut,flaghard=False):
 		return itog
 	itog=take_dat(a)
 
-	putpath2 = 'G:\\DATA_SBOR\\KRIPTA\\ASYMBOLS_INFO\\log.roman'
+	putpath2 = 'G:\\SYMBOLS_INFO\\KRIPTASYMBOLS_INFO\\log.roman'
 	A = dict()
 	for ex in all:
 		if ex in itog:

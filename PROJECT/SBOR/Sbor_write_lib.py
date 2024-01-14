@@ -80,7 +80,7 @@ class Histwrite2:
 			self.ab_izm[instr_name] = askbid
 			self.ab[instr_name][timekey] = askbid
 			self.zapisab = True
-		if timekeyminute != self.timekeyminute0 and instr_name in self.ab_izm:
+		if timekeyminute != self.timekeyminute0:
 			self.timekeyminute0 = timekeyminute
 			self.abm[instr_name][timekeyminute] = self.ab_izm[instr_name]
 

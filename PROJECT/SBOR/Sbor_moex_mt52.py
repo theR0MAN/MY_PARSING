@@ -7,7 +7,7 @@ import json
 
 def moexsbor(QE):
 	sboroblig=False    # собирать облигации
-	putpath = 'G:\\DATA_SBOR\\MOSCOWEXCH\\FINAM'
+	putpath = 'G:\\DATA_SBOR'
 	startsbor_hour = 4# 4
 	stopsbor_hour = 21# 21
 	# печатать инструменты с пустыми стаканами
@@ -106,7 +106,7 @@ def moexsbor(QE):
 							print("fuckingsheat", sym['name'])
 						else:
 							allsym[sym['name']] = sym
-					pth = putpath + '\\ASYMBOLS_INFO'
+					pth = 'G:\\SYMBOLS_INFO\\MOEXSYMBOLS_INFO'
 					if not os.path.exists(pth):
 						os.mkdir(pth)
 					pth=pth +'\\'+ str(dat.year)

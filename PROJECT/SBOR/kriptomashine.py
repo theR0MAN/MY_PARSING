@@ -144,7 +144,7 @@ def mfun(ex):
 			if day0!=day and mnt>3:  #day0!=day and mnt>3
 				print('day0!=day and mnt>3 POGNALI')
 				day0 = day
-				dct=myload('G:\\DATA_SBOR\\KRIPTA\\ASYMBOLS_INFO\\log.roman')
+				dct=myload('G:\\SYMBOLS_INFO\\KRIPTASYMBOLS_INFO\\log.roman')
 				if ex in dct:
 					symbols=dct[ex]
 					print(f" {ex} get symbols {len(symbols)} ")
@@ -168,8 +168,8 @@ if __name__ == "__main__":
 
 	# all = ('bingx', 'whitebit', 'bitfinex2','poloniex',)
 	# onlyfut = ('bybit', 'binance', 'huobi', 'binanceusdm',)
-	all = ('whitebit','bingx','bybit','poloniex',)
-	onlyfut = (  'huobi', 'binance','kucoinfutures',)
+	all = ('whitebit','bingx','poloniex',)
+	onlyfut = (  'bybit','huobi', 'binance',)
 	# all = ('whitebit','bingx',)
 	# onlyfut = ('huobi',  'binanceusdm', 'bybit', )
 	rez=rez_dict(20, 50, all, onlyfut, True)

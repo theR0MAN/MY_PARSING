@@ -9,7 +9,7 @@ import traceback
 from statistics import mean
 
 markets = ['FRTS']  # ,'MOEX'
-minutki = 0
+minutki = 77
 onlymerge = 0
 # instrument = 'Si-12.23*FRTS'
 # instrument2 = 'Si-3.24*FRTS'
@@ -26,7 +26,7 @@ instrument3 = 'GOLD-6.24*FRTS'
 start_year, start_month, start_day, start_hour = 2023, 10, 13, 11
 stop_year, stop_month, stop_day, stop_hour = 	 2023, 10, 13, 12
 
-getpath = 'G:\\DATA_SBOR' if system() == 'Windows' else '/media/roman/J/DATA_SBOR'
+getpath = 'G:\\DATA_SBOR\\ELSE' if system() == 'Windows' else '/media/roman/J/DATA_SBOR'
 content = getdata_merge(onlymerge, minutki, markets, getpath, start_year, start_month, start_day, start_hour, stop_year,
 						stop_month, stop_day, stop_hour)
 print(content)

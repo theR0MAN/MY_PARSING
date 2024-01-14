@@ -21,9 +21,9 @@ def getdata_merge(onlymerge, minutki, markets, getpath, start_year, start_month,
 		fln = 'abt.roman'
 	elif minutki==1:
 		fln = 'abm.roman'
-	else:
-		minutki=2
-		fln = 'stk.roman'
+	elif minutki==77:
+		fln = '.roman'
+
 
 
 	dL = '\\' if system() == 'Windows' else '/'
@@ -105,13 +105,12 @@ def getdata_merge(onlymerge, minutki, markets, getpath, start_year, start_month,
 
 
 
-
-
 # 	класс распаковки и получения списка инстр
 class Getl2:
 	def __init__(self, content):
 		self.content=content
 		self.timer=0
+		self.rpd=3600
 		# self.output=[]  #список инструментов
 	def gettm(self,z):
 		'''получает путь , возвращает время в юникод'''
@@ -120,12 +119,15 @@ class Getl2:
 		self.year = int(x[l - 4])
 		self.mon = int(x[l - 3])
 		self.day = int(x[l - 2])
-		self.hr = int(x[l - 1].split('.')[0][:2])
+		self.hr = int(x[l - 1].split('.')[0][:-3])
+		# self.hr = int(x[l - 1].split('.')[0])
 		tm = int(time.mktime(datetime.datetime(self.year, self.mon, self.day, self.hr).timetuple()))
 		return tm  # ,year,mon,day,hr
 
 	def getd(self):
 		for cont in self.content:
+			if 'abm.roman' in cont:
+				self.rpd = 60
 			a = dict()
 			print(cont, 'время предыдущего  расчета  ', time.time() - self.timer)
 			# self.timer = time.time()
@@ -134,8 +136,28 @@ class Getl2:
 					bb = dict(json.loads(lz.decompress(f.read()).decode('utf-8')))
 				a |= bb
 			# print( 'время распаковки ', time.time() - self.timer)
+			# print(a)
 			self.timer=time.time()
 			yield [a,self.gettm(cont[0])]
+
+
+	def get_l2NEW(self):
+		z = self.getd()
+		L2 = dict()
+		while True:
+			cc = next(z)
+			a = cc[0]
+			starttime = cc[1]
+			for ttm in range(self.rpd):
+				tmp = str(ttm)
+				self.ttime=starttime + ttm
+				for inst in a:
+					if tmp in a[inst]:
+						L2[inst] = a[inst][tmp]
+					else:
+						L2[inst] =None
+				yield L2
+				
 
 
 	def get_l2(self):
@@ -167,37 +189,6 @@ class Getl2:
 				# просто идея -самы весящий -тот кто меньш отклоняется от среднего -проще считать, нежели с быстрым
 				yield L2
 
-# помойная функция, но пусть будет -использовать нужно ту что ниже
-def getfut0(l):
-	REZ=dict()
-	for inst in l:
-		if"-" in inst and '.' in inst:
-			REZ[inst]=[]
-			REZ[inst].append([])
-			REZ[inst].append([])
-			REZ[inst].append([])
-	for inst0 in l:
-		if"-" in inst0 and '.' in inst0:
-			bodyit = inst0[:inst0.find('-')]
-			x = inst0[inst0.find('-') + 1:inst0.find('*')].split(".")
-			x2 = float(x[0]) + float(x[1]) * 12
-			for inst in l:
-				if "-" in inst and '.' in inst:
-					bodyinst = inst[:inst.find('-')]
-					xi = inst[inst.find('-') + 1:inst.find('*')].split(".")
-					x2i = float(xi[0]) + float(xi[1]) * 12
-					if bodyinst==bodyit and not x2==x2i:
-						REZ[inst0][0].append(inst)
-						if x2<x2i:
-							REZ[inst0][1].append(inst)
-						if x2>x2i:
-							REZ[inst0][2].append(inst)
-	return REZ
-# словарь списков фьючей с более поздним и ранник сроком экспирации
-# instr в список не входит -получать из ключа
-# REZ[instr][0] - все
-# REZ[instr][1] - более поздние
-# REZ[instr][2]  -более ранние
 
 #  сортирует словарь по значениям
 def sortdict(dict) :
@@ -206,6 +197,7 @@ def sortdict(dict) :
 	sorted_value_index = argsort(values)
 	return {keys[i]: values[i] for i in sorted_value_index}
 
+# Для брокера открытие
 # принимает список фьючей - возвращает
 # список инструментов
 # словарь для календарок в виде
