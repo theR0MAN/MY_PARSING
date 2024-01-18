@@ -6,7 +6,7 @@ import time
 import lzma as lz
 import json
 from numpy import argsort
-
+from collections import deque
 
 def getdata_merge(onlymerge, minutki, markets, getpath, start_year, start_month, start_day, start_hour, stop_year,
 				  stop_month, stop_day, stop_hour):
@@ -107,7 +107,12 @@ def getdata_merge(onlymerge, minutki, markets, getpath, start_year, start_month,
 
 # 	класс распаковки и получения списка инстр
 class Getl2:
-	def __init__(self, content):
+	def __init__(self, content,periodhertbeat,part,mnoz):
+		self.rez = dict()
+		self.periodhertbeat=periodhertbeat
+		self.periodraschet=int(periodhertbeat/2)
+		self.part=part
+		self.mnoz=mnoz
 		self.content=content
 		self.timer=0
 		self.rpd=3600
@@ -129,7 +134,7 @@ class Getl2:
 			if 'abm.roman' in cont:
 				self.rpd = 60
 			a = dict()
-			print(cont, 'время предыдущего  расчета  ', time.time() - self.timer)
+			# print(cont, 'время предыдущего  расчета  ', time.time() - self.timer)
 			# self.timer = time.time()
 			for name in cont:
 				with lz.open(name) as f:
@@ -137,13 +142,25 @@ class Getl2:
 				a |= bb
 			# print( 'время распаковки ', time.time() - self.timer)
 			# print(a)
-			self.timer=time.time()
-			yield [a,self.gettm(cont[0])]
+			# self.timer=time.time()
+			tme=self.gettm(cont[0])
+			for key in a:
+				if key not in self.rez:
+					self.rez[key] = dict()
+					self.rez[key]['lastdata'] = None
+					self.rez[key]['lasttime'] = tme
+					self.rez[key]['kvotimestamps'] = 0
+					self.rez[key]['kvoraschet'] = 0
+					self.rez[key]['heartbeat'] = deque()
+					self.rez[key]['medheartbeat'] = None
+					# self.rez[key]['timestampTEK'] = None
+
+			yield [a,tme]
 
 
 	def get_l2NEW(self):
 		z = self.getd()
-		L2 = dict()
+		L2=dict()
 		while True:
 			cc = next(z)
 			a = cc[0]
@@ -153,11 +170,37 @@ class Getl2:
 				self.ttime=starttime + ttm
 				for inst in a:
 					if tmp in a[inst]:
-						L2[inst] = a[inst][tmp]
+						self.rez[inst]['lastdata'] = a[inst][tmp]
+						self.rez[inst]['timestamp'] = self.ttime - self.rez[inst]['lasttime']
+						self.rez[inst]['timestampTEK'] = self.ttime - self.rez[inst]['lasttime']
+						# self.rez[inst]['timestampTEK'] = 0
+						self.rez[inst]['lasttime'] = self.ttime
+						if self.rez[inst]['kvotimestamps'] < self.periodhertbeat:
+							self.rez[inst]['heartbeat'].append(self.rez[inst]['timestamp'])
+							self.rez[inst]['kvotimestamps'] += 1
+							self.rez[inst]['kvoraschet'] += 1
+						else:
+							self.rez[inst]['heartbeat'].append(self.rez[inst]['timestamp'])
+							self.rez[inst]['heartbeat'].popleft()
+							self.rez[inst]['kvoraschet'] += 1
+							if self.rez[inst]['kvoraschet'] > self.periodraschet:
+								self.rez[inst]['kvoraschet'] = 0
+								l = sorted(list(self.rez[inst]['heartbeat']))
+								# l.sort()
+								self.rez[inst]['medheartbeat'] = l[int(self.periodhertbeat * self.part)]
 					else:
-						L2[inst] =None
+						self.rez[inst]['timestampTEK'] = self.ttime - self.rez[inst]['lasttime']
+
+				for inst in self.rez:
+					L2[inst]=dict()
+					L2[inst]['dat']=self.rez[inst]['lastdata']
+					itg = False
+					if self.rez[inst]['medheartbeat']!=None:
+						itg= self.rez[inst]['medheartbeat']*self.mnoz > self.rez[inst]['timestampTEK']
+					L2[inst]['tmstp'] = [self.rez[inst]['medheartbeat'],self.rez[inst]['timestampTEK'],itg]
+				# print(L2)
 				yield L2
-				
+
 
 
 	def get_l2(self):
