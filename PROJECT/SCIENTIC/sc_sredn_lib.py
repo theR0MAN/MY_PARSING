@@ -146,7 +146,190 @@ class Mysredn:
 		mediana = self.getmediana(data, instrument+ 'shlifeasy', period)
 		return(self.getsredn_easy(mediana, instrument + 'shlifeasy', period))
 
+	def getsupersredn_exp(self,data,instrument,period):  # kotir - (Ask+Bid)/2
+		sredn= self.getsredn_exp(data, instrument+ 'supersrednexp', period)
+		if sredn==None:
+			return None
+		else:
+			dsredn=self.getsredn_exp(sredn-data, instrument+ 'supersrednexp2',period)
+			if dsredn == None:
+				return None
+			else:
+				return  sredn-dsredn
 
+	def getsupersredn_easy(self,data,instrument,period):  # kotir - (Ask+Bid)/2
+		sredn= self.getsredn_easy(data, instrument+ 'supersredneasy', period)
+		if sredn==None:
+			return None
+		else:
+			dsredn=self.getsredn_easy(sredn-data, instrument+ 'supersredneasy2',period)
+			if dsredn == None:
+				return None
+			else:
+				return  sredn-dsredn
+
+# добавлена отработка через период  delitel
+class Mysredndiskret:
+	def __init__(self,delitel):
+		self.baza=dict()
+		self.delitel=delitel
+
+
+	def getsredn_exp(self,data,instrument,period0):
+		diskret = max(1, int(period0 / self.delitel))
+		period = int(period0 / diskret)
+		per = str(period0)
+		instrument=instrument+'exp'
+		if instrument not in self.baza:
+			self.baza[instrument]=dict()
+			self.baza[instrument][per] = dict()
+			self.baza[instrument][per]['nak']=0
+			self.baza[instrument][per]['count'] = 0
+			self.baza[instrument][per]['nakdiskret'] = 1000000
+			self.baza[instrument][per]['myreturn'] = None
+		elif per not in self.baza[instrument]:
+			self.baza[instrument][per] = dict()
+			self.baza[instrument][per]['nak']=0
+			self.baza[instrument][per]['count'] = 0
+			self.baza[instrument][per]['nakdiskret'] = 1000000
+			self.baza[instrument][per]['myreturn'] = None
+
+		if data==None:
+			return (None)
+		else:
+			self.baza[instrument][per]['nakdiskret'] += 1
+			if self.baza[instrument][per]['nakdiskret'] >=diskret:
+				self.baza[instrument][per]['nakdiskret']=0
+				if self.baza[instrument][per]['count']<period:
+					self.baza[instrument][per]['nak']+=data
+					self.baza[instrument][per]['count']+=1
+					self.baza[instrument][per]['myreturn'] = None
+				else:
+					self.baza[instrument][per]['nak']=self.baza[instrument][per]['nak']-self.baza[instrument][per]['nak']/period + data
+					self.baza[instrument][per]['myreturn'] = self.baza[instrument][per]['nak']/period
+			return self.baza[instrument][per]['myreturn']
+
+	def getsredn_easy(self,data,instrument,period0):
+		diskret = max(1, int(period0 / self.delitel))
+		period = int(period0 / diskret)
+		per = str(period)
+		instrument = instrument + 'easy'
+		if instrument not in self.baza:
+			self.baza[instrument]=dict()
+			self.baza[instrument][per] = dict()
+			self.baza[instrument][per]['nake']=0
+			self.baza[instrument][per]['counte'] = 0
+			self.baza[instrument][per]['qe'] = deque()
+			self.baza[instrument][per]['nakdiskret'] = 1000000
+			self.baza[instrument][per]['myreturn'] = None
+		elif per not in self.baza[instrument]:
+			self.baza[instrument][per] = dict()
+			self.baza[instrument][per]['nake']=0
+			self.baza[instrument][per]['counte'] = 0
+			self.baza[instrument][per]['qe'] = deque()
+			self.baza[instrument][per]['nakdiskret'] = 1000000
+			self.baza[instrument][per]['myreturn'] = None
+		if data==None:
+			return (None)
+		else:
+			self.baza[instrument][per]['nakdiskret'] += 1
+			if self.baza[instrument][per]['nakdiskret'] >= diskret:
+				self.baza[instrument][per]['nakdiskret'] = 0
+				if self.baza[instrument][per]['counte'] < period:
+					self.baza[instrument][per]['qe'].append(data)
+					self.baza[instrument][per]['nake'] += data
+					self.baza[instrument][per]['counte'] += 1
+					self.baza[instrument][per]['myreturn'] = None
+				else:
+					self.baza[instrument][per]['qe'].append(data)
+					last = self.baza[instrument][per]['qe'].popleft()
+					self.baza[instrument][per]['nake'] = self.baza[instrument][per]['nake'] - last + data
+					self.baza[instrument][per]['myreturn'] =self.baza[instrument][per]['nake'] / period
+			return self.baza[instrument][per]['myreturn']
+
+	def getmediana(self,data,instrument,period0):
+		diskret = max(1, int(period0 / self.delitel))
+		period = int(period0 / diskret)
+		per = str(period)
+		instrument = instrument + 'med'
+		if instrument not in self.baza:
+			self.baza[instrument]=dict()
+			self.baza[instrument][per] = dict()
+			self.baza[instrument][per]['countm'] = 0
+			self.baza[instrument][per]['qm'] = deque()
+			self.baza[instrument][per]['nakdiskret'] = 1000000
+			self.baza[instrument][per]['myreturn'] = None
+		elif per not in self.baza[instrument]:
+			self.baza[instrument][per] = dict()
+			self.baza[instrument][per]['countm'] = 0
+			self.baza[instrument][per]['qm'] = deque()
+			self.baza[instrument][per]['nakdiskret'] = 1000000
+			self.baza[instrument][per]['myreturn'] = None
+
+		if data==None:
+			self.baza[instrument][per]['myreturn'] =None
+		else:
+			self.baza[instrument][per]['nakdiskret'] += 1
+			if self.baza[instrument][per]['nakdiskret'] >= diskret:
+				self.baza[instrument][per]['nakdiskret'] = 0
+				if self.baza[instrument][per]['countm']<period:
+					self.baza[instrument][per]['qm'].append(data)
+					self.baza[instrument][per]['countm']+=1
+					return(None)
+				else:
+					self.baza[instrument][per]['qm'].append(data)
+					self.baza[instrument][per]['qm'].popleft()
+					l=list(self.baza[instrument][per]['qm'])
+					l.sort()
+					ln=len(l)
+					self.baza[instrument][per]['myreturn'] =(l[int(ln / 2)] if ln % 2 == 1 else (l[int(ln / 2)] + l[int(ln / 2) - 1]) / 2)
+			return self.baza[instrument][per]['myreturn']
+
+	def getshlifmed_exp(self,data,instrument,period):
+		mediana = self.getmediana(data, instrument+ 'shlifexp', period)
+		return self.getsredn_exp(mediana, instrument + 'shlifexp', period)
+
+	def getshlifmed_easy(self,data,instrument,period):
+		mediana = self.getmediana(data, instrument+ 'shlifeasy', period)
+		return self.getsredn_easy(mediana, instrument + 'shlifeasy', period)
+
+	def getsupersredn_exp(self,data,instrument,period):  # kotir - (Ask+Bid)/2
+		sredn= self.getsredn_exp(data, instrument+ 'supersrednexp', period)
+		if sredn==None:
+			return None
+		else:
+			dsredn=self.getsredn_exp(sredn-data, instrument+ 'supersrednexp2',period)
+			if dsredn == None:
+				return None
+			else:
+				return  sredn-dsredn
+
+	def getsupersredn_easy(self,data,instrument,period):  # kotir - (Ask+Bid)/2
+		sredn= self.getsredn_easy(data, instrument+ 'supersredneasy', period)
+		if sredn==None:
+			return None
+		else:
+			dsredn=self.getsredn_easy(sredn-data, instrument+ 'supersredneasy2',period)
+			if dsredn == None:
+				return None
+			else:
+				return  sredn-dsredn
+
+
+
+	# #
+	# def getsupersredn(self,sr,kotir): # kotir - (Ask+Bid)/2
+	# 	if sr==None:
+	# 		return (None)
+	# 	else:
+	# 		data = sr - kotir
+	# 		if self.countss<self.period_sred:
+	# 			self.nakss+=data
+	# 			self.countss+=1
+	# 			return (None)
+	# 		else:
+	# 			self.nakss=self.nakss-self.nakss/self.period_sred + data
+	# 			return (sr-self.nakss/self.period_sred)
 
 # принимает список словарей, содержащий стаканы - возвращает кумулятивный стакан
 def megamerge_stakan(spis):

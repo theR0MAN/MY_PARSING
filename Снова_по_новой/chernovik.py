@@ -1,3 +1,29 @@
+from collections import  deque
+import itertools
+# persr = 2000 # период средней
+# kperso = 3 # период СКО = persr *kperso
+# ksovh = 1
+# # ksovih = 1
 
-for i in range (0,10,2):
-    print(i)
+# sym1='SiM4*FRTS2'
+# sym2='USD000UTSTOM*CUR'
+# identifikator=sym1+'@'+sym2+'@'+str(persr)+'@' +str(kperso )+'@'+str(ksovh)
+# print(identifikator)
+
+#
+# colors = ['red', 'green', 'blue']
+# sizes = ['S', 'M', 'L']
+# for color, size in itertools.product(colors, sizes):
+# 	print(color, size)
+
+
+persrs = [500,1000,2000,4000,8000,16000]
+kpersos = [1,2,4] # период СКО = persr *kperso
+ksovhs = 1,1.3,1.7,2
+
+sym1='SiM4*FRTS2'
+sym2='USD000UTSTOM*CUR'
+for persr,kperso,ksovh in itertools.product(persrs, kpersos,ksovhs ):
+	identifikator = sym1 + '@' + sym2 + '@' + str(persr) + '@' + str(kperso) + '@' + str(ksovh)
+	print(identifikator)
+

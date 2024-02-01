@@ -10,6 +10,7 @@ from statistics import mean
 from PROJECT.SBOR.my_lib  import *
 from get_my_insts import get_fut
 # mysyms = {'GD', 'SV', 'BR', 'NG', 'W4', 'Eu', 'Si', 'MX','ED','SR','SP'}
+# markets=['MOEX2', 'FRTS2', 'CURcross', 'USAFUT', 'CUR', 'RAW', 'FxMETBR', 'FxCUR']
 myklaster=['MAIN','NEAR','USAFUT','FAR']
 mysyms = ['GD', 'SV', 'BR', 'NG', 'W4', 'Eu', 'Si', 'MX','ED','SR' ]
 
@@ -21,8 +22,8 @@ minutki = 0
 onlymerge = 0
 
 
-start_year, start_month, start_day, start_hour = 2024, 1, 17, 4
-stop_year, stop_month, stop_day, stop_hour = 	 2024, 1, 17, 20
+start_year, start_month, start_day, start_hour = 2024, 1, 16, 4
+stop_year, stop_month, stop_day, stop_hour = 	 2024, 1, 24, 20
 
 content = getdata_merge(onlymerge, minutki, markets, 'G:\\DATA_SBOR', start_year, start_month, start_day, start_hour, stop_year,
 						stop_month, stop_day, stop_hour)
