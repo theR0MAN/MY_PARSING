@@ -22,15 +22,49 @@ dats={'Si':['SiM4*FRTS2','USD000UTSTOM*CUR','SiU4*FRTS2']}
 instdict = dict()
 
 sym1='SiM4*FRTS2'
-sym2='USD000UTSTOM*CUR'
+# sym2='USD000UTSTOM*CUR'
 
+# sym1='SiH4*FRTS2'
+# sym1='SiM4*FRTS2'
+# sym1='SiU4*FRTS2'
+# sym2='USD000UTSTOM*CUR'
+# sym2='USD000000TOD*CUR'
+sym2= 'USDRUBF*FRTS2'
+
+# sym1='EDH4*FRTS2'
+# sym2='EDM4*FRTS2'
+# sym2= 'EURUSD*FxCUR'
+
+# sym1='GDM4*FRTS2'
+# sym1='GDU4*FRTS2'
+# sym1='FUTGCG24.US*USAFUT'
+# sym1='Золото*RAW'
+# sym1='XAUUSD*FxMETBR'
+# sym2= 'GDH4*FRTS2'
+# sym2='GLDRUBF*FRTS2'
+# sym2='Золото*RAW'
+# sym2='XAUUSD*FxMETBR'
+
+# sym1='MXM4*FRTS2'
+# sym1='MXH4*FRTS2'
+# sym2= 'IMOEXF*FRTS2'
+
+# sym1 = 'Природный газ*RAW'
+# sym1 = 'NGF4*FRTS2'
+# sym1='NGH4*FRTS2'
+# sym1='FUTQGH24.US*USAFUT'
+
+# sym2='NGG4*FRTS2'
+# sym2 = 'Природный газ*RAW'
+# sym2='NatGas*FxMETBR'
+# discret=False
 
 zaderzka=3
 comis = 0.03
-persr = 4000 # период средней
+persr = 1000 # период средней
 kperso = 2 # период СКО = persr *kperso
-ksovh = 1.3
-ksovih = 1.3
+ksovh = 1.5
+ksovih = 1
 minkso = comis
 
 
@@ -316,7 +350,7 @@ print('PAINT', sym1, "  ", sym2)
 
 color = get_color()
 fig = px.line(
-	title=f"D REZ {sym1} {sym2}  persr={persr}   kperso={kperso}  ksovh ={ksovh}  ksovih ={ksovih}   " )
+	title=f"D 2 REZ {sym1} {sym2}  persr={persr}   kperso={kperso}  ksovh ={ksovh}  ksovih ={ksovih}   " )
 clr = color()
 fig.add_scatter(x=profrezixes, y=profrez1, line_color=clr, name=sym1 + " - " + ' profrez1')
 clr = color()

@@ -22,8 +22,8 @@ minutki = 0
 onlymerge = 0
 
 
-start_year, start_month, start_day, start_hour = 2024, 1, 16, 4
-stop_year, stop_month, stop_day, stop_hour = 	 2024, 1, 24, 20
+start_year, start_month, start_day, start_hour = 2024, 2, 1, 4
+stop_year, stop_month, stop_day, stop_hour = 	 2024, 2, 14, 20
 
 content = getdata_merge(onlymerge, minutki, markets, 'G:\\DATA_SBOR', start_year, start_month, start_day, start_hour, stop_year,
 						stop_month, stop_day, stop_hour)
