@@ -28,19 +28,19 @@ instdict = dict()
 zaderzka = 3
 comis = 0.03
 comismaker = 0.01
-minkso = 0.1
+minkso = 0
 
 
 dats = {'Si': ['NGH4*FRTS2',  'NGG4*FRTS2']} #,'NGF4*FRTS2'
-persrs = [3000]
+persrs = [500]
 kpersos = [2]  # период СКО = persr *kperso
-ksovhs = [0]
+ksovhs = [1]
 koefvihs = [1] # <=1
 
 minutki = 0
 onlymerge = 0
 start_year, start_month, start_day, start_hour = 2024, 1, 23, 4
-sstop_year, sstop_month, sstop_day, sstop_hour = 2024, 2, 15, 20
+sstop_year, sstop_month, sstop_day, sstop_hour = 2024, 1, 30, 20
 
 content = getdata_merge(onlymerge, minutki, markets, 'G:\\DATA_SBOR', start_year, start_month, start_day, start_hour, sstop_year,
 						sstop_month, sstop_day, sstop_hour)

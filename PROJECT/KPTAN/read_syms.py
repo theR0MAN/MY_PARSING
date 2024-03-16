@@ -3,7 +3,7 @@
 # import time
 # import operator
 
-from PROJECT.my_lib import *
+from PROJECT.SBOR.my_lib import *
 
 
 

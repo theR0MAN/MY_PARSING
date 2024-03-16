@@ -150,7 +150,6 @@ for id in EQmas:
 				flagbuy = False
 				flagsell = False
 				flagbuyvih = True
-				first=True
 				buyopenprice1 = Ask1
 				sellopenprice2 = Bid2
 				buyopenprice1f = Ask1f

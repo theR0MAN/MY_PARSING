@@ -3,11 +3,11 @@ import datetime
 import time
 # import multiprocessing
 from multiprocessing import Process
-
+import traceback
 import ccxt.pro as ccxt
 
-from getlocaldata import rez_dict
-from my_lib import *
+from PROJECT.SBOR.getlocaldata import rez_dict
+from PROJECT.SBOR.my_lib import *
 
 
 #
@@ -39,7 +39,8 @@ from my_lib import *
 
 # all = ('bitfinex2',)
 
-
+totalstset=set()
+cnnn=0
 
 count = 0
 def mfun(ex):
@@ -70,6 +71,8 @@ def mfun(ex):
 	# huobi  - только фьючи оставить, иначе ошибка
 	async def counter():
 		global count
+		global cnnn
+		global totalstset
 		count0=0
 		tm0 = time.time()
 		tmlast = time.time()
@@ -79,61 +82,78 @@ def mfun(ex):
 			tmlast = time.time()
 			if tm0 + 1 <= tm:
 				tm0 = tm
+				cnnn += 1
+				print( len(totalstset))
+				if cnnn > 0:
+					cnnn = 0
+					totalstset = set()
 				print(ex,' тормознули на ',round( tm-tmlast,2), ' answers ', count-count0," aliveeset ",len( aliveset) ," erreoeset ",len( errorset), errorset)
 				count0=count
 
 
 	async def poll(exch, symb, stsl,num):
 		global count
+		global cnnn
+		global totalstset
 		exchange = getattr(ccxt, exch)()
 		tm0 = time.time()
 		await asyncio.sleep(stsl)#stsl
 		print("START ",exch,symb,"  ",num)
 
 		while True:
-			await asyncio.sleep(0.05)
+			await asyncio.sleep(0.01)
 			tm = time.time()
 			# dat = datetime.datetime.utcfromtimestamp(tm)
 			# if dat.second<=3:
 			# 	print(' BREAK TO TIME')
 			# 	break
-			if tm0 + 0.1 <= tm:
+			if tm0 + 0.01 <= tm:
 				tm0 = tm
 				try:
 					timer = time.time()
-					stk=await asyncio.wait_for(exchange.watch_order_book(symb, depth),1200)
-					dc=dict()
-					if len(stk['asks']) >0 and len(stk['bids']) >0 :
-						try:
-							Ask = stk['asks'][0][0]
-							Bid = stk['bids'][0][0]
-							if Ask > 0 and Bid > 0 and Ask >Bid:
-								# print(exch, symb, stk['timestamp'])
-								dc['asks']=stk['asks']
-								dc['bids'] = stk['bids']
-								if stk['timestamp'] != None:
-									dc['timestamp'] = stk['timestamp'] / 1000
-									# print(exch,symb,stk['timestamp'])
-								else:
-									dc['timestamp'] = None
-								dc['zad']= time.time() - timer
-								myredput(symb+'*'+exch,dc)
-								count+=1
-						except:
-							print(exch," какая то херь в криптомашине с",symb )
+					# await exchange.throttle(50)
+					l=len(symb)
+					stset=set()
 
-					aliveset.add(exch+symb)
-					if exch+symb in errorset:
-						print('ALIVE ',exch+symb)
-						errorset.remove(exch+symb)
+					while True:
+						stk = await exchange.watch_order_book_for_symbols(symb, depth)
+						totalstset.add(stk['symbol'])
+
+
+
+						# print(l,)
+
+						# dc=dict()
+						# if len(stk['asks']) >0 and len(stk['bids']) >0 :
+						# 	try:
+						# 		Ask = stk['asks'][0][0]
+						# 		Bid = stk['bids'][0][0]
+						# 		if Ask > 0 and Bid > 0 and Ask >Bid:
+						# 			dc['asks']=stk['asks']
+						# 			dc['bids'] = stk['bids']
+						# 			if stk['timestamp'] != None:
+						# 				dc['timestamp'] = stk['timestamp'] / 1000
+						# 			else:
+						# 				dc['timestamp'] = None
+						# 			dc['zad']= time.time() - timer
+						# 			myredput(symb+'*'+exch,dc)
+						# 			count+=1
+						# 	except:
+						# 		print(exch," какая то херь в криптомашине с",symb )
+
+					# aliveset.add(exch+symb)
+					# if exch+symb in errorset:
+					# 	print('ALIVE ',exch+symb)
+					# 	errorset.remove(exch+symb)
 
 				except Exception:
 					await  exchange.close()
 					await asyncio.sleep(1)
-					errorset.add(exch+symb)
-					if exch+symb in aliveset:
-						print('DEAD ',exch+symb)
-						aliveset.remove(exch+symb)
+					# errorset.add(exch+symb)
+					traceback.print_exc()
+					# if exch+symb in aliveset:
+						# print('DEAD ',exch+symb)
+						# aliveset.remove(exch+symb)
 
 	async def main(ex):
 		asyncio.create_task(counter())
@@ -151,17 +171,24 @@ def mfun(ex):
 				dct=myload('G:\\SYMBOLS_INFO\\KRIPTASYMBOLS_INFO\\log.roman')
 				if ex in dct:
 					symbols=dct[ex]
+					# symbols = ['UNI/USDT:USDT', 'ARB/USDT:USDT', 'NEAR/USDT:USDT', 'MKR/USDT:USDT', 'DOT/USDT:USDT', 'SUI/USDT:USDT', 'FTM/USDT:USDT', 'DYM/USDT:USDT',
+					# 		   'AGIX/USDT:USDT', 'SEI/USDT:USDT', 'MEME/USDT:USDT', 'INJ/USDT:USDT' ]
+					# symbols=['OM/USDT:USDT', 'KNC/USDT:USDT', 'LUNA/USDT:USDT', 'GAL/USDT:USDT', 'BAL/USDT:USDT']
+
 					print(f" {ex} get symbols {len(symbols)} ")
 					time.sleep(2)
 					stsl = 0
 					num = 0
+					symsp=[]
 					for sym in symbols:
 						if sym not in vorksymbols:
 							vorksymbols.add(sym)
 							num+=1
 							stsl+=2
 							print(ex,' PUSK ',sym)
-							asyncio.create_task(poll(ex, sym, stsl,num))
+							symsp.append(sym)
+					if len (symsp)>0:
+						asyncio.create_task(poll(ex, symsp, stsl,num))
 				else:
 					print(ex,'ZJOPA')
 	asyncio.run(main(ex))
@@ -172,12 +199,10 @@ if __name__ == "__main__":
 
 	# all = ('bingx', 'whitebit', 'bitfinex2','poloniex',)
 	# onlyfut = ('bybit', 'binance', 'huobi', 'binanceusdm',)
-
-	# all = ('whitebit','bingx','poloniex',)
-	# onlyfut = (  'bybit','huobi', 'binance',)
-
-	all = ('bitget',)
-	onlyfut = ( )
+	all = ()
+	onlyfut = ('okx',)
+	# all = ('whitebit','bingx',)
+	# onlyfut = ('huobi',  'binanceusdm', 'bybit', )
 	rez=rez_dict(20, 50, all, onlyfut, True)
 
 	dat = datetime.datetime.utcfromtimestamp(time.time())
@@ -198,6 +223,11 @@ if __name__ == "__main__":
 			day00 = day
 			rez_dict(20, 50, all, onlyfut, True)
 
+#
+#   File "C:\Users\milro\AppData\Roaming\Python\Python39\site-packages\ccxt\base\exchange.py", line 2982, in market_symbols
+#     raise BadRequest(self.id + ' symbols must be of the same type, either ' + marketType + ' or ' + market['type'] + '.')
+# ccxt.base.errors.BadRequest: binance symbols must be of the same type, either swap or future.
+#
 
 
 

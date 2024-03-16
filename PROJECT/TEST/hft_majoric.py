@@ -27,17 +27,17 @@ instdict = dict()
 # sym2 = 'USD000UTSTOM*CUR'
 
 zaderzka = 3
-comis = 0.03
+comis = 0
 comismaker = 0.01
-minkso = comis / 10
+minkso = 0
 # 'NGF4*FRTS2', 'NGG4*FRTS2', 'NGH4*FRTS2', 'NGJ4*FRTS2', 'NGK4*FRTS2'
-dats = {'Si': ['NGH4*FRTS2', 'NGG4*FRTS2']}  # ,'NGF4*FRTS2'
+dats = {'Si': ['NGF4*FRTS2', 'NGG4*FRTS2', 'NGH4*FRTS2', 'NGJ4*FRTS2', 'NGK4*FRTS2','FUTNGH24.US*USAFUT', 'FUTNGJ24.US*USAFUT', 'FUTQGH24.US*USAFUT', 'FUTQGJ24.US*USAFUT', 'FUTNGK24.US*USAFUT','NatGas*FxMETBR', 'Природный газ*RAW']}  # ,'NGF4*FRTS2'
 # dats = {'Si': ['NGF4*FRTS2', 'NGG4*FRTS2', 'NGH4*FRTS2', 'NGJ4*FRTS2', 'NGK4*FRTS2']}
 # dats = {'Si': ['BRG4*FRTS2', 'BRH4*FRTS2', 'BRJ4*FRTS2', 'BRK4*FRTS2', 'BRM4*FRTS2', 'BRN4*FRTS2', 'BRQ4*FRTS2', 'BRU4*FRTS2', 'BRV4*FRTS2', 'BRX4*FRTS2', 'BRZ4*FRTS2', 'BRF5*FRTS2', 'Brent*FxMETBR', 'Crude*FxMETBR', 'Нефть WTI*RAW', 'Нефть Brent*RAW']}
 # ['BRG4*FRTS2', 'BRH4*FRTS2', 'BRJ4*FRTS2', 'BRK4*FRTS2', 'BRM4*FRTS2', 'BRN4*FRTS2', 'BRQ4*FRTS2', 'BRU4*FRTS2', 'BRV4*FRTS2', 'BRX4*FRTS2', 'BRZ4*FRTS2', 'BRF5*FRTS2', 'Brent*FxMETBR', 'Crude*FxMETBR', 'Нефть WTI*RAW', 'Нефть Brent*RAW]
 persrs = [500]
 kpersos = [2]  # период СКО = persr *kperso
-ksovhs = [1]
+ksovhs = [0]
 koefvihs = [1]  # <=1
 
 minutki = 0
@@ -181,7 +181,6 @@ for onetwo, persr, kperso, ksovh, koefvih in itertools.product(onetwomas, persrs
 
 	# typesignal[id]=None
 
-
 	ids = sym1 + '@' + sym2
 	id2 = sym1 + '@' + sym2 + '@' + str(persr)
 	print(id)
@@ -263,10 +262,10 @@ Ask1f = None
 Bid1f = None
 Ask2f = None
 Bid2f = None
-tme=None
+tme = None
 bigstruct = dict()
 # bigstruct['time']=dict()
-mystruct= dict()
+mystruct = dict()
 for persr in persrs:
 	for kperso in kpersos:
 		for ksovh in ksovhs:
@@ -274,9 +273,7 @@ for persr in persrs:
 				idev = str(persr) + '@' + str(kperso) + '@' + str(ksovh) + '@' + str(koefvih)
 				mystruct[idev] = dict()
 				for sym in dats['Si']:
-					mystruct[idev][sym] =[]
-
-
+					mystruct[idev][sym] = []
 
 # master=dict()
 while True:
@@ -300,18 +297,18 @@ while True:
 		# лень менять прошлую структуру - раскидаю сигралы после каждой секунды, хоть это и не так эффективно
 		# @@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@
 
-		idevmas=dict()
+		idevmas = dict()
 		signals = dict()
 		for persr in persrs:
 			for kperso in kpersos:
 				for ksovh in ksovhs:
 					for koefvih in koefvihs:
 						idev = str(persr) + '@' + str(kperso) + '@' + str(ksovh) + '@' + str(koefvih)
-						signals [idev]=dict()
+						signals[idev] = dict()
 						for sym in dats['Si']:
-							signals [idev][sym] =dict()
-							signals[idev][sym]['buy']=[]
-							signals[idev][sym]['buyvih']=[]
+							signals[idev][sym] = dict()
+							signals[idev][sym]['buy'] = []
+							signals[idev][sym]['buyvih'] = []
 							signals[idev][sym]['sell'] = []
 							signals[idev][sym]['sellvih'] = []
 
@@ -326,15 +323,26 @@ while True:
 					if data[sym1]['tmstp'][2] and data[sym2]['tmstp'][2]:
 						status[ids] = True
 
-						Ask1 = data[sym1]['dat'][0]
-						Bid1 = data[sym1]['dat'][1]
-						Ask2 = data[sym2]['dat'][0]
-						Bid2 = data[sym2]['dat'][1]
+						Ask10 = data[sym1]['dat'][0]
+						Bid10 = data[sym1]['dat'][1]
+						Ask20 = data[sym2]['dat'][0]
+						Bid20 = data[sym2]['dat'][1]
+						Ask1 = (Ask10 + Bid10) / 2
+						Bid1 = Ask1
+						Ask2 = (Ask20 + Bid20) / 2
+						Bid2 = Ask2
 
-						Ask1f = futuredata[sym1]['dat'][0]
-						Bid1f = futuredata[sym1]['dat'][1]
-						Ask2f = futuredata[sym2]['dat'][0]
-						Bid2f = futuredata[sym2]['dat'][1]
+						Ask1f0 = futuredata[sym1]['dat'][0]
+						Bid1f0 = futuredata[sym1]['dat'][1]
+						Ask2f0 = futuredata[sym2]['dat'][0]
+						Bid2f0 = futuredata[sym2]['dat'][1]
+
+						Ask1f = (Ask1f0 + Bid1f0) / 2
+						Bid1f = Ask1f
+						Ask2f = (Ask2f0 + Bid2f0) / 2
+						Bid2f = Ask2f
+
+
 
 						dAsk[sym1] = Ask1
 						dBid[sym1] = Bid1
@@ -397,17 +405,15 @@ while True:
 												# ************************************************
 												# ************************************************
 												#  при реверсе сделки минуется флаг выхода в итоовой записи - это гуд
-												idev= str(persr) + '@' + str(kperso) + '@' + str(ksovh) + '@' + str(koefvih)
+												idev = str(persr) + '@' + str(kperso) + '@' + str(ksovh) + '@' + str(koefvih)
 												# typesignal1=None
 												event = False
 												# закрытие продажи  покупкой
 												if Asksp < SoBid * ksovih and totrade[id0]:  # Asksp<SoBid
 													if flagsellvih[id]:
-
 														signals[idev][sym1]['sellvih'].append(sym2)
 														signals[idev][sym2]['buyvih'].append(sym1)
 
-		
 														REZ[id].append(['sellvih', [Ask1, Bid1], [Ask2, Bid2], [Ask1f, Bid1f], [Ask2f, Bid2f]])
 														event = True
 														flagsellvih[id] = False
@@ -495,25 +501,23 @@ while True:
 
 												if event:
 													if idev not in idevmas:
-														idevmas [idev]=set()
+														idevmas[idev] = set()
 													idevmas[idev].add(sym1)
 													idevmas[idev].add(sym2)
 
-
 		# лучше бы переделать по словарям изначально, но попарсим.
-		# случилось событие -вписываем все сигналы  чоглвчно стрyктурe 
+		# случилось событие -вписываем все сигналы  чоглвчно стрyктурe
 
 		for idev in idevmas:
-			for sym in idevmas[idev] :
-				mystruct[idev][sym].append([dAsk[sym],dBid[sym],dAskf[sym],dBidf[sym], signals[idev][sym]])
-
+			for sym in idevmas[idev]:
+				mystruct[idev][sym].append([dAsk[sym], dBid[sym], dAskf[sym], dBidf[sym], signals[idev][sym]])
 
 		# фиксация эквити раз в час  закрытие покупки продажей
 		if hour0 != hour:
 			hour0 = hour
-			stime=str(tme)
-			bigstruct[stime]=dict()
-			bigstruct[stime]['asks'] =copy.deepcopy(dAsk)
+			stime = str(tme)
+			bigstruct[stime] = dict()
+			bigstruct[stime]['asks'] = copy.deepcopy(dAsk)
 			bigstruct[stime]['bids'] = copy.deepcopy(dBid)
 			bigstruct[stime]['data'] = copy.deepcopy(mystruct)
 
@@ -526,7 +530,6 @@ while True:
 							mystruct[idev] = dict()
 							for sym in dats['Si']:
 								mystruct[idev][sym] = []
-
 
 			# counthour+=1
 			eqcountprofrezixes += 1
@@ -590,7 +593,7 @@ while True:
 		print('error')
 		break
 
-if tme!=None:
+if tme != None:
 	stime = str(tme)
 	bigstruct[stime] = dict()
 	bigstruct[stime]['asks'] = copy.deepcopy(dAsk)
@@ -608,7 +611,7 @@ if tme!=None:
 						mystruct[idev][sym] = []
 
 # myput('rez6', EQ)
-myput('bigstruct2', bigstruct)
+# myput('bigstruct2', bigstruct)
 
 # print('PAINT', sym1, "  ", sym2,'   ',persrs)
 print(f'time = {time.time() - timer}')
@@ -636,36 +639,36 @@ for onetwo, persr, kperso, ksovh, koefvih in itertools.product(onetwomas, persrs
 	fig.add_scatter(x=profrezixes[id], y=profcomis[id], line_color=clr, name='comis')
 	fig.show()
 
-	# color = get_color()
-	# fig = px.line(title=f"D REZ eq {id} ")
-	# clr = color()
-	# fig.add_scatter(x=eqprofrezixes, y=eqprofrez1[id], line_color=clr, name=sym1 + " - " + ' eqprofrez1')
-	# clr = color()
-	# fig.add_scatter(x=eqprofrezixes, y=eqprofrez2[id], line_color=clr, name=sym2 + " - " + ' eqprofrez2')
-	# clr = color()
-	# fig.add_scatter(x=eqprofrezixes, y=eqprofrez1f[id], line_color=clr, name=sym1 + " - " + ' eqprofrez1f')
-	# clr = color()
-	# fig.add_scatter(x=eqprofrezixes, y=eqprofrez2f[id], line_color=clr, name=sym2 + " - " + ' eqprofrez2f')
-	# clr = color()
-	# fig.add_scatter(x=eqprofrezixes, y=eqprofrezall[id], line_color=clr, name=' eqprofrezall')
-	# clr = color()
-	# fig.add_scatter(x=eqprofrezixes, y=eqprofrezallf[id], line_color=clr, name=' eqprofrezallf')
-	#
-	# clr = color()
-	# fig.add_scatter(x=eqprofrezixes, y=fixprof1[id], line_color=clr, name=' fixprof1')
-	# clr = color()
-	# fig.add_scatter(x=eqprofrezixes, y=fixprof2[id], line_color=clr, name=' fixprof2')
-	#
-	# clr = color()
-	# fig.add_scatter(x=eqprofrezixes, y=eqprofcomis[id], line_color=clr, name='eqcomis')
-	# fig.show()
+# color = get_color()
+# fig = px.line(title=f"D REZ eq {id} ")
+# clr = color()
+# fig.add_scatter(x=eqprofrezixes, y=eqprofrez1[id], line_color=clr, name=sym1 + " - " + ' eqprofrez1')
+# clr = color()
+# fig.add_scatter(x=eqprofrezixes, y=eqprofrez2[id], line_color=clr, name=sym2 + " - " + ' eqprofrez2')
+# clr = color()
+# fig.add_scatter(x=eqprofrezixes, y=eqprofrez1f[id], line_color=clr, name=sym1 + " - " + ' eqprofrez1f')
+# clr = color()
+# fig.add_scatter(x=eqprofrezixes, y=eqprofrez2f[id], line_color=clr, name=sym2 + " - " + ' eqprofrez2f')
+# clr = color()
+# fig.add_scatter(x=eqprofrezixes, y=eqprofrezall[id], line_color=clr, name=' eqprofrezall')
+# clr = color()
+# fig.add_scatter(x=eqprofrezixes, y=eqprofrezallf[id], line_color=clr, name=' eqprofrezallf')
+#
+# clr = color()
+# fig.add_scatter(x=eqprofrezixes, y=fixprof1[id], line_color=clr, name=' fixprof1')
+# clr = color()
+# fig.add_scatter(x=eqprofrezixes, y=fixprof2[id], line_color=clr, name=' fixprof2')
+#
+# clr = color()
+# fig.add_scatter(x=eqprofrezixes, y=eqprofcomis[id], line_color=clr, name='eqcomis')
+# fig.show()
 
-	# color = get_color()
-	# fig = px.line( title=f"D id {id}  ")
-	# clr = color()
-	# fig.add_scatter(x=paintdictixes[id], y=paintdictasksspread[id], line_color=clr, name= ' askSpread')
-	# fig.add_scatter(x=paintdictixes[id], y=paintdictbidsspread[id], line_color=clr, name=' bidSpread')
-	# clr = color()
-	# fig.add_scatter(x=paintdictixes[id], y=paintdictaskot[id] ,line_color=clr, name=' askot')
-	# fig.add_scatter(x=paintdictixes[id], y=paintdictbidot[id], line_color=clr, name=' bidot')
-	# fig.show()
+# color = get_color()
+# fig = px.line( title=f"D id {id}  ")
+# clr = color()
+# fig.add_scatter(x=paintdictixes[id], y=paintdictasksspread[id], line_color=clr, name= ' askSpread')
+# fig.add_scatter(x=paintdictixes[id], y=paintdictbidsspread[id], line_color=clr, name=' bidSpread')
+# clr = color()
+# fig.add_scatter(x=paintdictixes[id], y=paintdictaskot[id] ,line_color=clr, name=' askot')
+# fig.add_scatter(x=paintdictixes[id], y=paintdictbidot[id], line_color=clr, name=' bidot')
+# fig.show()

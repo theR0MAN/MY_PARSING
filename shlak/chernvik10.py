@@ -15,15 +15,18 @@
 # print(ksovh)
 # print(koefvih)
 
-
-dats = {'Si': ['x1', 'x2', 'x3', 'x4', 'x5']} #,'NGF4*FRTS2'
-
-vectmas={}
-for i in dats['Si']:
-	vectmas[i]=[]
-	for j in dats['Si']:
-		if j !=i:
-			vectmas[i].append(i+'-'+j)
-
-for sym in vectmas:
-	print(sym,vectmas[sym] )
+#
+# dats = {'Si': ['x1', 'x2', 'x3', 'x4', 'x5']} #,'NGF4*FRTS2'
+#
+# vectmas={}
+# for i in dats['Si']:
+# 	vectmas[i]=[]
+# 	for j in dats['Si']:
+# 		if j !=i:
+# 			vectmas[i].append(i+'-'+j)
+#
+# for sym in vectmas:
+# 	print(sym,vectmas[sym] )
+# a= set({'GDM4*FRTS2', 'GDZ4*FRTS2', 'GDU4*FRTS2'} )
+z=str(a)
+print(z)

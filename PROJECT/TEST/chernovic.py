@@ -1,19 +1,17 @@
 
+import time
+
+import asyncio
+
+async def print_numbers():
+    for i in range(10):
+        await asyncio.sleep(1)
+        print(i)
 
 
-# dats = {'Si': ['x1', 'x2', 'x3', 'x4', 'x5']} #,'NGF4*FRTS2'
-#
-# vectmas={}
-# for i in dats['Si']:
-# 	vectmas[i]=dict()
-# 	for j in dats['Si']:
-# 		if j !=i:
-# 			vectmas[i][j]=[]
-#
-# for sym in vectmas:
-# 	print(sym,vectmas[sym] )
+async def main():
+    task2 = asyncio.create_task(print_numbers())
+    await task2
 
-a=[1,2,3, 4]
 
-if 1 and 4  in a:
-	print ('True')
+asyncio.run(main())

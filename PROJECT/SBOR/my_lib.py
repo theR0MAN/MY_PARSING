@@ -14,6 +14,11 @@ def mysortdict(dict) :
 		dict_2[key] = dict_1[key]
 	return dict_2
 
+def mysortspis (data,rev=False):
+	res = sorted(data, reverse=rev, key=lambda x: x[1])
+	return res
+
+
 def myput(name,data):
 	with lz.open(name, "w") as f:
 		f.write(lz.compress(json.dumps(data).encode('utf-8')))
@@ -28,6 +33,7 @@ r = redis.Redis(db=1)
 pipeline = r.pipeline()
 
 
+
 def myredput(key, data):
 	r.set(key, pickle.dumps(data))
 
@@ -37,6 +43,11 @@ def myredget(key):
 	else:
 		return None
 
+def myreddel(key):
+	r.delete(key)
+
+def myreddelall():
+	r.flushdb()
 
 
 def mycontget(dct):

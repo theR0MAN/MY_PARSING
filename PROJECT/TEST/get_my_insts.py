@@ -1,3 +1,4 @@
+import copy
 import time
 import datetime
 from PROJECT.SBOR.my_lib  import *
@@ -20,12 +21,9 @@ def get_fut(tme):
 	for key in a:
 		if a[key]['exchange'] == 'ФОРТС' and a[key]['expiration_time']>tme+ 86400:
 			spinst.append(key)
+	# print(spinst)
+	# quit()
 
-
-	# instset=set()
-	# for inst in spinst:
-	# 	bodyit = inst[:-2]
-	# 	instset.add(bodyit)
 	for i in mysyms:     #instset
 		rez[i] = dict()
 		rez[i]['MAIN']=[]
@@ -52,18 +50,18 @@ def get_fut(tme):
 	rez['NG']['NEAR'].append('NatGas*FxMETBR')
 	rez['Si']['FAR'].append('USDind*FxMETBR')
 	# добавим валютку   CURcross
-	rez['Si']['NEAR'].append('USDRUB*CURcross')
-	rez['Si']['NEAR'].append('USDRUR*CURcross')
-	rez['Si']['NEAR'].append('USDRUB_TMS*CURcross')
-	rez['Eu']['NEAR'].append('EURRUB*CURcross')
-	rez['Eu']['NEAR'].append('EURRUR*CURcross')
-	rez['Eu']['NEAR'].append('EURRUB_TMS*CURcross')
+	# rez['Si']['NEAR'].append('USDRUB*CURcross')
+	# rez['Si']['NEAR'].append('USDRUR*CURcross')
+	# rez['Si']['NEAR'].append('USDRUB_TMS*CURcross')
+	# rez['Eu']['NEAR'].append('EURRUB*CURcross')
+	# rez['Eu']['NEAR'].append('EURRUR*CURcross')
+	# rez['Eu']['NEAR'].append('EURRUB_TMS*CURcross')
 
 	# добавим валютку   CUR
 	rez['Si']['NEAR'].append('USD000UTSTOM*CUR')
 	rez['Si']['NEAR'].append('USD000000TOD*CUR')
-	rez['Eu']['NEAR'].append('EURUSD000TOM*CUR')
-	rez['Eu']['NEAR'].append('EURUSD000TOD*CUR')
+	# rez['Eu']['NEAR'].append('EURUSD000TOM*CUR')
+	# rez['Eu']['NEAR'].append('EURUSD000TOD*CUR')
 	rez['Eu']['NEAR'].append('EUR_RUB__TOM*CUR')
 	rez['Eu']['NEAR'].append('EUR_RUB__TOD*CUR')
 
@@ -80,11 +78,11 @@ def get_fut(tme):
 	rez['W4']['NEAR'].append('Пшеница*RAW')
 	# добавим сбер
 	rez['SR']['NEAR'].append('SBER*MOEX2')
-	rez['SR']['FAR']=rez['SP']['MAIN']
+	rez['SR']['FAR']=copy.copy(rez['SP']['MAIN'])
 	rez['SR']['FAR'].append('SBERP*MOEX2')
 	
 	rez['SP']['NEAR'].append('SBERP*MOEX2')
-	rez['SP']['FAR']=rez['SR']['MAIN']
+	rez['SP']['FAR']=copy.copy(rez['SR']['MAIN'])
 	rez['SP']['FAR'].append('SBER*MOEX2')
 	
 
@@ -123,6 +121,10 @@ def get_fut(tme):
 # month=1
 # day=5
 #
-# get_fut(year,month,day)
+a= get_fut(time.time()-100000)
+
+for i in a:
+	print(i, a[i])
 
 
+# 'USDRUBF*FRTS2', 'SiH4*FRTS2', 'SiH5*FRTS2', 'SiM4*FRTS2', 'SiM5*FRTS2', 'USD000UTSTOM*CUR', 'USD000000TOD*CUR'
