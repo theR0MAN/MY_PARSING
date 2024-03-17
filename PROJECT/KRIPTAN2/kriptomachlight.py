@@ -3,30 +3,11 @@ import datetime
 import time
 # import multiprocessing
 from multiprocessing import Process
-import traceback
+
 import ccxt.pro as ccxt
 
-from PROJECT.SBOR.getlocaldata import rez_dict
-from PROJECT.SBOR.my_lib import *
-
-
-#
-# print(' wait 0')
-# time.sleep(10)
-#
-# 'binance' 5,8/137 - 137  42- соберем фьючи, слишком тяжелый   на Каймановых островах
-# 'bybit' 4,4/224 -224    20 круто    Дубай  -надо собрать всё ,но соберем фьючи
-# 'bingx' 2,1 / 230  -240  9- собрать всё   -сингапур
-# 'bitfinex' 0,4 /65 -65   6- всё    на Британских Виргинских острова
-# 'bitfinex2'  0,6/104 -104    6-всё
-# 'poloniex' 1,2 /94 - 50  12- всё  США
-# 'kucoinfutures' 0,7/120 -120  6 все
-# 'binanceusdm'- 0,7/122 -122   6-шикарно   сша
-# 'whitebit' 0,7/135 -90   5- литва - ну нах но соберем
-# 'phemex'  2,3/180 -110    12- сингапур - очень зашибок до 180 символов только фьючи возьмем
-# huobi  - только фьючи оставить, иначе ошибка
-
-# okx  bitget bitmart bitmex cryptocom  gate  htx kucoin  mexc woo
+from getlocaldata import rez_dict
+from my_lib import *
 
 
 #
@@ -86,78 +67,136 @@ def mfun(ex):
 	aliveset=set()
 
 
+	# huobi  - только фьючи оставить, иначе ошибка
+	async def counter():
+		global count
+		count0=0
+		tm0 = time.time()
+		tmlast = time.time()
+		while True:
+			tm = time.time()
+			await asyncio.sleep(0.05)
+			tmlast = time.time()
+			if tm0 + 1 <= tm:
+				tm0 = tm
+				print(ex,' тормознули на ',round( tm-tmlast,2), ' answers ', count-count0," aliveeset ",len( aliveset) ," erreoeset ",len( errorset), errorset)
+				count0=count
 
-	async def poll(exch, symb):
+
+	async def poll(exch, symb, stsl,num):
 		global count
 		exchange = getattr(ccxt, exch)()
-		print("START ",exch,symb)
+		tm0 = time.time()
+		await asyncio.sleep(stsl)#stsl
+		print("START ",exch,symb,"  ",num)
 
 		while True:
-			# await asyncio.sleep(0.01)
+			await asyncio.sleep(0.05)
+			tm = time.time()
+			# dat = datetime.datetime.utcfromtimestamp(tm)
+			# if dat.second<=3:
+			# 	print(' BREAK TO TIME')
+			# 	break
+			if tm0 + 0.1 <= tm:
+				tm0 = tm
+				try:
+					timer = time.time()
+					stk=await asyncio.wait_for(exchange.watch_order_book(symb, depth),1200)
+					dc=dict()
+					if len(stk['asks']) >0 and len(stk['bids']) >0 :
+						try:
+							Ask = stk['asks'][0][0]
+							Bid = stk['bids'][0][0]
+							if Ask > 0 and Bid > 0 and Ask >Bid:
+								# print(exch, symb, stk['timestamp'])
+								dc['asks']=stk['asks']
+								dc['bids'] = stk['bids']
+								if stk['timestamp'] != None:
+									dc['timestamp'] = stk['timestamp'] / 1000
+									# print(exch,symb,stk['timestamp'])
+								else:
+									dc['timestamp'] = None
+								dc['zad']= time.time() - timer
+								myredput(symb+'*'+exch,dc)
+								count+=1
+						except:
+							print(exch," какая то херь в криптомашине с",symb )
 
-			try:
-				timer = time.time()
-				stk=await exchange.watch_order_book_for_symbols(symb, depth)
-				print(stk)
+					aliveset.add(exch+symb)
+					if exch+symb in errorset:
+						print('ALIVE ',exch+symb)
+						errorset.remove(exch+symb)
 
-
-			except Exception:
-				print('pizdec')
-				traceback.print_exc()
-				await  exchange.close()
-				# await asyncio.sleep(1)
+				except Exception:
+					await  exchange.close()
+					await asyncio.sleep(1)
+					errorset.add(exch+symb)
+					if exch+symb in aliveset:
+						print('DEAD ',exch+symb)
+						aliveset.remove(exch+symb)
 
 	async def main(ex):
-		# asyncio.create_task(counter())
+		asyncio.create_task(counter())
 		day0=-1
 		vorksymbols=set()
-		# while True:
-		# await  asyncio.sleep(5)
-		# раз в день проверять обновления символов
-		dat = datetime.datetime.utcfromtimestamp(time.time())
-		day=dat.day
-		mnt=dat.minute
-		if day0!=day and mnt>2:  #day0!=day and mnt>3
-			# print('day0!=day and mnt>3 POGNALI')
-			day0 = day
-			# dct=myload('G:\\SYMBOLS_INFO\\KRIPTASYMBOLS_INFO\\log.roman')
-			# if ex in dct:
-			symbols = ['UNI/USDT:USDT', 'ARB/USDT:USDT', 'NEAR/USDT:USDT', 'MKR/USDT:USDT', 'DOT/USDT:USDT','SUI/USDT:USDT', 'FTM/USDT:USDT', 'DYM/USDT:USDT', 'AGIX/USDT:USDT', 'SEI/USDT:USDT', 'MEME/USDT:USDT', 'INJ/USDT:USDT',]
-
-			print(f" {ex} get symbols {len(symbols)} ")
-			asyncio.create_task(poll(ex, symbols))
-					# print(ex,'ZJOPA')
+		while True:
+			await  asyncio.sleep(5)
+			# раз в день проверять обновления символов
+			dat = datetime.datetime.utcfromtimestamp(time.time())
+			day=dat.day
+			mnt=dat.minute
+			if day0!=day and mnt>3:  #day0!=day and mnt>3
+				print('day0!=day and mnt>3 POGNALI')
+				day0 = day
+				dct=myload('G:\\SYMBOLS_INFO\\KRIPTASYMBOLS_INFO\\log.roman')
+				if ex in dct:
+					symbols=dct[ex]
+					print(f" {ex} get symbols {len(symbols)} ")
+					time.sleep(2)
+					stsl = 0
+					num = 0
+					for sym in symbols:
+						if sym not in vorksymbols:
+							vorksymbols.add(sym)
+							num+=1
+							stsl+=2
+							print(ex,' PUSK ',sym)
+							asyncio.create_task(poll(ex, sym, stsl,num))
+				else:
+					print(ex,'ZJOPA')
 	asyncio.run(main(ex))
 
 
-mfun('binance')
+if __name__ == "__main__":
 
 
-#
-# async def main():
-# 	ex = 'binance'
-# 	symbols = ['BTC/USDT:USDT', 'BTC/USDT:USDT-240329', 'BTC/USDT:USDT-240628', 'ETH/USDT:USDT', 'ETH/USDT:USDT-240329', 'ETH/USDT:USDT-240628', 'AXS/USDT:USDT', 'LINK/USDT:USDT',
-# 			   'UNI/USDT:USDT', 'ARB/USDT:USDT', 'NEAR/USDT:USDT', 'MKR/USDT:USDT', 'DOT/USDT:USDT', 'APT/USDT:USDT', 'FIL/USDT:USDT', 'DOGE/USDT:USDT', 'APE/USDT:USDT',
-# 			   'AVAX/USDT:USDT', 'EOS/USDT:USDT', 'LTC/USDT:USDT', 'ETC/USDT:USDT', 'MATIC/USDT:USDT', 'XRP/USDT:USDT', 'TRX/USDT:USDT', 'SOL/USDT:USDT', 'ADA/USDT:USDT',
-# 			   'GRT/USDT:USDT', 'ICP/USDT:USDT', 'SAND/USDT:USDT', 'CRV/USDT:USDT', 'AAVE/USDT:USDT', 'BLUR/USDT:USDT', 'GALA/USDT:USDT', 'FET/USDT:USDT', 'SUSHI/USDT:USDT',
-# 			   'SNX/USDT:USDT', 'STRK/USDT:USDT', 'ATOM/USDT:USDT', 'TIA/USDT:USDT', 'JUP/USDT:USDT', 'EGLD/USDT:USDT', 'XLM/USDT:USDT', 'STG/USDT:USDT', 'COMP/USDT:USDT',
-# 			   'SUI/USDT:USDT', 'FTM/USDT:USDT', 'DYM/USDT:USDT', 'AGIX/USDT:USDT', 'SEI/USDT:USDT', 'MEME/USDT:USDT', 'INJ/USDT:USDT', 'RNDR/USDT:USDT', 'ZETA/USDT:USDT',
-# 			   'MANTA/USDT:USDT']
-# 	print(f" {ex} get symbols {len(symbols)} ")
-# 	day0=-1
-# 	while True:
-# 		await  asyncio.sleep(5)
-# 		time.sleep(2)
-# 		stsl = 0
-# 		num = 0
-# 		asyncio.create_task(poll(ex, symbols, stsl,num))
-#
-#
-# asyncio.run(main())
+	# all = ('bingx', 'whitebit', 'bitfinex2','poloniex',)
+	# onlyfut = ('bybit', 'binance', 'huobi', 'binanceusdm',)
+
+	# all = ('whitebit','bingx','poloniex',)
+	# onlyfut = (  'bybit','huobi', 'binance',)
+
+	all = ('bitget',)
+	onlyfut = ( )
+	rez=rez_dict(20, 50, all, onlyfut, True)
+
+	dat = datetime.datetime.utcfromtimestamp(time.time())
+	day00 = dat.day
+	for ex in rez:
+		exchange = getattr(ccxt, ex)()
+		exchange.rateLimit = True
+		Process(name='worker' + ex, target=mfun, args=(ex,)).start()
+	print('ZAEBUBA')
 
 
-
-
+	while True:
+		time.sleep(10)
+		dat = datetime.datetime.utcfromtimestamp(time.time())
+		day = dat.day
+		mnt = dat.minute
+		if day00 != day:  # and mnt>1
+			day00 = day
+			rez_dict(20, 50, all, onlyfut, True)
 
 
 

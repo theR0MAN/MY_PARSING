@@ -1,13 +1,24 @@
-from  my_filter_instrs import  *
-import time
+# from  my_filter_instrs import  *
+from my_kriptofun import *
 
-# Первое множество
-A = {1, 3, 5}
+kyader=1
+kcorut=5
+minsyms=50
+obrezsyms=30
+myexchanges=['binance','bybit','bitget','okx','kucoin','bitmex','cryptocom', 'binanceusdm', 'huobi']
+# myexchanges=['bybit']
+flaghard=False
 
-# Второе множество
-B = {1, 2, 3}
+mycores =getcorutine(kyader,kcorut,minsyms,obrezsyms,myexchanges,flaghard)
+# mycores=myload('corutines')
 
-C = {1, 2, 4}
+# for core in mycores:
+# 	for corutin in mycores [core]:
+# 		if corutin ['exchange'] =='binance':
+# 			print(corutin)
 
-# Выполнение операции пересечения с помощью &
-print('Intersection using &:', A & B & C)
+
+for core in mycores:
+	print(core,mycores[core])
+
+

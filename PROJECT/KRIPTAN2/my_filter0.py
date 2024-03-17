@@ -1,10 +1,10 @@
 from  my_load_markets  import  *
-
+from  my_info_exch import  *
 # minsyms - удаляем рынок (спот или своп) при количестве инструментов меньше этого параметра
 def myfiltr(myexchanges,minsyms,flaghard=False):
 	print(f' старт функции myfiltr  minsyms = {minsyms} flaghard= {flaghard}  myexchanges={myexchanges}')
+	a,raiting=myinfo()
 
-	a = markload(flaghard)
 	rezset = set()
 	b=dict()
 	b['spot']=dict()
@@ -40,93 +40,65 @@ def myfiltr(myexchanges,minsyms,flaghard=False):
 
 
 	# работа с множествами  myhas
+	print( ' рейтинг бирж исходя из количества пересечений с общим множеством символов')
+	for type in myhas:
+		for ex in myhas[type]:
+			print(type,ex,len(rezset&myhas[type][ex]))
+
 	print('было инструментов до пересечения множеств ',len(rezset))
 	for type in myhas:
 		for ex in myhas[type]:
 			rezset=rezset&myhas[type][ex]
 	print('осталось инструментов после пересечения множеств ',len(rezset),rezset)
+	rz=[]
+	for bz in raiting:
+		if bz in rezset:
+			rz.append(bz)
+	print('сортировка множества согласно рейтингу',len(rz),rz)
+
+	def myfars(a):
+		b = []
+		ln = len(a)
+		if int(ln / 2) == ln / 2:
+			tp = 1
+		else:
+			tp = 2
+
+		for i in range(int(ln / 2)):
+			b.append(a[i])
+			b.append(a[ln - 1 - i])
+		if tp == 2:
+			b.append(a[int(ln / 2)])
+		return b
+
+	rz=myfars(rz)
+	# это нужно для кайфа по распределению нагрузки по ядрам
+	print(' спайка -первое+последнее к центру,',rz)
 
 	print(' получение итогового словоря словаря инструментов по рынкам по множеству')
 	c=dict ()
 	c['spot']=dict()
 	c['swap']=dict()
+
 	for type in b:
 		for ex in b[type]:
 			if ex in myhas[type]:
 				c[type][ex]=[]
-				for sym in b[type][ex]:
-					base = sym.partition('/')[0]
-					if base in rezset:
-						c[type][ex].append(sym)
+				for baza in rz:
+					for sym in b[type][ex]:
+						base = sym.partition('/')[0]
+						if base ==baza:
+							c[type][ex].append(sym)
+							break
 	for type in c:
 		for ex in c[type] :
 			print(ex,type,len(c[type][ex]),c[type][ex])
 
-
-
-
-	# for ex in b:
-	# 	if len (b[ex]['spot'])< minsyms:
-	# 		del myhas[ex]['spot']
-	# 		print(' del spot', ex,len (b[ex]['spot']))
-	# 	if len (b[ex]['swap'])< minsyms:
-	# 		del myhas[ex]['swap']
-	# 		print(' del swap', ex,len (b[ex]['swap']))
-
-
-
-	quit()
-
-	for exch in a:
-		print(exch,len(a[exch]))
-
-	myhas=dict()
-	for exch in a:
-		myhas[exch]=dict()
-		myhas[exch]['spot']=set()
-		myhas[exch]['swap'] =set()
-
-		for sym in a[exch]:
-			if a[exch][sym]['active'] == True:
-				if a[exch][sym]['type'] == 'spot'and a[exch][sym]['quote'] == 'USDT':
-					myhas[exch]['spot'].add(sym.partition('/')[0])
-				elif a[exch][sym]['type'] == 'swap'and a[exch][sym]['quote'] == 'USDT' and a[exch][sym]['settle'] == 'USDT':
-					myhas[exch]['swap'].add(sym.partition('/')[0])
-
-	# for base in myhas:
-
-
-
-	baseset = set()
-	filtr1 = dict()
-	for exch in a:
-		myhas[exch]=dict()
-		filtr1[exch] = []
-		for sym in a[exch]:
-			if a[exch][sym]['active'] == True:
-				if a[exch][sym]['type'] == 'spot' and a[exch][sym]['quote'] == 'USDT':
-					baseset.add(a[exch][sym]['base'])
-					filtr1[exch].append(sym)
-				if a[exch][sym]['type'] == 'swap' and a[exch][sym]['quote'] == 'USDT' and a[exch][sym]['settle'] == 'USDT':
-					baseset.add(a[exch][sym]['base'])
-					filtr1[exch].append(sym)
-
-	# рейтинг баз символов
-	rsyms = dict()
-	for sym in baseset:
-		rsyms[sym] = dict()
-		rsyms[sym] = 0
-
-	for exch in filtr1:
-		for sym in filtr1[exch]:
-			base = sym.partition('/')[0]
-			rsyms[base] += 1
-
-	rsyms = mysortdict(rsyms)
-	print(" рейтинг символов  c  базой USDT по всем рынкам",rsyms)
-
-
 	print(' завершение работы myfiltr')
+	return c
+
+	# quit()
+
 # [['cryptocom', 'binanceusdm'] , [ 'binance'] , ['bitget']  , ['okx'] , ['kucoin', 'bitmex'] ,['bybit']]        'bingx'
 myexchanges=['binance','bybit','bitget','okx','kucoin','bitmex','cryptocom', 'binanceusdm', 'huobi']
 myfiltr(myexchanges,50,flaghard=False)

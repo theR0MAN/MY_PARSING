@@ -10,6 +10,24 @@ from multiprocessing import Process
 # quit()
 def mymachine1(a,exchanges):
 	def getdepth(ex):
+		#  глубины стаканов
+		exchdepth = {}
+		exchdepth['kucoinfutures'] = 20
+		exchdepth['kraken'] = 10
+		exchdepth['kucoin'] = 20
+		exchdepth['bitfinex2'] = 25
+		exchdepth['bitmex'] = None
+		exchdepth['bitopro'] = None  # 5
+		exchdepth['bitfinex'] = 25
+		exchdepth['bingx'] = 20
+		exchdepth['poloniexfutures'] = 5
+		exchdepth['huobi'] = 20
+		exchdepth['binanceusdm'] = 5
+		exchdepth['binance'] = 5
+		exchdepth['coinex'] = None
+		exchdepth['bitrue'] = None
+		exchdepth['bybit'] = 1  # 50
+		exchdepth['others'] = 1
 		if ex in exchdepth:
 			depth = exchdepth[ex]
 		else:
@@ -25,24 +43,6 @@ def mymachine1(a,exchanges):
 
 
 
-	#  глубины стаканов
-	exchdepth = {}
-	exchdepth['kucoinfutures'] = 20
-	exchdepth['kraken'] = 10
-	exchdepth['kucoin'] = 20
-	exchdepth['bitfinex2'] = 25
-	exchdepth['bitmex'] = None
-	exchdepth['bitopro'] = None  # 5
-	exchdepth['bitfinex'] = 25
-	exchdepth['bingx'] = 20
-	exchdepth['poloniexfutures'] = 5
-	exchdepth['huobi'] = 20
-	exchdepth['binanceusdm'] = 5
-	exchdepth['binance'] = 5
-	exchdepth['coinex'] = None
-	exchdepth['bitrue'] = None
-	exchdepth['bybit']=1#50
-	exchdepth['others']=1
 
 	# разделение на корутины по к-ву элтов     # bitmex    bybit     ['swap']
 	corutins = {}

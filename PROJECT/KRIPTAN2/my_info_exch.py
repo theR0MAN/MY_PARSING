@@ -1,7 +1,9 @@
 from  my_load_markets  import  *
 
-def myinfo(flaghard=False):
-	print(' старт функции myinfo flaghard=', flaghard)
+# allbases  False - только по базам USDT
+def myinfo(flaghard=False,allbases=True):
+	''' возвращает список баз символов с убыванием популярности '''
+	print(' старт функции myinfo flaghard=', flaghard," allbases=",allbases)
 
 
 	a = markload(flaghard)
@@ -62,10 +64,10 @@ def myinfo(flaghard=False):
 		filtr1[exch] = []
 		for sym in a[exch]:
 			if a[exch][sym]['active'] == True:
-				if a[exch][sym]['type'] == 'spot' and a[exch][sym]['quote'] == 'USDT':
+				if a[exch][sym]['type'] == 'spot' and (a[exch][sym]['quote'] == 'USDT'or allbases):
 					baseset.add(a[exch][sym]['base'])
 					filtr1[exch].append(sym)
-				if a[exch][sym]['type'] == 'swap' and a[exch][sym]['quote'] == 'USDT' and a[exch][sym]['settle'] == 'USDT':
+				if a[exch][sym]['type'] == 'swap' and (a[exch][sym]['quote'] == 'USDT' and a[exch][sym]['settle'] == 'USDT' or allbases):
 					baseset.add(a[exch][sym]['base'])
 					filtr1[exch].append(sym)
 
@@ -80,12 +82,21 @@ def myinfo(flaghard=False):
 			base = sym.partition('/')[0]
 			rsyms[base] += 1
 
+
 	rsyms = mysortdict(rsyms)
-	print(" рейтинг символов  c  базой USDT по всем рынкам",rsyms)
+	print(" рейтинг символов   по всем рынкам", rsyms)
+
+	rz=[]
+	for key in rsyms:
+		if rsyms[key]>10:
+			rz.append(key)
+	print(len(rz),rz)
+
 
 
 	print(' завершение работы myinfo')
+	return a,rz
 
 
-myinfo()
+# myinfo()
 
