@@ -160,6 +160,7 @@ def myinfo(flaghard=False,allbases=True):
 
 	print(' завершение работы myinfo')
 	return a,rz
+# myinfo()
 # minsyms - удаляем рынок (спот или своп) при количестве инструментов меньше этого параметра
 # obrezsyms - сделано если пересечений слишком много и пк не тянет - режет топ символов до  obrezsyms
 def myfiltr(myexchanges,minsyms,obrezsyms,flaghard=False):
@@ -174,12 +175,15 @@ def myfiltr(myexchanges,minsyms,obrezsyms,flaghard=False):
 	myhas['spot']=dict()
 	myhas['swap']=dict()
 	#  оставим только мои биржи и фильтруем по базе USDT
+	print(" не вулючаем спот по huobi -")
 	for exch in myexchanges:
 		b['spot'] [exch]= []
 		b['swap'] [exch]= []
 		myhas['spot'][exch] = set()
 		myhas['swap'][exch] = set()
 		for sym in a[exch]:
+			if exch=='huobi' and a[exch][sym]['type'] == 'spot':
+				continue
 			if a[exch][sym]['active'] == True:
 				if a[exch][sym]['type'] == 'spot'and a[exch][sym]['quote'] == 'USDT':
 					b['spot'][exch].append(sym)
@@ -260,6 +264,15 @@ def myfiltr(myexchanges,minsyms,obrezsyms,flaghard=False):
 	for type in c:
 		for ex in c[type] :
 			print(ex,type,len(c[type][ex]),c[type][ex])
+
+	print(' подготовка контейдера в редис ')
+	dct=dict()
+	for type in c:
+		for ex in c[type] :
+			dct[ex+ '&'+type]=[]
+			for sym in c[type] [ex]:
+				dct[ex + '&' + type].append(sym)
+	myredput('conainer', dct)
 
 	print(' завершение работы myfiltr')
 	return c

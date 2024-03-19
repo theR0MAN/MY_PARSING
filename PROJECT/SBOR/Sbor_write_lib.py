@@ -96,7 +96,31 @@ class Histwrite2:
 				self.zapis = True
 
 
-			
+	def kriptoputter(self, instr_name,dict_data):
+		# нахер тики - там только стаканы, собераем урезанные -только бестбанды
+		instr_name += "*" + self.market
+		dat = datetime.datetime.utcfromtimestamp(int(time.time()))
+		hour = dat.hour
+		timekey = str(dat.minute * 60 + dat.second)
+
+		if hour != self.hr:
+			self.hr = hour
+
+			if self.zapis:
+				self.write_compress('stk',self.a)
+				self.a = {}
+				self.a_izm = {}
+				self.zapis = False
+
+		if  dict_data!={}:
+			if not instr_name in self.a:
+				self.a[instr_name] = {}
+				self.a[instr_name][timekey] = dict_data
+				self.a_izm[instr_name] = dict_data
+			if self.a_izm[instr_name] != dict_data:
+				self.a_izm[instr_name] = dict_data
+				self.a[instr_name][timekey] = dict_data
+				self.zapis = True
 
 	def get_filename(self):
 		dL = '\\' if system() == 'Windows' else '/'

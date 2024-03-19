@@ -6,32 +6,24 @@ from PROJECT.SBOR.my_lib import *
 # response = c.request('pool.ntp.org')
 # t= ctime(response.tx_time)
 # print(t)
+import os
 
-
-import datetime
-import ntplib
-
-client = ntplib.NTPClient()
-response = client.request('pool.ntp.org')
-print(datetime.datetime.utcfromtimestamp(response.tx_time) )
-# fromtimestamp(response.tx_time))
-
-# print(datetime.fromtimestamp(t))
-
+# pth='G:\\NEWKRIPT'
 #
-a=myload('watchOrderBookForSymbols')
-#
-#
-#
-for type in a:
-	for ex in a[type]:
-		print(type, ex, a[type][ex]['zadtmstmp'][:50])
-		ln=len(a[type][ex]['zadtmstmp'])
-		if ln>3:
-			print(type, ex,ln,sorted(a[type][ex]['zadtmstmp'])[int(ln/2)],'  ',sum(a[type][ex]['zadtmstmp'])/ln)
+# dr= os.listdir(pth)
+# print(dr)
+
+# поиск папок в папке=поиск каталогов в каталоге
+# import os
+# pth = 'G:\\NEWKRIPT'
+# folders = [e for e in os.listdir(pth) if os.path.isdir(e)]
+# print(folders)
+a=myload('z')
+
+for key in a:
+	print(key,mysortdict(a[key]))
 
 
 
-# bitmex    bybit   sorted(a[type][ex]['zadtmstmp'][:50])
 
 

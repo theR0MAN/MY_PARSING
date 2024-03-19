@@ -170,6 +170,7 @@ class Getl2:
 				self.ttime=starttime + ttm
 				for inst in a:
 					if tmp in a[inst]:
+						# print('inst ',inst, a[inst])
 						self.rez[inst]['svez']=True
 						self.rez[inst]['lastdata'] = a[inst][tmp]
 						self.rez[inst]['timestamp'] = self.ttime - self.rez[inst]['lasttime']
@@ -200,8 +201,9 @@ class Getl2:
 					if self.rez[inst]['medheartbeat']!=None:
 						itg= self.rez[inst]['medheartbeat']*self.mnoz > self.rez[inst]['timestampTEK'] or self.rez[inst]['svez']
 					L2[inst]['tmstp'] = [self.rez[inst]['medheartbeat'],self.rez[inst]['timestampTEK'],itg]
-				# print(L2)
+
 				yield L2
+
 
 
 

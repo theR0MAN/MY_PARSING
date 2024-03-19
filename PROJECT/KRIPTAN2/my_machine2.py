@@ -11,7 +11,8 @@ from my_kriptofun import *
 # quit()
 def mymachine1(core):
 
-	async def poll(exch, symb):
+	async def poll(exch,type, symb):
+		exname = '*' + exch + '&' + type
 		depth = getdepth(exch)
 		global count
 		exchange = getattr(ccxt, exch)()
@@ -36,15 +37,14 @@ def mymachine1(core):
 								# print(exch, symb, stk['timestamp'])
 								dc['asks']=stk['asks'][0]
 								dc['bids'] = stk['bids'][0]
-								dc['mytime'] = tme
-								dc['watchall'] = False
+								# dc['mytime'] = round(tme,3)
 								if stk['timestamp'] != None:
 									dc['timestamp'] = stk['timestamp'] / 1000
-									if tme - stk['timestamp'] / 1000 > 5:
-										print(tme - stk['timestamp'] / 1000, symb + '*' + exch)
+									if tme - stk['timestamp'] / 1000 > 7:
+										print(tme - stk['timestamp'] / 1000, symb + exname)
 								else:
 									dc['timestamp'] = None
-								myredput(symb+'*'+exch,dc)
+								myredput(symb+exname,dc)
 						except Exception:
 							print(exch," какая то херь в криптомашине с",symb )
 							traceback.print_exc()
@@ -55,7 +55,8 @@ def mymachine1(core):
 					await asyncio.sleep(1)
 
 
-	async def example(ex, symbols):
+	async def example(ex,type, symbols):
+		exname='*' + ex+'&'+type
 		depth=getdepth(ex)
 		birza = getattr(ccxt, ex)()
 		while True:
@@ -73,18 +74,16 @@ def mymachine1(core):
 						if Ask > 0 and Bid > 0 and Ask > Bid:
 							dc['asks'] = stk['asks'][0]
 							dc['bids'] = stk['bids'][0]
-
-							dc['mytime'] = time.time()
-							dc['watchall'] = True
+							# dc['mytime'] = round(tme,3)
 							# dc['zad'] = tme- rezdict[type][ex]['startzapros']
 							if stk['timestamp'] != None:
 								dc['timestamp'] = stk['timestamp'] / 1000
-								if tme - stk['timestamp'] / 1000 > 5:
-									print(tme- stk['timestamp'] / 1000,  symb + '*' + ex)
+								if tme - stk['timestamp'] / 1000 > 7:
+									print(tme- stk['timestamp'] / 1000,  symb + exname)
 							else:
 								dc['timestamp'] = None
 							# print(symb + '*' + ex,dc)
-							myredput(symb + '*' + ex, dc)
+							myredput(symb + exname, dc)
 					except Exception:
 						print(ex, " какая то херь в криптомашине1 с", symb)
 						traceback.print_exc()
@@ -102,39 +101,38 @@ def mymachine1(core):
 
 
 	async def main():
+
+		#  запуск корутин
 		for corutine in core:
 			if corutine['metod']=='watchOrderBookForSymbols':
 				print(corutine['exchange'],corutine['type'],corutine['metod'],corutine['symbols'])
-				asyncio.create_task(example(corutine['exchange'], corutine['symbols']))
+				asyncio.create_task(example(corutine['exchange'], corutine['type'], corutine['symbols']))
 				print(' пуск корутины',corutine['exchange'], corutine['symbols'],corutine['type'])
-			elif corutine['metod']=='watchOrderBook':
-				if corutine['type']=='swap':
-					for sym in corutine['symbols']:
-						asyncio.create_task(poll(corutine['exchange'], sym))
 
-		await  asyncio.sleep(600)
-		print('stop 1')
+			elif corutine['metod']=='watchOrderBook':
+				for sym in corutine['symbols']:
+					asyncio.create_task(poll(corutine['exchange'], corutine['type'], sym))
+
+		await  asyncio.sleep(31100000) # а пока подождем с годик
+
+		# # может вкрутим обновления корутин, пока не пуду пускать гэзэ
+		# dat = datetime.datetime.utcfromtimestamp(time.time())
+		# day00 = dat.day
+		# while True:
+		# 	await  asyncio.sleep(10)
+		# 	dat = datetime.datetime.utcfromtimestamp(time.time())
+		# 	day = dat.day
+		# 	# mnt = dat.minute
+		# 	if day00 != day:  # and mnt>1
+		# 		day00 = day
+		# 		print(' новый день скоро встретит ночь за окном')
+		# # print('stop 1')
 	# **********************************
 	asyncio.run(main())
 	print('end')
 
 
 
-# kyader = 1
-# kcorut = 5
-# minsyms = 50
-# obrezsyms=50
-# # myexchanges = ['binance', 'bybit', 'bitget', 'okx', 'kucoin', 'bitmex', 'cryptocom', 'binanceusdm', 'huobi']  #'kucoinfutures', 'huobi'
-# myexchanges = [ 'bybit']
-# flaghard = False
-#
-# # mycores =getcorutine(kyader,kcorut,minsyms,obrezsyms,myexchanges,flaghard)
-# mycores = myload('corutines')
-# for core in mycores:
-# 	mymachine1(core)
-# 	print(core, len(mycores[core]), mycores[core])
-# 	# for corutine in mycores[core]:
-# 	# 	print(corutine['exchange'],corutine['type'],corutine['symbols'])
 
 # quit()
 if __name__ == "__main__":
@@ -151,13 +149,24 @@ if __name__ == "__main__":
 
 	mycores =getcorutine(kyader,kcorut,minsyms,obrezsyms,myexchanges,flaghard)
 	# mycores = myload('corutines')
-#
 
 	dat = datetime.datetime.utcfromtimestamp(time.time())
 	day00 = dat.day
-	name= 'worker'
+
+	# quit()
 	for core in mycores:
-		# print(' process')
+		print(' process',core )
 		Process(target=mymachine1, args=(mycores[core],)).start()
 	print('ZAEBUBA')
+
+	#
+	# while True:
+	# 	time.sleep(10)
+	# 	dat = datetime.datetime.utcfromtimestamp(time.time())
+	# 	day = dat.day
+	# 	# mnt = dat.minute
+	# 	if day00 != day:  # and mnt>1
+	# 		day00 = day
+	# 		print(' новый день скоро встретит ночь за окном')
+
 
