@@ -79,7 +79,11 @@ def mymachine1(core):
 							if stk['timestamp'] != None:
 								dc['timestamp'] = stk['timestamp'] / 1000
 								if tme - stk['timestamp'] / 1000 > 7:
-									print(tme- stk['timestamp'] / 1000,  symb + exname)
+									dat = datetime.datetime.utcfromtimestamp(time.time())
+									day = dat.day
+									hour = dat.hour
+									mnt = dat.minute
+									print(f" day {day} hour{hour}  mnt {mnt} задержка по таймстампу {tme - stk['timestamp'] / 1000, symb + exname}  ")
 							else:
 								dc['timestamp'] = None
 							# print(symb + '*' + ex,dc)
@@ -137,19 +141,22 @@ def mymachine1(core):
 # quit()
 if __name__ == "__main__":
 	kyader = 6
-	kcorut = 4
+	kcorut = 12
 	minsyms = 50
-	obrezsyms = 30
+	obrezsyms = 200
 	flaghard = False
 	# myexchanges = ['binance', 'bybit', 'bitget', 'okx', 'kucoin', 'bitmex', 'cryptocom', 'binanceusdm', 'huobi']  #'kucoinfutures'
-	myexchanges = ['binance','bybit', 'bitget', 'bitmex', 'cryptocom','binanceusdm',  'okx', 'huobi'  ]
-	# myexchanges = ['bybit']
+	# myexchanges = ['binance','bybit', 'bitget', 'bitmex', 'cryptocom','binanceusdm',  'okx', 'huobi'  ]
+	# myexchanges = ['binance', 'bybit', 'bitget',  'okx', 'huobi']
+	# myexchanges = ['bybit',]
+	# myexchanges = ['binance&swap', 'bitget&swap', 'bybit&swap', 'huobi&swap', 'okx&swap',]
+	myexchanges = ['binance&swap']
 	# myexchanges = ['huobi']
 
 
 	mycores =getcorutine(kyader,kcorut,minsyms,obrezsyms,myexchanges,flaghard)
 	# mycores = myload('corutines')
-
+	# quit()
 	dat = datetime.datetime.utcfromtimestamp(time.time())
 	day00 = dat.day
 

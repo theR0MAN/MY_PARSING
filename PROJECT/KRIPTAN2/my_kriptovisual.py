@@ -7,13 +7,15 @@ from collections import deque
 import datetime, time  # timer=time.time()
 import traceback
 import statistics
-zadpol=3
+# zadpol=3
 zadtmsmp=3
 
 pth='G:\\NEWKRIPT'
 
-markets = os.listdir(pth)
-# markets = ['binance', 'binanceusdm', 'bingx', 'bybit', 'huobi', 'kucoinfutures', 'whitebit']  #'poloniex',24 1  7-10
+have = os.listdir(pth)
+print('has dir',have)
+quit()
+markets = ['bybit&swap','huobi&swap',  'okx&swap','binance&swap', 'bitget&swap']  #'poloniex',24 1  7-10
 print(markets)
 
 # markets = ['FRTS2']  # ,'MOEX'
@@ -22,8 +24,8 @@ instdict = dict()
 minutki = 123
 onlymerge = 0
 
-start_year, start_month, start_day, start_hour = 2024, 3, 18, 16
-stop_year, stop_month, stop_day, stop_hour = 2024, 3, 18, 16
+start_year, start_month, start_day, start_hour = 2024, 3, 20, 1
+stop_year, stop_month, stop_day, stop_hour = 2024, 3, 20, 2
 
 content = getdata_merge(onlymerge, minutki, markets, pth, start_year, start_month, start_day, start_hour, stop_year,
 						stop_month, stop_day, stop_hour)
@@ -33,7 +35,7 @@ if content==[]:
 	print(' нет данных за этот период' )
 	quit()
 
-exem = Getl2(content, 200, 0.95, 10)
+exem = Getl2(content, 200, 0.95,10)
 # scie = Mysredn()
 z = exem.get_l2NEW()  # получает словарь котиров
 day0 = -1
@@ -120,13 +122,14 @@ while True:
 	# 	заполнение
 	# 	print(instdict)
 	# 	quit()
-		timestamps=[]
-		medtmamp =0
-		for instfull in data:
-			if data[instfull]['dat'] != None:
-				tmst=data[instfull]['dat']['timestamp']
+		timestamps = []
+		medtmamp = 0
+		for inst in data:
+			if data[inst]['dat'] != None:
+				tmst = data[inst]['dat']['timestamp']
 				timestamps.append(tmst)
-			medtmamp=statistics.median(timestamps)
+		if timestamps != []:
+			medtmamp = statistics.median(timestamps)
 
 
 		for instfull in data:
@@ -137,14 +140,14 @@ while True:
 				# print(instr,instfull,data[instfull]['dat'])
 				if data[instfull]['dat'] != None:
 					# print(f" {instfull} timestamp={data[instfull]['dat']['timestamp']}  {medtmamp-data[instfull]['dat']['timestamp']}   ")
-					if data[instfull]['tmstp'][1]<zadpol and medtmamp-data[instfull]['dat']['timestamp']<zadtmsmp:
+					if data[instfull]['tmstp'][2] and medtmamp-data[instfull]['dat']['timestamp']<zadtmsmp:
 						rezdict[instr][instfull]['asks'].append (data[instfull]['dat']['asks'][0])
 						rezdict[instr][instfull]['bids'].append(data[instfull]['dat']['bids'][0])
 					else:
-						if data[instfull]['tmstp'][1] > zadpol:
-							print('zaderzka zadpol',instfull)
-						if medtmamp-data[instfull]['dat']['timestamp']<zadtmsmp:
-							print('zaderzka zadtmsmp', instfull)
+						# if data[instfull]['tmstp'][2] :
+						# 	print('zaderzka zadpol',instfull)
+						# if medtmamp-data[instfull]['dat']['timestamp']<zadtmsmp:
+						# 	print('zaderzka zadtmsmp', instfull)
 
 
 						rezdict[instr][instfull]['asks'].append(None)
@@ -165,6 +168,8 @@ while True:
 		print('error')
 		# quit()
 		break
+
+# quit()
 # нормализация словаря
 delspis=[]
 for instr in rezdict:

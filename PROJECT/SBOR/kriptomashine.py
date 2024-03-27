@@ -144,6 +144,7 @@ def mfun(ex):
 			# раз в день проверять обновления символов
 			dat = datetime.datetime.utcfromtimestamp(time.time())
 			day=dat.day
+			hour=dat.hour
 			mnt=dat.minute
 			if day0!=day and mnt>3:  #day0!=day and mnt>3
 				print('day0!=day and mnt>3 POGNALI')

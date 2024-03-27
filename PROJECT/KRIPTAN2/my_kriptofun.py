@@ -174,15 +174,17 @@ def myfiltr(myexchanges,minsyms,obrezsyms,flaghard=False):
 	myhas = dict()
 	myhas['spot']=dict()
 	myhas['swap']=dict()
-	#  оставим только мои биржи и фильтруем по базе USDT
+	#  оставим только мои биржи и фильтруем по базе USDT      'bybit'
 	print(" не вулючаем спот по huobi -")
-	for exch in myexchanges:
+	for exch0 in myexchanges:
+		exch=exch0.split('&')[0]
+		etype=exch0.split('&')[1]
 		b['spot'] [exch]= []
 		b['swap'] [exch]= []
 		myhas['spot'][exch] = set()
 		myhas['swap'][exch] = set()
 		for sym in a[exch]:
-			if exch=='huobi' and a[exch][sym]['type'] == 'spot':
+			if not a[exch][sym]['type'] == etype:
 				continue
 			if a[exch][sym]['active'] == True:
 				if a[exch][sym]['type'] == 'spot'and a[exch][sym]['quote'] == 'USDT':
@@ -323,6 +325,7 @@ def getcorutine(kyader,kcorut,minsyms,obrezsyms,myexchanges,flaghard):
 
 	corutins['swap']['bitmex'] = 10
 	corutins['spot']['bybit'] = 10
+	# corutins['swap']['huobi'] = 7
 
 	c2=dict()
 	for type in c:

@@ -8,22 +8,32 @@ from PROJECT.SBOR.my_lib import *
 # print(t)
 import os
 
-# pth='G:\\NEWKRIPT'
-#
-# dr= os.listdir(pth)
-# print(dr)
+from time import time
+import numpy as np
+from numba import njit
 
-# поиск папок в папке=поиск каталогов в каталоге
-# import os
-# pth = 'G:\\NEWKRIPT'
-# folders = [e for e in os.listdir(pth) if os.path.isdir(e)]
-# print(folders)
-a=myload('z')
+# Pure Python version:
+@njit
+def mean_distance_from_zero(arr):
+    total = 0
+    for i in range(len(arr)):
+        total += abs(arr[i])
+    return total / len(arr)
 
-for key in a:
-	print(key,mysortdict(a[key]))
+# A fast, JITed version:
+# mean_distance_from_zero_numba = njit(
+#     mean_distance_from_zero
+# )
 
+arr = np.array(range(100), dtype=np.float64)
+# arr=[1,2,3,4,5,6,7,8,9,10]
+# arr=list(range(100))
+print(arr)
 
+start = time()
 
-
-
+for i in range(3):
+    start = time()
+    mean_distance_from_zero(arr)
+    print("Elapsed Numba:   ", time() - start)
+	

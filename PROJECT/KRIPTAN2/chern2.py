@@ -1,76 +1,11 @@
-# from  my_filter_instrs import  *
-from my_kriptofun import *
-
-# a= myload('8')
-# for sym in a:
-# 	print(sym,a[sym])
-# 	break
-
-from PROJECT.TEST.Test_lib import *
-from PROJECT.VIZUAL.Viz_lib import get_color
-from PROJECT.SCIENTIC.sc_sredn_lib import *
-from platform import system
-import plotly.express as px
-from collections import deque
-import datetime, time  # timer=time.time()
-import traceback
 
 
-pth='G:\\NEWKRIPT'
 
-markets = os.listdir(pth)
-# markets = ['binance', 'binanceusdm', 'bingx', 'bybit', 'huobi', 'kucoinfutures', 'whitebit']  #'poloniex',24 1  7-10
-print(markets)
+a=[['BTC/USDT:USDT*binance&swap', 1.0, 53.3], ['MINA/USDT:USDT*binance&swap', 0.974884, 79.9], ['OMG/USDT:USDT*binance&swap', 0.972766, 95.1], ['SNT/USDT:USDT*binance&swap', 0.971889, 82.7], ['SPELL/USDT:USDT*binance&swap', 0.970841, 91.2], ['BAT/USDT:USDT*binance&swap', 0.96915, 77.4], ['ASTR/USDT:USDT*binance&swap', 0.968155, 71.1], ['KNC/USDT:USDT*binance&swap', 0.967676, 80.9], ['COTI/USDT:USDT*binance&swap', 0.967025, 92.6], ['FLOW/USDT:USDT*binance&swap', 0.966669, 95.5], ['SXP/USDT:USDT*binance&swap', 0.966291, 80.5], ['IOST/USDT:USDT*binance&swap', 0.965193, 77.3], ['KAVA/USDT:USDT*binance&swap', 0.964885, 82.3], ['ZIL/USDT:USDT*binance&swap', 0.96476, 90.6], ['GAS/USDT:USDT*binance&swap', 0.964299, 78.1], ['ADA/USDT:USDT*binance&swap', 0.96407, 76.4], ['SEI/USDT:USDT*binance&swap', 0.962704, 88.4], ['LOOM/USDT:USDT*binance&swap', 0.960966, 79.4], ['EGLD/USDT:USDT*binance&swap', 0.959275, 83.0], ['TWT/USDT:USDT*binance&swap', 0.959221, 70.6], ['1INCH/USDT:USDT*binance&swap', 0.9577, 77.2], ['KSM/USDT:USDT*binance&swap', 0.955732, 89.8], ['VET/USDT:USDT*binance&swap', 0.954178, 72.0], ['REN/USDT:USDT*binance&swap', 0.952498, 86.1], ['BAND/USDT:USDT*binance&swap', 0.952189, 87.0], ['ICX/USDT:USDT*binance&swap', 0.951789, 80.4], ['DAR/USDT:USDT*binance&swap', 0.950844, 102.1], ['CVX/USDT:USDT*binance&swap', 0.949948, 84.3], ['FXS/USDT:USDT*binance&swap', 0.94935, 75.9], ['ALICE/USDT:USDT*binance&swap', 0.94841, 91.8], ['ILV/USDT:USDT*binance&swap', 0.94807, 97.5], ['TLM/USDT:USDT*binance&swap', 0.947738, 104.6], ['ENS/USDT:USDT*binance&swap', 0.94601, 95.6], ['DASH/USDT:USDT*binance&swap', 0.945993, 74.1], ['REEF/USDT:USDT*binance&swap', 0.945643, 94.7], ['MANTA/USDT:USDT*binance&swap', 0.944484, 103.8], ['GMX/USDT:USDT*binance&swap', 0.942955, 79.9], ['AUDIO/USDT:USDT*binance&swap', 0.942405, 82.4], ['ENJ/USDT:USDT*binance&swap', 0.941662, 99.3], ['AXS/USDT:USDT*binance&swap', 0.940375, 94.1], ['RUNE/USDT:USDT*binance&swap', 0.939798, 97.6], ['JOE/USDT:USDT*binance&swap', 0.938939, 110.7], ['RLC/USDT:USDT*binance&swap', 0.938802, 93.5], ['HFT/USDT:USDT*binance&swap', 0.938623, 90.6], ['POWR/USDT:USDT*binance&swap', 0.938314, 79.4], ['OGN/USDT:USDT*binance&swap', 0.936507, 97.4], ['KLAY/USDT:USDT*binance&swap', 0.933157, 76.7], ['INJ/USDT:USDT*binance&swap', 0.932127, 83.7], ['ACE/USDT:USDT*binance&swap', 0.931728, 108.2], ['GLMR/USDT:USDT*binance&swap', 0.931617, 94.4], ['SLP/USDT:USDT*binance&swap', 0.931327, 105.1], ['LSK/USDT:USDT*binance&swap', 0.928834, 79.4], ['MTL/USDT:USDT*binance&swap', 0.928553, 77.6], ['RVN/USDT:USDT*binance&swap', 0.926287, 83.4], ['ORBS/USDT:USDT*binance&swap', 0.923103, 81.6], ['AGLD/USDT:USDT*binance&swap', 0.922973, 92.1], ['APE/USDT:USDT*binance&swap', 0.922583, 87.0], ['XRP/USDT:USDT*binance&swap', 0.922447, 53.2], ['BIGTIME/USDT:USDT*binance&swap', 0.921659, 122.4], ['LINA/USDT:USDT*binance&swap', 0.919775, 89.6], ['ETH/USDT:USDT*binance&swap', 0.919427, 69.2], ['XTZ/USDT:USDT*binance&swap', 0.91786, 85.2], ['STORJ/USDT:USDT*binance&swap', 0.917193, 83.6], ['LRC/USDT:USDT*binance&swap', 0.913797, 98.4], ['ETC/USDT:USDT*binance&swap', 0.913535, 77.8], ['XEM/USDT:USDT*binance&swap', 0.913057, 64.7], ['DYDX/USDT:USDT*binance&swap', 0.911728, 70.2], ['SAND/USDT:USDT*binance&swap', 0.911604, 134.2], ['WAXP/USDT:USDT*binance&swap', 0.911252, 97.8], ['MANA/USDT:USDT*binance&swap', 0.909969, 92.5], ['YFI/USDT:USDT*binance&swap', 0.90928, 73.7], ['WIF/USDT:USDT*binance&swap', 0.908825, 185.1], ['BNT/USDT:USDT*binance&swap', 0.908163, 83.9], ['BICO/USDT:USDT*binance&swap', 0.906966, 91.5], ['PYTH/USDT:USDT*binance&swap', 0.9065, 113.5], ['WOO/USDT:USDT*binance&swap', 0.905916, 102.3], ['DGB/USDT:USDT*binance&swap', 0.903365, 81.1], ['MAGIC/USDT:USDT*binance&swap', 0.902179, 103.1], ['WAVES/USDT:USDT*binance&swap', 0.902084, 94.6], ['ALGO/USDT:USDT*binance&swap', 0.901671, 86.3], ['AEVO/USDT:USDT*binance&swap', 0.899631, 120.8], ['ETHFI/USDT:USDT*binance&swap', 0.896108, 218.5], ['NMR/USDT:USDT*binance&swap', 0.895259, 89.9], ['BLZ/USDT:USDT*binance&swap', 0.891015, 65.2], ['GMT/USDT:USDT*binance&swap', 0.890373, 100.3], ['GALA/USDT:USDT*binance&swap', 0.890232, 181.1], ['PIXEL/USDT:USDT*binance&swap', 0.890057, 150.4], ['ZETA/USDT:USDT*binance&swap', 0.886993, 111.1], ['DOT/USDT:USDT*binance&swap', 0.886123, 74.7], ['ALPHA/USDT:USDT*binance&swap', 0.883958, 85.8], ['RNDR/USDT:USDT*binance&swap', 0.882732, 100.0], ['HBAR/USDT:USDT*binance&swap', 0.880562, 77.0], ['HOT/USDT:USDT*binance&swap', 0.878804, 95.9], ['ORDI/USDT:USDT*binance&swap', 0.877297, 89.9], ['BLUR/USDT:USDT*binance&swap', 0.875051, 84.0], ['NEO/USDT:USDT*binance&swap', 0.874097, 77.3], ['CELO/USDT:USDT*binance&swap', 0.872092, 82.8], ['XMR/USDT:USDT*binance&swap', 0.870473, 54.2], ['UMA/USDT:USDT*binance&swap', 0.866544, 84.9], ['PERP/USDT:USDT*binance&swap', 0.865923, 95.7], ['AR/USDT:USDT*binance&swap', 0.858171, 171.3], ['AAVE/USDT:USDT*binance&swap', 0.854482, 90.4], ['EOS/USDT:USDT*binance&swap', 0.853145, 78.4], ['PORTAL/USDT:USDT*binance&swap', 0.851668, 111.7], ['FET/USDT:USDT*binance&swap', 0.850925, 99.9], ['LPT/USDT:USDT*binance&swap', 0.84663, 137.6], ['XLM/USDT:USDT*binance&swap', 0.845372, 56.2], ['ONE/USDT:USDT*binance&swap', 0.843505, 91.5], ['LINK/USDT:USDT*binance&swap', 0.842849, 70.4], ['OXT/USDT:USDT*binance&swap', 0.841724, 85.1], ['MEME/USDT:USDT*binance&swap', 0.835478, 127.6], ['OCEAN/USDT:USDT*binance&swap', 0.833499, 83.2], ['QTUM/USDT:USDT*binance&swap', 0.832963, 93.2], ['DOGE/USDT:USDT*binance&swap', 0.831943, 165.6], ['CKB/USDT:USDT*binance&swap', 0.826095, 124.5], ['YGG/USDT:USDT*binance&swap', 0.824267, 217.4], ['MATIC/USDT:USDT*binance&swap', 0.82182, 73.0], ['SUPER/USDT:USDT*binance&swap', 0.819378, 92.4], ['RAD/USDT:USDT*binance&swap', 0.818052, 110.8], ['T/USDT:USDT*binance&swap', 0.812259, 94.5], ['AVAX/USDT:USDT*binance&swap', 0.811757, 113.3], ['ETHW/USDT:USDT*binance&swap', 0.810464, 87.9], ['ID/USDT:USDT*binance&swap', 0.808174, 130.3], ['ONT/USDT:USDT*binance&swap', 0.807944, 112.1], ['API3/USDT:USDT*binance&swap', 0.807132, 113.0], ['ATOM/USDT:USDT*binance&swap', 0.806399, 67.1], ['ROSE/USDT:USDT*binance&swap', 0.805445, 93.6], ['ANKR/USDT:USDT*binance&swap', 0.789156, 89.5], ['CHZ/USDT:USDT*binance&swap', 0.784827, 86.5], ['MDT/USDT:USDT*binance&swap', 0.784373, 98.5], ['CHR/USDT:USDT*binance&swap', 0.7811, 128.2], ['IOTA/USDT:USDT*binance&swap', 0.773275, 91.7], ['BADGER/USDT:USDT*binance&swap', 0.771926, 187.9], ['AUCTION/USDT:USDT*binance&swap', 0.766451, 86.5], ['GRT/USDT:USDT*binance&swap', 0.766272, 90.2], ['IMX/USDT:USDT*binance&swap', 0.759895, 98.0], ['TON/USDT:USDT*binance&swap', 0.754211, 218.3], ['ALT/USDT:USDT*binance&swap', 0.750812, 129.6], ['CELR/USDT:USDT*binance&swap', 0.739544, 84.9], ['QNT/USDT:USDT*binance&swap', 0.73945, 81.8], ['METIS/USDT:USDT*binance&swap', 0.739078, 90.4], ['ARPA/USDT:USDT*binance&swap', 0.73463, 92.4], ['AGIX/USDT:USDT*binance&swap', 0.726153, 110.5], ['GLM/USDT:USDT*binance&swap', 0.719106, 150.2], ['C98/USDT:USDT*binance&swap', 0.716694, 90.6]]
 
-# markets = ['FRTS2']  # ,'MOEX'
-instdict = dict()
+print(len(a))
+b=[]
+for i in a:
+	b.append(i[0])
 
-minutki = 123
-onlymerge = 0
-
-start_year, start_month, start_day, start_hour = 2024, 3, 18, 8
-stop_year, stop_month, stop_day, stop_hour = 2024, 3, 18, 8
-
-content = getdata_merge(onlymerge, minutki, markets, pth, start_year, start_month, start_day, start_hour, stop_year,
-						stop_month, stop_day, stop_hour)
-print(content)
-
-if content==[]:
-	print(' нет данных за этот период' )
-	quit()
-
-exem = Getl2(content, 200, 0.95, 10)
-# scie = Mysredn()
-z = exem.get_l3()  # получает словарь котиров
-day0 = -1
-count = 0
-ct = 0
-
-razrez = 0
-countrr = 0
-
-obryv = dict()
-paintdict = {}
-# подготовка словаря отрисовки
-ixes = []
-
-
-first=False
-instset=set()
-
-limgraf=5 # минимум графиков в окне
-while True:
-
-	count += 1
-	try:
-		data = next(z)  # это якобы на серваке - к нему нужен доступ
-		for sym in data:
-			if data[sym]['dat']!=None:
-				print(sym, data[sym])
-		# print(data)
-		# if count>100:
-		# break
-	except Exception:
-		print(traceback.format_exc())
-		print('error')
-		break
+print(b)

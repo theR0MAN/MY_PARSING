@@ -315,6 +315,26 @@ class Mysredndiskret:
 			else:
 				return  sredn-dsredn
 
+	def getnormalize_by_getsredn_easy(self,instrument,Ask,Bid,period):
+		data=(Ask+Bid)/2
+		sredn = self.getsredn_easy(data, instrument+ 'bygetsredneasy', period)
+		if sredn!=None:
+			Askn = 100 * Ask / sredn
+			Bidn = 100 * Bid / sredn
+			return Askn,Bidn
+		else:
+			return None,None
+
+	def getnormalize_by_getshlifmed_easy(self,instrument,Ask,Bid,period):
+		data=(Ask+Bid)/2
+		sredn = self.getshlifmed_easy(data, instrument+ 'bygetshlifmedeasy', period)
+		if sredn!=None:
+			Askn = 100 * Ask / sredn
+			Bidn = 100 * Bid / sredn
+			return Askn,Bidn
+		else:
+			return None,None
+
 
 
 	# #

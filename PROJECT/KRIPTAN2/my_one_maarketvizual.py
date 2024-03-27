@@ -22,8 +22,8 @@ instdict = dict()
 minutki = 123
 onlymerge = 0
 
-start_year, start_month, start_day, start_hour = 2024, 3, 18, 16
-stop_year, stop_month, stop_day, stop_hour = 2024, 3, 18, 16
+start_year, start_month, start_day, start_hour = 2024, 3, 20, 2
+stop_year, stop_month, stop_day, stop_hour = 2024, 3, 20, 2
 
 content = getdata_merge(onlymerge, minutki, markets, pth, start_year, start_month, start_day, start_hour, stop_year,
 						stop_month, stop_day, stop_hour)
