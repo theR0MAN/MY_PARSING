@@ -115,8 +115,8 @@ while True:
 					rezdictcorrect[sym]['bids'].append(bid)
 				count += 1
 				ixes.append(count)
-				mxm=scie.getsredn_exp(mx,'mxsko',period*2)
-				mnm=scie.getsredn_exp(mn,'mnsko',period*2)
+				mxm=scie.getsredn_exp(mx,'mxsko',period)
+				mnm=scie.getsredn_exp(mn,'mnsko',period)
 				# if mxm!=None:
 				# 	mxm*=2
 				# if mnm!=None:

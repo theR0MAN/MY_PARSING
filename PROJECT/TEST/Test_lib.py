@@ -116,6 +116,7 @@ class Getl2:
 		self.content=content
 		self.timer=0
 		self.rpd=3600
+		# self.hoursec =0
 		# self.output=[]  #список инструментов
 	def gettm(self,z):
 		'''получает путь , возвращает время в юникод'''
